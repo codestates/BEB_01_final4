@@ -32,8 +32,7 @@ const Collections = () => {
     <div>
       <Grid>
         {sandbox.map((token, i) => {
-          console.log(token.tokenURI);
-          return (
+          return token.tokenURI === null ? null : (
             <Grid.Col span={12} md={6} lg={4} key={i}>
               <CollectionWrapper
                 style={{
