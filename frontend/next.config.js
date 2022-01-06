@@ -7,6 +7,7 @@ module.exports = {
       "images.newindianexpress.com",
       "files.thefacecdn.com",
       "encrypted-tbn0.gstatic.com",
+      "api.sandbox.game",
     ],
   },
 };
