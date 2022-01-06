@@ -7,7 +7,7 @@ import styled from "styled-components";
 
 const CText = styled(Text)`
   && {
-    margin: 0 15px;
+    margin: 0 20px;
     cursor: pointer;
   }
 `;
@@ -79,14 +79,16 @@ const Layout = ({ children }) => {
               <Input style={{ marginRight: "20px", width: "300px" }} variant="default" placeholder="Search" />
 
               <div style={{ display: "flex" }}>
-                <Link href="/mint-nft" passHref>
-                  <CText>NFT 민트</CText>
+                <Link href="/collections" passHref>
+                  <CText>Collections</CText>
                 </Link>
-                <Link href="/" passHref>
-                  <CText>메뉴 1</CText>
+
+                <Link href="/create" passHref>
+                  <CText>Create</CText>
                 </Link>
-                <Link href="/" passHref>
-                  <CText>메뉴 2</CText>
+
+                <Link href="/nfts" passHref>
+                  <CText>nfts</CText>
                 </Link>
               </div>
             </div>
