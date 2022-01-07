@@ -1,0 +1,3077 @@
+{
+    "assets": [
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/PH3WX9HL2ATc5tuqnOLdti-mtQlL7VvMxRr1s4fMLy8vAVOibpCVW2p9Oj0c67WYFcHG5cUn2doG0FIlMpJFJfRVhY6Tf8bUiN2WDzk",
+            "name": "DG Deezys",
+            "description": "DCL Wearable 17/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "shoes",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "yeezy",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 32,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "feet",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/Vybt_tgqeD94jxAYNE_6-7e7olTtHsZ4ZFrOiUuDKxXNo-BlxW_0Iqa9I0Zzgssr3FFQOT5jEOFQ39sz2aYeHN9_WYnre5U5LZAD7UA",
+            "name": "DG Fur Mink",
+            "description": "DCL Wearable 59/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "mink",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "fur",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/oHZ8GCP8y-YKpUzUIjuifS4x6HNI4tYquZAITkxdCH_sHg4OspusTaKkyJZXQPNpaf0pbgyDKyTyaFYSfoyJoVYW-mre1P4xXjGNfw",
+            "name": "DG Flip Up Spectacles",
+            "description": "DCL Wearable 44/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "eyewear",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "glasses",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "flip up",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "accessories",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "shades",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/X2M-vUnRUAEKX6a2U4Uj4T3rw2cToUBmXLu83AtW7-m62r7sQVs-ZDk_pv1dGvUPi2wsQH564p88o0BcOURTLZGp",
+            "name": "DG Tracksuit Bottom",
+            "description": "DCL Wearable 54/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "lower_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 30,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "bottom",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 30,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "tracksuit",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 63,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/Vybt_tgqeD94jxAYNE_6-7e7olTtHsZ4ZFrOiUuDKxXNo-BlxW_0Iqa9I0Zzgssr3FFQOT5jEOFQ39sz2aYeHN9_WYnre5U5LZAD7UA",
+            "name": "DG Fur Mink",
+            "description": "DCL Wearable 53/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "mink",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "fur",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/Vybt_tgqeD94jxAYNE_6-7e7olTtHsZ4ZFrOiUuDKxXNo-BlxW_0Iqa9I0Zzgssr3FFQOT5jEOFQ39sz2aYeHN9_WYnre5U5LZAD7UA",
+            "name": "DG Fur Mink",
+            "description": "DCL Wearable 55/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "mink",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "fur",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/imjdyP13HqyEafc27pOg4GodixnNGg--GDQczXfwPjddvXais81zOG0fr2efIWwxVK-8EjgYSOQPWfznMPxQnDn-m6Xe21vqW6-R",
+            "name": "DG Tracksuit Top",
+            "description": "DCL Wearable 49/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "tracksuit",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 63,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/X2M-vUnRUAEKX6a2U4Uj4T3rw2cToUBmXLu83AtW7-m62r7sQVs-ZDk_pv1dGvUPi2wsQH564p88o0BcOURTLZGp",
+            "name": "DG Tracksuit Bottom",
+            "description": "DCL Wearable 53/100",
+            "traits": []
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/oHZ8GCP8y-YKpUzUIjuifS4x6HNI4tYquZAITkxdCH_sHg4OspusTaKkyJZXQPNpaf0pbgyDKyTyaFYSfoyJoVYW-mre1P4xXjGNfw",
+            "name": "DG Flip Up Spectacles",
+            "description": "DCL Wearable 11/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "eyewear",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "glasses",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "flip up",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "accessories",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "shades",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/qzrpfjxzuWB0leekSPWPwEUDv1nJBj7kmhdlBdxeF-HvQOh4Y9vL3DMDyYAx4_FmWpLmIk3MkI7JjBacn4y8PpixT2oMvmUSsePQ",
+            "name": "DG Slides",
+            "description": "DCL Wearable 10/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "shoes",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "sandals",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 24,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "slides",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 24,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "feet",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/oHZ8GCP8y-YKpUzUIjuifS4x6HNI4tYquZAITkxdCH_sHg4OspusTaKkyJZXQPNpaf0pbgyDKyTyaFYSfoyJoVYW-mre1P4xXjGNfw",
+            "name": "DG Flip Up Spectacles",
+            "description": "DCL Wearable 32/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "eyewear",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "glasses",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "flip up",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "accessories",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "shades",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/Vybt_tgqeD94jxAYNE_6-7e7olTtHsZ4ZFrOiUuDKxXNo-BlxW_0Iqa9I0Zzgssr3FFQOT5jEOFQ39sz2aYeHN9_WYnre5U5LZAD7UA",
+            "name": "DG Fur Mink",
+            "description": "DCL Wearable 15/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "mink",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "fur",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/5AKGeLaUVp8zEIxM1bPTxcPJMObn0ee4iA3S3kIdxW77OlTmkpOJdCF83zKoavmjRER4wpjUq71W_Cc4YE6XKb3P",
+            "name": "DG Fur Mink",
+            "description": "DCL Wearable 17/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "mink",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "fur",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/Gy6gdhHip5rI2XykEzQ8zhIdz14wQmQaGWAuAtCWusl_1lhO3cX4Z4wrwDDR2lRqKPyOaYYCzLg6W_wDPHda21ZX",
+            "name": "DG Deezys",
+            "description": "DCL Wearable 7/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "shoes",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "yeezy",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 32,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "feet",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/5n-uQpVYcodlR_AU6ImOqfPOy9pU3o_1m4qHMSQngue3IY2qzVNtMlopcWxKC4Iqbor_a2O0oX8DIgzJ-yT2fEk",
+            "name": "DG Slides",
+            "description": "DCL Wearable 35/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "shoes",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "sandals",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 24,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "slides",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 24,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "feet",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/S3EihfFrUO2wsKMyq3werr292Pt-Cz4NGjTBYGmcIrQHIyix2L4eaEB9VUgjdXSr7bFCX6xNWxy8hSNZoEsWqQG3sg",
+            "name": "DG Flip Up Spectacles",
+            "description": "DCL Wearable 41/100",
+            "traits": []
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/imjdyP13HqyEafc27pOg4GodixnNGg--GDQczXfwPjddvXais81zOG0fr2efIWwxVK-8EjgYSOQPWfznMPxQnDn-m6Xe21vqW6-R",
+            "name": "DG Tracksuit Top",
+            "description": "DCL Wearable 45/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "tracksuit",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 63,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/DDSfSl8PrhNgcxDpL3Sx9OEc0RGlO6ZPmM3ehRaei_VCINRWdjA5fJP6Ju_aJ2y2nnRaFzbeIOZzzgkdE9nhU-hSv3xnv20eWhQfLw",
+            "name": "DG Tracksuit Bottom",
+            "description": "DCL Wearable 44/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "lower_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 30,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "bottom",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 30,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "tracksuit",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 63,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/PH3WX9HL2ATc5tuqnOLdti-mtQlL7VvMxRr1s4fMLy8vAVOibpCVW2p9Oj0c67WYFcHG5cUn2doG0FIlMpJFJfRVhY6Tf8bUiN2WDzk",
+            "name": "DG Deezys",
+            "description": "DCL Wearable 44/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "shoes",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "yeezy",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 32,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "feet",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/5n-uQpVYcodlR_AU6ImOqfPOy9pU3o_1m4qHMSQngue3IY2qzVNtMlopcWxKC4Iqbor_a2O0oX8DIgzJ-yT2fEk",
+            "name": "DG Slides",
+            "description": "DCL Wearable 8/100",
+            "traits": []
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/5AKGeLaUVp8zEIxM1bPTxcPJMObn0ee4iA3S3kIdxW77OlTmkpOJdCF83zKoavmjRER4wpjUq71W_Cc4YE6XKb3P",
+            "name": "DG Fur Mink",
+            "description": "DCL Wearable 47/100",
+            "traits": []
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/imjdyP13HqyEafc27pOg4GodixnNGg--GDQczXfwPjddvXais81zOG0fr2efIWwxVK-8EjgYSOQPWfznMPxQnDn-m6Xe21vqW6-R",
+            "name": "DG Tracksuit Top",
+            "description": "DCL Wearable 16/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "tracksuit",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 63,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/qzrpfjxzuWB0leekSPWPwEUDv1nJBj7kmhdlBdxeF-HvQOh4Y9vL3DMDyYAx4_FmWpLmIk3MkI7JjBacn4y8PpixT2oMvmUSsePQ",
+            "name": "DG Slides",
+            "description": "DCL Wearable 34/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "shoes",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "sandals",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 24,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "slides",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 24,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "feet",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/5AKGeLaUVp8zEIxM1bPTxcPJMObn0ee4iA3S3kIdxW77OlTmkpOJdCF83zKoavmjRER4wpjUq71W_Cc4YE6XKb3P",
+            "name": "DG Fur Mink",
+            "description": "DCL Wearable 11/100",
+            "traits": []
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/Gy6gdhHip5rI2XykEzQ8zhIdz14wQmQaGWAuAtCWusl_1lhO3cX4Z4wrwDDR2lRqKPyOaYYCzLg6W_wDPHda21ZX",
+            "name": "DG Deezys",
+            "description": "DCL Wearable 39/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "shoes",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "yeezy",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 32,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "feet",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/S3EihfFrUO2wsKMyq3werr292Pt-Cz4NGjTBYGmcIrQHIyix2L4eaEB9VUgjdXSr7bFCX6xNWxy8hSNZoEsWqQG3sg",
+            "name": "DG Flip Up Spectacles",
+            "description": "DCL Wearable 38/100",
+            "traits": []
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/oHZ8GCP8y-YKpUzUIjuifS4x6HNI4tYquZAITkxdCH_sHg4OspusTaKkyJZXQPNpaf0pbgyDKyTyaFYSfoyJoVYW-mre1P4xXjGNfw",
+            "name": "DG Flip Up Spectacles",
+            "description": "DCL Wearable 36/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "eyewear",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "glasses",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "flip up",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "accessories",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "shades",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/PH3WX9HL2ATc5tuqnOLdti-mtQlL7VvMxRr1s4fMLy8vAVOibpCVW2p9Oj0c67WYFcHG5cUn2doG0FIlMpJFJfRVhY6Tf8bUiN2WDzk",
+            "name": "DG Deezys",
+            "description": "DCL Wearable 37/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "shoes",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "yeezy",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 32,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "feet",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/oHZ8GCP8y-YKpUzUIjuifS4x6HNI4tYquZAITkxdCH_sHg4OspusTaKkyJZXQPNpaf0pbgyDKyTyaFYSfoyJoVYW-mre1P4xXjGNfw",
+            "name": "DG Flip Up Spectacles",
+            "description": "DCL Wearable 39/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "eyewear",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "glasses",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "flip up",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "accessories",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "shades",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/5AKGeLaUVp8zEIxM1bPTxcPJMObn0ee4iA3S3kIdxW77OlTmkpOJdCF83zKoavmjRER4wpjUq71W_Cc4YE6XKb3P",
+            "name": "DG Fur Mink",
+            "description": "DCL Wearable 33/100",
+            "traits": []
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/S3EihfFrUO2wsKMyq3werr292Pt-Cz4NGjTBYGmcIrQHIyix2L4eaEB9VUgjdXSr7bFCX6xNWxy8hSNZoEsWqQG3sg",
+            "name": "DG Flip Up Spectacles",
+            "description": "DCL Wearable 6/100",
+            "traits": []
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/imjdyP13HqyEafc27pOg4GodixnNGg--GDQczXfwPjddvXais81zOG0fr2efIWwxVK-8EjgYSOQPWfznMPxQnDn-m6Xe21vqW6-R",
+            "name": "DG Tracksuit Top",
+            "description": "DCL Wearable 39/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "tracksuit",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 63,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/Vybt_tgqeD94jxAYNE_6-7e7olTtHsZ4ZFrOiUuDKxXNo-BlxW_0Iqa9I0Zzgssr3FFQOT5jEOFQ39sz2aYeHN9_WYnre5U5LZAD7UA",
+            "name": "DG Fur Mink",
+            "description": "DCL Wearable 12/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "mink",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "fur",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/5AKGeLaUVp8zEIxM1bPTxcPJMObn0ee4iA3S3kIdxW77OlTmkpOJdCF83zKoavmjRER4wpjUq71W_Cc4YE6XKb3P",
+            "name": "DG Fur Mink",
+            "description": "DCL Wearable 10/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "mink",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "fur",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/X2M-vUnRUAEKX6a2U4Uj4T3rw2cToUBmXLu83AtW7-m62r7sQVs-ZDk_pv1dGvUPi2wsQH564p88o0BcOURTLZGp",
+            "name": "DG Tracksuit Bottom",
+            "description": "DCL Wearable 18/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "lower_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 30,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "bottom",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 30,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "tracksuit",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 63,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/imjdyP13HqyEafc27pOg4GodixnNGg--GDQczXfwPjddvXais81zOG0fr2efIWwxVK-8EjgYSOQPWfznMPxQnDn-m6Xe21vqW6-R",
+            "name": "DG Tracksuit Top",
+            "description": "DCL Wearable 15/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "tracksuit",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 63,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/HkUZMqyOFS-i_81bn7YnfIPbcMpb4cc1lOOpPb6giiRAxlGimAnVdyoBbeLD8ywIReo5jsY40mNOmE8RY09UX_7icg",
+            "name": "DG Tracksuit Top",
+            "description": "DCL Wearable 6/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "tracksuit",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 63,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/PH3WX9HL2ATc5tuqnOLdti-mtQlL7VvMxRr1s4fMLy8vAVOibpCVW2p9Oj0c67WYFcHG5cUn2doG0FIlMpJFJfRVhY6Tf8bUiN2WDzk",
+            "name": "DG Deezys",
+            "description": "DCL Wearable 6/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "shoes",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "yeezy",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 32,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "feet",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/X2M-vUnRUAEKX6a2U4Uj4T3rw2cToUBmXLu83AtW7-m62r7sQVs-ZDk_pv1dGvUPi2wsQH564p88o0BcOURTLZGp",
+            "name": "DG Tracksuit Bottom",
+            "description": "DCL Wearable 21/100",
+            "traits": []
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/5n-uQpVYcodlR_AU6ImOqfPOy9pU3o_1m4qHMSQngue3IY2qzVNtMlopcWxKC4Iqbor_a2O0oX8DIgzJ-yT2fEk",
+            "name": "DG Slides",
+            "description": "DCL Wearable 5/100",
+            "traits": []
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/5AKGeLaUVp8zEIxM1bPTxcPJMObn0ee4iA3S3kIdxW77OlTmkpOJdCF83zKoavmjRER4wpjUq71W_Cc4YE6XKb3P",
+            "name": "DG Fur Mink",
+            "description": "DCL Wearable 5/100",
+            "traits": []
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/Vybt_tgqeD94jxAYNE_6-7e7olTtHsZ4ZFrOiUuDKxXNo-BlxW_0Iqa9I0Zzgssr3FFQOT5jEOFQ39sz2aYeHN9_WYnre5U5LZAD7UA",
+            "name": "DG Fur Mink",
+            "description": "DCL Wearable 43/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "mink",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "fur",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/qzrpfjxzuWB0leekSPWPwEUDv1nJBj7kmhdlBdxeF-HvQOh4Y9vL3DMDyYAx4_FmWpLmIk3MkI7JjBacn4y8PpixT2oMvmUSsePQ",
+            "name": "DG Slides",
+            "description": "DCL Wearable 2/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "shoes",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "sandals",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 24,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "slides",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 24,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "feet",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/oHZ8GCP8y-YKpUzUIjuifS4x6HNI4tYquZAITkxdCH_sHg4OspusTaKkyJZXQPNpaf0pbgyDKyTyaFYSfoyJoVYW-mre1P4xXjGNfw",
+            "name": "DG Flip Up Spectacles",
+            "description": "DCL Wearable 29/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "eyewear",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "glasses",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "flip up",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "accessories",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "shades",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 31,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/S3EihfFrUO2wsKMyq3werr292Pt-Cz4NGjTBYGmcIrQHIyix2L4eaEB9VUgjdXSr7bFCX6xNWxy8hSNZoEsWqQG3sg",
+            "name": "DG Flip Up Spectacles",
+            "description": "DCL Wearable 17/100",
+            "traits": []
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/DDSfSl8PrhNgcxDpL3Sx9OEc0RGlO6ZPmM3ehRaei_VCINRWdjA5fJP6Ju_aJ2y2nnRaFzbeIOZzzgkdE9nhU-hSv3xnv20eWhQfLw",
+            "name": "DG Tracksuit Bottom",
+            "description": "DCL Wearable 11/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "lower_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 30,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "bottom",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 30,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "tracksuit",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 63,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/DDSfSl8PrhNgcxDpL3Sx9OEc0RGlO6ZPmM3ehRaei_VCINRWdjA5fJP6Ju_aJ2y2nnRaFzbeIOZzzgkdE9nhU-hSv3xnv20eWhQfLw",
+            "name": "DG Tracksuit Bottom",
+            "description": "DCL Wearable 48/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "lower_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 30,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "bottom",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 30,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "tracksuit",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 63,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/Vybt_tgqeD94jxAYNE_6-7e7olTtHsZ4ZFrOiUuDKxXNo-BlxW_0Iqa9I0Zzgssr3FFQOT5jEOFQ39sz2aYeHN9_WYnre5U5LZAD7UA",
+            "name": "DG Fur Mink",
+            "description": "DCL Wearable 18/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "mink",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "fur",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 52,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "top",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "coat",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 115,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "upper_body",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 85,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/qzrpfjxzuWB0leekSPWPwEUDv1nJBj7kmhdlBdxeF-HvQOh4Y9vL3DMDyYAx4_FmWpLmIk3MkI7JjBacn4y8PpixT2oMvmUSsePQ",
+            "name": "DG Slides",
+            "description": "DCL Wearable 15/100",
+            "traits": [
+                {
+                    "trait_type": "Tag",
+                    "value": "shoes",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "decentral games",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "exclusive",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseMale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Body Shape",
+                    "value": "BaseFemale",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "sandals",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 24,
+                    "order": null
+                },
+                {
+                    "trait_type": "Tag",
+                    "value": "slides",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 24,
+                    "order": null
+                },
+                {
+                    "trait_type": "Rarity",
+                    "value": "legendary",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 202,
+                    "order": null
+                },
+                {
+                    "trait_type": "Category",
+                    "value": "feet",
+                    "display_type": null,
+                    "max_value": null,
+                    "trait_count": 56,
+                    "order": null
+                }
+            ]
+        },
+        {
+            "tokenURI": "https://lh3.googleusercontent.com/HkUZMqyOFS-i_81bn7YnfIPbcMpb4cc1lOOpPb6giiRAxlGimAnVdyoBbeLD8ywIReo5jsY40mNOmE8RY09UX_7icg",
+            "name": "DG Tracksuit Top",
+            "description": "DCL Wearable 13/100",
+            "traits": []
+        }
+    ]
+}
