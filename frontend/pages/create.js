@@ -20,7 +20,7 @@ const TitleInput = styled.div`
 const MintNFT = () => {
   return (
     <Container>
-      <Text style={{ fontSize: "35px", fontWeight: "bold" }} align="center">
+      <Text style={{ fontSize: "35px", fontWeight: "bold", marginBottom: "30px" }} align="center">
         Create New Item
       </Text>
       <FileUpload />
