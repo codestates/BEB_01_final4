@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Group, Text, useMantineTheme } from "@mantine/core";
+import { Text } from "@mantine/core";
 import Image from "next/image";
 import { sandbox } from "../public/collections/sandbox";
 import styled from "styled-components";
@@ -24,12 +24,11 @@ const EllipsisDiv = styled.div`
 `;
 
 const Collections = () => {
-  const theme = useMantineTheme();
-
-  const secondaryColor = theme.colorScheme === "dark" ? theme.colors.dark[1] : theme.colors.gray[7];
-
   return (
     <div>
+      <Text style={{ fontSize: "32px", margin: "40px 0", fontWeight: "bold" }} align="center">
+        Explore Collections
+      </Text>
       <Grid>
         {sandbox.map((token, i) => {
           return token.tokenURI === null ? null : (

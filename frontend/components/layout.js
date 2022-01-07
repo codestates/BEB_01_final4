@@ -83,12 +83,12 @@ const Layout = ({ children }) => {
                   <CText>Collections</CText>
                 </Link>
 
-                <Link href="/create" passHref>
-                  <CText>Create</CText>
-                </Link>
-
                 <Link href="/nfts" passHref>
                   <CText>nfts</CText>
+                </Link>
+
+                <Link href="/create" passHref>
+                  <CText>Create</CText>
                 </Link>
               </div>
             </div>
