@@ -34,8 +34,8 @@ const Profile = () => {
       control={
         <div
           style={{
-            width: "32px",
-            height: "32px",
+            width: "36px",
+            height: "36px",
             border: "2px solid rgb(229, 232, 235)",
             borderRadius: "16px",
           }}

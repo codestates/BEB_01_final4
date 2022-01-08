@@ -107,10 +107,12 @@ const Layout = ({ children }) => {
             <div style={{ display: "flex", alignItems: "center" }}>
               {account && <Profile />}
 
-              <Button style={{ marginLeft: "20px" }} onClick={connectWallet} variant="light" color="orange">
-                <Image width={28} height={28} src="https://docs.metamask.io/metamask-fox.svg" alt="" />
-                <span style={{ marginLeft: "10px" }}>지갑 연결</span>
-              </Button>
+              {!account && (
+                <Button style={{ marginLeft: "20px" }} onClick={connectWallet} variant="light" color="orange">
+                  <Image width={28} height={28} src="https://docs.metamask.io/metamask-fox.svg" alt="" />
+                  <span style={{ marginLeft: "10px" }}>지갑 연결</span>
+                </Button>
+              )}
             </div>
           </div>
         </Header>
