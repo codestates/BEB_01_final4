@@ -33,18 +33,23 @@ const CreateCollection = () => {
       return;
     }
 
-    setVisible(true);
-    console.log(web3);
-    const contract = await new web3.eth.Contract(GGanbuCollection.abi)
-      .deploy({
-        data: GGanbuCollection.bytecode,
-        arguments: [name, symbol, name], // Writing you arguments in the array
-      })
-      .send({ from: account });
+    try {
+      setVisible(true);
+      console.log(web3);
+      const contract = await new web3.eth.Contract(GGanbuCollection.abi)
+        .deploy({
+          data: GGanbuCollection.bytecode,
+          arguments: [name, symbol, name], // Writing you arguments in the array
+        })
+        .send({ from: account });
 
-    console.log(contract);
-    if (contract) {
-      console.log("test");
+      console.log(contract);
+      if (contract) {
+        console.log(contract._address);
+      }
+    } catch (e) {
+      console.dir(e);
+    } finally {
       setVisible(false);
     }
   };
