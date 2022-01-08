@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Head from "next/head";
 import { MantineProvider } from "@mantine/core";
 import Layout from "../components/layout";
 import Web3 from "web3";
+import { useStore } from "../utils/store";
 
 export default function App(props) {
   const { Component, pageProps } = props;
-  const [web3, setWeb3] = useState();
+  const setWeb3 = useStore((state) => state.setWeb3);
 
   useEffect(() => {
     if (typeof window.ethereum !== "undefined") {

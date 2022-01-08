@@ -1,6 +1,9 @@
-import { Button, Input, Text } from "@mantine/core";
+import { useState } from "react";
+import { Button, Input, LoadingOverlay, Text } from "@mantine/core";
 import styled from "styled-components";
 import { useInputState } from "@mantine/hooks";
+import { GGanbuCollection } from "../public/compiledContracts/GGanbuCollection";
+import { useStore } from "../utils/store";
 
 const Container = styled.div`
   && {
@@ -21,6 +24,30 @@ const CreateCollection = () => {
   const [name, setName] = useInputState("");
   const [symbol, setSymbol] = useInputState("");
   const [description, setDescription] = useInputState("");
+  const [web3, account] = useStore((state) => [state.web3, state.account]);
+  const [visible, setVisible] = useState(false);
+
+  const handleCreateCollection = async (name, symbol) => {
+    if (!account) {
+      alert("지갑을 먼저 연결해주세요.");
+      return;
+    }
+
+    setVisible(true);
+    console.log(web3);
+    const contract = await new web3.eth.Contract(GGanbuCollection.abi)
+      .deploy({
+        data: GGanbuCollection.bytecode,
+        arguments: [name, symbol, name], // Writing you arguments in the array
+      })
+      .send({ from: account });
+
+    console.log(contract);
+    if (contract) {
+      console.log("test");
+      setVisible(false);
+    }
+  };
 
   return (
     <Container>
@@ -42,8 +69,9 @@ const CreateCollection = () => {
 
       <div style={{ width: "180px", margin: "0 auto" }}>
         <Button
-          onClick={() => {
+          onClick={async () => {
             console.log(name, symbol, description);
+            await handleCreateCollection(name, symbol);
           }}
           variant="light"
           color="teal"
@@ -52,6 +80,7 @@ const CreateCollection = () => {
           Create
         </Button>
       </div>
+      <LoadingOverlay visible={visible} />
     </Container>
   );
 };

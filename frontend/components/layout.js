@@ -5,6 +5,7 @@ import { Input } from "@mantine/core";
 import Link from "next/link";
 import styled from "styled-components";
 import Profile from "./profile";
+import { useStore } from "../utils/store";
 
 const CText = styled(Text)`
   && {
@@ -15,7 +16,7 @@ const CText = styled(Text)`
 
 const Layout = ({ children }) => {
   const [opened, setOpened] = useState(false);
-  const [account, setAccount] = useState("");
+  const [account, setAccount] = useStore((state) => [state.account, state.setAccount]);
   const theme = useMantineTheme();
 
   const connectWallet = async () => {
@@ -23,10 +24,7 @@ const Layout = ({ children }) => {
       method: "eth_requestAccounts",
     });
 
-    console.log(accounts);
-
     setAccount(accounts[0]);
-    console.log(accounts[0]);
   };
 
   return (
