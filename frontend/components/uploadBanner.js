@@ -7,6 +7,7 @@ import { MdOutlineImage } from "react-icons/md";
 const InputTemp = styled.div`
   border-radius: 10px;
   border: 3px dashed rgb(127, 117, 117);
+  height: 250px;
 `;
 
 const ImageContainer = styled.div`
@@ -16,7 +17,7 @@ const ImageContainer = styled.div`
   position: relative;
   cursor: pointer;
   border-radius: 10px;
-  height: 320px;
+  height: 100%;
   // width: 350px;
   :hover {
     background-color: rgb(226, 224, 224);
@@ -27,6 +28,7 @@ const PreviewImage = styled.img`
   width: 100%;
   height: 100%;
   border-radius: 10px;
+  object-fit: cover;
   :hover {
     background-color: transparent;
   }
@@ -58,7 +60,7 @@ const ipfsHttpClient = create({
   protocol: "https",
 });
 
-function UploadFile() {
+function UploadBanner() {
   const [imgUrl, setImgUrl] = useState(null);
 
   const onHandleChange = async (event) => {
@@ -107,4 +109,4 @@ function UploadFile() {
   );
 }
 
-export default UploadFile;
+export default UploadBanner;
