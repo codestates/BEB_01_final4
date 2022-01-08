@@ -5,8 +5,10 @@ import { IconContext } from "react-icons";
 import { MdOutlineImage } from "react-icons/md";
 
 const InputTemp = styled.div`
-  border-radius: 10px;
+  border-radius: 50%;
   border: 3px dashed rgb(127, 117, 117);
+  width: 200px;
+  height: 200px;
 `;
 
 const ImageContainer = styled.div`
@@ -15,9 +17,9 @@ const ImageContainer = styled.div`
   align-items: center;
   position: relative;
   cursor: pointer;
-  border-radius: 10px;
-  height: 320px;
-  // width: 350px;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
   :hover {
     background-color: rgb(226, 224, 224);
   }
@@ -26,7 +28,7 @@ const ImageContainer = styled.div`
 const PreviewImage = styled.img`
   width: 100%;
   height: 100%;
-  border-radius: 10px;
+  border-radius: 50%;
   :hover {
     background-color: transparent;
   }
@@ -37,8 +39,8 @@ const PreviewImageCloseButton = styled.button`
   outline: none;
   border: none;
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 30px;
+  right: 30px;
   background: none;
   cursor: pointer;
   font-size: 20px;
@@ -58,7 +60,7 @@ const ipfsHttpClient = create({
   protocol: "https",
 });
 
-function UploadFile() {
+function UploadLogo() {
   const [imgUrl, setImgUrl] = useState(null);
 
   const onHandleChange = async (event) => {
@@ -84,8 +86,8 @@ function UploadFile() {
 
   return (
     <>
-      <InputImage id="fileUpload" type="file" name="fileUpload" onChange={onHandleChange} />
-      <label htmlFor="fileUpload">
+      <InputImage id="uploadLogo" type="file" name="uploadLogo" onChange={onHandleChange} />
+      <label htmlFor="uploadLogo">
         <InputTemp>
           <ImageContainer>
             {imgUrl ? (
@@ -107,4 +109,4 @@ function UploadFile() {
   );
 }
 
-export default UploadFile;
+export default UploadLogo;

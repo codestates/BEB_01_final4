@@ -1,6 +1,6 @@
 import { Button, Input, Text } from "@mantine/core";
 import styled from "styled-components";
-import FileUpload from "../components/uploadFile";
+import UploadFile from "../components/uploadFile";
 
 const Container = styled.div`
   && {
@@ -23,7 +23,7 @@ const MintNFT = () => {
       <Text style={{ fontSize: "35px", fontWeight: "bold", marginBottom: "30px" }} align="center">
         Create New Item
       </Text>
-      <FileUpload />
+      <UploadFile />
       <TitleInput>
         <Text>이름</Text>
         <Input variant="default" placeholder="이름" />
