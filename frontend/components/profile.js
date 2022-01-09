@@ -52,7 +52,7 @@ const Profile = () => {
       trigger="hover"
       delay={200}
     >
-      <Menu.Item onClick={() => router.push("/create-collection")}>Create Collection</Menu.Item>
+      <Menu.Item onClick={() => router.push("/collections")}>My Collections</Menu.Item>
     </Menu>
   );
 };
