@@ -4,6 +4,8 @@ import Image from "next/image";
 import { Input } from "@mantine/core";
 import Link from "next/link";
 import styled from "styled-components";
+import Profile from "./profile";
+import { useStore } from "../utils/store";
 
 const CText = styled(Text)`
   && {
@@ -14,7 +16,16 @@ const CText = styled(Text)`
 
 const Layout = ({ children }) => {
   const [opened, setOpened] = useState(false);
+  const [account, setAccount] = useStore((state) => [state.account, state.setAccount]);
   const theme = useMantineTheme();
+
+  const connectWallet = async () => {
+    let accounts = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
+
+    setAccount(accounts[0]);
+  };
 
   return (
     <AppShell
@@ -83,20 +94,26 @@ const Layout = ({ children }) => {
                   <CText>Collections</CText>
                 </Link>
 
-                <Link href="/create" passHref>
-                  <CText>Create</CText>
-                </Link>
-
                 <Link href="/nfts" passHref>
                   <CText>nfts</CText>
+                </Link>
+
+                <Link href="/create" passHref>
+                  <CText>Create</CText>
                 </Link>
               </div>
             </div>
 
-            <Button variant="light" color="orange">
-              <Image width={28} height={28} src="https://docs.metamask.io/metamask-fox.svg" alt="" />
-              <span style={{ marginLeft: "10px" }}>지갑 연결</span>
-            </Button>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              {account && <Profile />}
+
+              {!account && (
+                <Button style={{ marginLeft: "20px" }} onClick={connectWallet} variant="light" color="orange">
+                  <Image width={28} height={28} src="https://docs.metamask.io/metamask-fox.svg" alt="" />
+                  <span style={{ marginLeft: "10px" }}>지갑 연결</span>
+                </Button>
+              )}
+            </div>
           </div>
         </Header>
       }

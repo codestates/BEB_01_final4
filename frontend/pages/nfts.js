@@ -1,4 +1,4 @@
-import { Grid } from "@mantine/core";
+import { Grid, Text } from "@mantine/core";
 import { sandbox } from "../public/collections/sandbox";
 import styled from "styled-components";
 import Image from "next/image";
@@ -20,7 +20,11 @@ const CImage = styled(Image)`
 const NFTS = () => {
   return (
     <div>
-      <Grid>
+      <Text style={{ fontSize: "32px", margin: "40px 0", fontWeight: "bold" }} align="center">
+        The Sandbox
+      </Text>
+
+      <Grid style={{ padding: "0 60px" }}>
         {sandbox.map((nft, i) => {
           return nft.tokenURI === null ? null : (
             <Grid.Col span={12} md={6} lg={4} key={i}>
