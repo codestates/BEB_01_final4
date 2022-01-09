@@ -5,7 +5,6 @@ import { useInputState } from "@mantine/hooks";
 import { GGanbuCollection } from "../public/compiledContracts/GGanbuCollection";
 import { useStore } from "../utils/store";
 import UploadLogo from "../components/uploadLogo";
-import UploadFile from "../components/uploadFile";
 import UploadBanner from "../components/uploadBanner";
 
 const Container = styled.div`
