@@ -1,6 +1,6 @@
-import { Button, Grid, Text } from "@mantine/core";
+import { Button, Grid, SimpleGrid, Text } from "@mantine/core";
 import { useRouter } from "next/router";
-import Collection from "../components/collection";
+import CollectionCard from "../components/collectionCard";
 import { axie } from "../public/collections/axie";
 
 const Collections = () => {
@@ -13,9 +13,18 @@ const Collections = () => {
       <Button style={{ marginBottom: "20px" }} color="teal" size="xl" onClick={() => router.push("/create-collection")}>
         Create a collection
       </Button>
-      <Grid justify="center">
-        <Collection collection={axie} />
-      </Grid>
+
+      <SimpleGrid
+        style={{ padding: "0 30px" }}
+        cols={3}
+        spacing="lg"
+        breakpoints={[
+          { maxWidth: 1250, cols: 2, spacing: "md" },
+          { maxWidth: 850, cols: 1, spacing: "sm" },
+        ]}
+      >
+        <CollectionCard collection={axie} />
+      </SimpleGrid>
     </div>
   );
 };

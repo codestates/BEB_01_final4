@@ -22,12 +22,12 @@ const EllipsisDiv = styled.div`
   -webkit-box-orient: vertical;
 `;
 
-const Collection = ({ collection }) => {
+const CollectionCard = ({ collection }) => {
   const router = useRouter();
 
   return (
     <Grid.Col
-      span={12}
+      span={4}
       md={6}
       lg={4}
       onClick={() => {
@@ -116,4 +116,4 @@ const Collection = ({ collection }) => {
   );
 };
 
-export default Collection;
+export default CollectionCard;

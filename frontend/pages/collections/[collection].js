@@ -13,6 +13,7 @@ import { decentraland } from "../../public/collections/decentraland";
 import { illuvium } from "../../public/collections/illuvium";
 import { nftWorlds } from "../../public/collections/nft-worlds";
 import { sandbox } from "../../public/collections/sandbox";
+import NFTCard from "../../components/nftCard";
 
 const StatBox = styled.div`
   flex: 1;
@@ -55,20 +56,6 @@ const staticCollections = {
   "NFT Worlds": nftWorlds,
   "The Sandbox": sandbox,
 };
-
-const NftWrapper = styled.div`
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: rgb(4 17 29 / 25%) 0px 0px 8px 0px;
-    transition: all 0.1s ease 0s;
-  }
-  cursor: pointer;
-`;
-
-const CImage = styled(Image)`
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-`;
 
 const NFTS = () => {
   const router = useRouter();
@@ -138,59 +125,25 @@ const NFTS = () => {
           <div style={{ textAlign: "center", margin: "20px 0" }}>{staticCollections[collectionName].description}</div>
         </Description>
 
-        <Grid justify="center">
+        {/* <Grid justify="space-between">
           {staticCollections[collectionName].assets.map((nft, i) => {
-            return nft.tokenURI === null ? null : (
-              <Grid.Col span={12} md={6} lg={4} key={i}>
-                <NftWrapper
-                  style={{
-                    width: 320,
-                    margin: "20px auto",
-                    border: "1px solid rgb(229, 232, 235)",
-                    borderRadius: "10px",
-                  }}
-                >
-                  <div>
-                    {nft?.tokenURI && (
-                      <CImage
-                        unoptimized={true}
-                        src={nft.tokenURI}
-                        width="320px"
-                        height="320px"
-                        layout="responsive"
-                        objectFit="cover"
-                        alt=""
-                      />
-                    )}
-                  </div>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      height: "60px",
-                      overflow: "hidden",
-                      padding: "5px 10px",
-                      fontSize: "13px",
-                    }}
-                  >
-                    <div style={{ width: "70%" }}>{nft.name}</div>
-
-                    <div style={{ display: "flex", width: "30%", flexDirection: "column", alignItems: "flex-end" }}>
-                      <span>Price</span>
-                      <div style={{ display: "flex", alignItems: "center", marginTop: "3px" }}>
-                        <Image width={14} height={14} src="/images/eth.svg" alt="" />
-                        <span style={{ marginLeft: "3px", fontWeight: "bold", fontSize: "14px" }}>22</span>
-                      </div>
-                    </div>
-
-                    {/* <div style={{ height: "30px" }}>2</div> */}
-                  </div>
-                </NftWrapper>
-              </Grid.Col>
-            );
+            return nft.tokenURI === null ? null : <NFTCard key={i} collectionName={collectionName} nft={nft} idx={i} />;
           })}
-        </Grid>
+        </Grid> */}
+
+        <SimpleGrid
+          style={{ padding: "0 80px" }}
+          cols={3}
+          spacing="lg"
+          breakpoints={[
+            { maxWidth: 1160, cols: 2, spacing: "md" },
+            { maxWidth: 840, cols: 1, spacing: "sm" },
+          ]}
+        >
+          {staticCollections[collectionName].assets.map((nft, i) => {
+            return nft.tokenURI === null ? null : <NFTCard key={i} collectionName={collectionName} nft={nft} idx={i} />;
+          })}
+        </SimpleGrid>
       </div>
     );
   } else return null; // TODO: DB에서 호출한 데이터 뿌리는 곳
