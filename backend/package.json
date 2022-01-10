@@ -10,7 +10,9 @@
     "mysql2": "^2.3.3",
     "nunjucks": "^3.2.3",
     "sequelize": "^6.12.5",
-    "yarn": "^1.22.17"
+    "yarn": "^1.22.17",
+    "abi-decoder": "^2.4.0",
+    "web3": "^1.6.1"
   },
   "name": "backend",
   "version": "1.0.0",
