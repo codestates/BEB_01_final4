@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class NFTs extends Model {
+  class Collections extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,18 +13,17 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  NFTs.init({
-    is_minted: DataTypes.BOOLEAN,
-    token_ids: DataTypes.INTEGER,
-    tokenURI: DataTypes.STRING,
+  Collections.init({
+    is_created: DataTypes.BOOLEAN,
     contractAddress: DataTypes.STRING,
+    ownerAddress: DataTypes.STRING,
     name: DataTypes.STRING,
+    symbol: DataTypes.STRING,
     description: DataTypes.STRING,
-    traits: DataTypes.STRING,
-    imageURI: DataTypes.STRING
+    image_url: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'NFTs',
+    modelName: 'Collections',
   });
-  return NFTs;
+  return Collections;
 };
