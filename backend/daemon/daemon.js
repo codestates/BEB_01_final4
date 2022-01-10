@@ -5,11 +5,18 @@ const fs = require('fs');
 const path = require("path");
 const basePath = __dirname;
 /*
- *  [1회 실행] node daemon.js
- *  [데몬 실행] npx pm2 start daemon.js --cron "* * * * *"
+ *  블록 처음부터 검색하려면 "./blockNumber" 파일 수정 필요 to 0 
+ *  [한번 실행] node daemon.js
+ *  [1분마다 실행] npx pm2 start daemon.js --cron "* * * * *"
  *  [상태 보기] npx pm2 status
  *  [모니터링 보기] npx pm2 monit
  *  [종료] npx pm2 delete 0
+ * 
+ *  & 참고 명령어
+ *  [DB삭제] drop database gganbu;
+ *  [DB생성] npx sequelize-cli db:create
+ *  [table삭제] npx sequelize-cli db:migrate:undo
+ *  [table생성] npx sequelize-cli db:migrate
  */
 
 /*
@@ -133,7 +140,7 @@ const monitAndUpdateNFT = async (MyCA, MyAbi, startBlkNum) => {
     if(arrTrans.length === 0) console.log('no transaction');
     for(let i=0;i<arrTrans.length;i++) {
       // Transactions 테이블 insert
-      await Transactions.findOrCreate({where:{hash:arrTrans[i].hash},default:arrTrans[i]});
+      await Transactions.create(arrTrans[i]);
     
       // NFTs 테이블 update
       await updateNFTtoDB(arrTrans[i], MyCA, MyAbi);

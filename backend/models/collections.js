@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     ownerAddress: DataTypes.STRING,
     name: DataTypes.STRING,
     symbol: DataTypes.STRING,
-    description: DataTypes.STRING,
+    description: DataTypes.TEXT,
     image_url: DataTypes.STRING,
     banner_url: DataTypes.STRING
   }, {
