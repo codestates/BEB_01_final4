@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Input, LoadingOverlay, Text } from "@mantine/core";
 import styled from "styled-components";
-import { useInputState, useSetState } from "@mantine/hooks";
+import { useInputState } from "@mantine/hooks";
 import { GGanbuCollection } from "../public/compiledContracts/GGanbuCollection";
 import { useStore } from "../utils/store";
 import UploadLogo from "../components/uploadLogo";
@@ -49,19 +49,21 @@ const CreateCollection = () => {
 
       if (contract) {
         console.log(contract._address);
+        const newCollection = {
+          contractAddress: contract._address,
+          ownerAddress: account,
+          name,
+          symbol,
+          description,
+          large_image_url: logoUrl,
+          banner_image_url: bannerUrl,
+          assets: [],
+        };
+        console.log(newCollection);
+        setCollections([...collections, newCollection]);
       }
     } catch (e) {
       console.dir(e);
-      const newCollection = {
-        contractAddress: contract._address,
-        ownerAddress: account,
-        name,
-        symbol,
-        description,
-        image_url: DataTypes.STRING,
-        banner_url: DataTypes.STRING,
-      };
-      setCollections([...collections]);
     } finally {
       setVisible(false);
     }
@@ -97,7 +99,6 @@ const CreateCollection = () => {
         <div style={{ width: "180px", margin: "0 auto" }}>
           <Button
             onClick={async () => {
-              console.log(name, symbol, description);
               await handleCreateCollection(name, symbol, description);
             }}
             variant="light"

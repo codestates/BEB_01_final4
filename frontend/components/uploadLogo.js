@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { create } from "ipfs-http-client";
 import styled from "styled-components";
 import { IconContext } from "react-icons";
@@ -60,9 +59,7 @@ const ipfsHttpClient = create({
   protocol: "https",
 });
 
-function UploadLogo() {
-  const [imgUrl, setImgUrl] = useState(null);
-
+function UploadLogo({ logoUrl, setLogoUrl }) {
   const onHandleChange = async (event) => {
     if (event.target?.files[0]) {
       let file = event.target.files[0];
@@ -77,7 +74,7 @@ function UploadLogo() {
         const url = `https://ipfs.infura.io/ipfs/${addedImg.path}`;
         // const url = `https://ipfs.io/ipfs/${addedImg.path}`;
         console.log(url);
-        setImgUrl(url);
+        setLogoUrl(url);
       } catch (e) {
         console.dir(`ipfs upload error: ${e}`);
       }
@@ -90,10 +87,10 @@ function UploadLogo() {
       <label htmlFor="uploadLogo">
         <InputTemp>
           <ImageContainer>
-            {imgUrl ? (
+            {logoUrl ? (
               <>
-                <PreviewImage src={imgUrl} />
-                <PreviewImageCloseButton onClick={() => setImgUrl("")}>X</PreviewImageCloseButton>
+                <PreviewImage src={logoUrl} />
+                <PreviewImageCloseButton onClick={() => setLogoUrl("")}>X</PreviewImageCloseButton>
               </>
             ) : (
               <IconContext.Provider value={{ color: "rgb(204, 204, 204) ", outline: "none" }}>
