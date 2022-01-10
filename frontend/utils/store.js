@@ -5,4 +5,7 @@ export const useStore = create((set) => ({
   setWeb3: (web3) => set({ web3 }),
   account: null,
   setAccount: (account) => set({ account }),
+
+  collections: [],
+  setCollections: (collections) => set({ collections }),
 }));

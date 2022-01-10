@@ -19,7 +19,6 @@ const CImage = styled(Image)`
 
 const NFTCard = ({ collectionName, nft, idx }) => {
   const router = useRouter();
-  console.log(nft);
   return (
     <Grid.Col span={12} md={6} lg={4} onClick={() => router.push(`/assets/${collectionName}/${idx}`)}>
       <NftWrapper

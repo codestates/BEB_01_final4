@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Input, LoadingOverlay, Text } from "@mantine/core";
 import styled from "styled-components";
-import { useInputState } from "@mantine/hooks";
+import { useInputState, useSetState } from "@mantine/hooks";
 import { GGanbuCollection } from "../public/compiledContracts/GGanbuCollection";
 import { useStore } from "../utils/store";
 import UploadLogo from "../components/uploadLogo";
@@ -28,8 +28,11 @@ const CreateCollection = () => {
   const [description, setDescription] = useInputState("");
   const [web3, account] = useStore((state) => [state.web3, state.account]);
   const [visible, setVisible] = useState(false);
+  const [collections, setCollections] = useStore((state) => [state.collections, state.setCollections]);
+  const [logoUrl, setLogoUrl] = useState("");
+  const [bannerUrl, setBannerUrl] = useState("");
 
-  const handleCreateCollection = async (name, symbol) => {
+  const handleCreateCollection = async (name, symbol, description) => {
     if (!account) {
       alert("지갑을 먼저 연결해주세요.");
       return;
@@ -44,12 +47,21 @@ const CreateCollection = () => {
         })
         .send({ from: account });
 
-      console.log(contract);
       if (contract) {
         console.log(contract._address);
       }
     } catch (e) {
       console.dir(e);
+      const newCollection = {
+        contractAddress: contract._address,
+        ownerAddress: account,
+        name,
+        symbol,
+        description,
+        image_url: DataTypes.STRING,
+        banner_url: DataTypes.STRING,
+      };
+      setCollections([...collections]);
     } finally {
       setVisible(false);
     }
@@ -63,11 +75,11 @@ const CreateCollection = () => {
         </Text>
         <TitleInput style={{ width: "200px" }}>
           <Text>로고 이미지</Text>
-          <UploadLogo />
+          <UploadLogo logoUrl={logoUrl} setLogoUrl={setLogoUrl} />
         </TitleInput>
         <TitleInput>
           <Text>배너 이미지</Text>
-          <UploadBanner />
+          <UploadBanner bannerUrl={bannerUrl} setBannerUrl={setBannerUrl} />
         </TitleInput>
         <TitleInput>
           <Text>이름</Text>
@@ -86,7 +98,7 @@ const CreateCollection = () => {
           <Button
             onClick={async () => {
               console.log(name, symbol, description);
-              await handleCreateCollection(name, symbol);
+              await handleCreateCollection(name, symbol, description);
             }}
             variant="light"
             color="teal"
