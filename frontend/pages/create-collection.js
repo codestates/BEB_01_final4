@@ -6,6 +6,7 @@ import { GGanbuCollection } from "../public/compiledContracts/GGanbuCollection";
 import { useStore } from "../utils/store";
 import UploadLogo from "../components/uploadLogo";
 import UploadBanner from "../components/uploadBanner";
+import { useRouter } from "next/router";
 
 const Container = styled.div`
   && {
@@ -23,6 +24,7 @@ const TitleInput = styled.div`
 `;
 
 const CreateCollection = () => {
+  const router = useRouter();
   const [name, setName] = useInputState("");
   const [symbol, setSymbol] = useInputState("");
   const [description, setDescription] = useInputState("");
@@ -61,6 +63,7 @@ const CreateCollection = () => {
         };
         console.log(newCollection);
         setCollections([...collections, newCollection]);
+        router.push(`/collections/${name}`);
       }
     } catch (e) {
       console.dir(e);

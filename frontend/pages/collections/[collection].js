@@ -15,6 +15,7 @@ import { nftWorlds } from "../../public/collections/nft-worlds";
 import { sandbox } from "../../public/collections/sandbox";
 import NFTCard from "../../components/nftCard";
 import { useStore } from "../../utils/store";
+import Link from "next/link";
 
 const StatBox = styled.div`
   flex: 1;
@@ -188,7 +189,9 @@ const NFTS = () => {
           </NameBox>
 
           <div style={{ position: "absolute", right: "30px", top: "330px" }}>
-            <Button size="lg">Add Item</Button>
+            <Link href={`/assets/${collection.contractAddress}/create`} passHref>
+              <Button size="lg">Add Item</Button>
+            </Link>
           </div>
 
           <div>
