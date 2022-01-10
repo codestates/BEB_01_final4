@@ -190,7 +190,7 @@ const insertNftMeta = async (data) => {
     });
     //console.log(result);
 
-    let output = `http://localhost:4000/metadata/nft/${result.dataValues.id}`;
+    let output = `${serverPath}/metadata/nft/${result.dataValues.id}`;
     console.log(output);
     return output;
   }
