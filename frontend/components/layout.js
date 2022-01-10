@@ -90,14 +90,9 @@ const Layout = ({ children }) => {
               <Input style={{ marginRight: "20px", width: "300px" }} variant="default" placeholder="Search" />
 
               <div style={{ display: "flex" }}>
-                <Link href="/collections" passHref>
+                <Link href="/explore-collections" passHref>
                   <CText>Collections</CText>
                 </Link>
-
-                <Link href="/nfts" passHref>
-                  <CText>nfts</CText>
-                </Link>
-
                 <Link href="/create" passHref>
                   <CText>Create</CText>
                 </Link>
