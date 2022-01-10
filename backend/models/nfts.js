@@ -19,8 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     tokenURI: DataTypes.STRING,
     contractAddress: DataTypes.STRING,
     name: DataTypes.STRING,
-    description: DataTypes.STRING,
-    traits: DataTypes.STRING,
+    description: DataTypes.TEXT,
+    traits: DataTypes.TEXT,
     imageURI: DataTypes.STRING
   }, {
     sequelize,
