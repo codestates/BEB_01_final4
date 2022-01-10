@@ -104,7 +104,7 @@ const monitAndUpdateNFT = async (MyCA, MyAbi, startBlkNum) => {
     //현재 블록체인 상의 현재 블록 번호 조회
     curBlkNum = await web3.eth.getBlockNumber();
     if(startBlkNum > curBlkNum) {
-      console.log(`최신 블록까지 이미 조회 완료 : ${startBlkNum}`);
+      //console.log(`최신 블록까지 이미 조회 완료 : ${startBlkNum}`);
       return;
     }
 
@@ -138,10 +138,8 @@ const monitAndUpdateNFT = async (MyCA, MyAbi, startBlkNum) => {
       // NFTs 테이블 update
       await updateNFTtoDB(arrTrans[i], MyCA, MyAbi);
     }
-    sequelize.close();
   }
   catch(err) {
-    console.log(err);
   }
 }
 

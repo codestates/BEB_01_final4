@@ -29,6 +29,9 @@ module.exports = {
       image_url: {
         type: Sequelize.STRING
       },
+      banner_url: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
