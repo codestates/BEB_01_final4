@@ -24,6 +24,19 @@ const TitleInput = styled.div`
   }
 `;
 
+export const isHangul = (value) => {
+  const regExp = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g;
+  return regExp.test(value);
+};
+
+export const toInputAlphabet = (e) => {
+  e.target.value = ("" + e.target.value).replace(/[^A-Za-z\\-\s]/gi, "");
+};
+
+export const toInputLowerCase = async (e) => {
+  e.target.value = ("" + e.target.value).replace(/[^a-z\\-]/gi, "").toLowerCase();
+};
+
 const CreateCollection = () => {
   const router = useRouter();
   const [name, setName] = useInputState("");
@@ -35,19 +48,6 @@ const CreateCollection = () => {
   const [logoUrl, setLogoUrl] = useState("");
   const [bannerUrl, setBannerUrl] = useState("");
 
-  const isHangul = (value) => {
-    const regExp = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g;
-    return regExp.test(value);
-  };
-
-  const toInputAlphabet = (e) => {
-    e.target.value = ("" + e.target.value).replace(/[^A-Za-z\\-\s]/gi, "");
-  };
-
-  const toInputLowerCase = async (e) => {
-    e.target.value = ("" + e.target.value).replace(/[^a-z\\-]/gi, "").toLowerCase();
-  };
-
   const handleCreateCollection = async ({ name, symbol, description, logoUrl, bannerUrl }) => {
     if (!account) {
       alert("지갑을 먼저 연결해주세요.");
@@ -55,7 +55,7 @@ const CreateCollection = () => {
     }
 
     if (!name || !symbol || !description || !logoUrl || !bannerUrl) {
-      alert("모든 입력 값을 입력해주세요.");
+      alert("모든 값을 입력해주세요.");
       return;
     }
 
@@ -93,7 +93,6 @@ const CreateCollection = () => {
             { withCredentials: true },
           );
 
-          // TODO: DB에서 마이 컬렉션 가져올 수 있게되면 삭제 예정
           setMyCollections([...myCollections, { ...newCollection, contractAddress: contract._address, assets: [] }]);
           router.push(`/collections/${symbol}`);
         }

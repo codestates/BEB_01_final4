@@ -33,7 +33,7 @@ const MintNFT = () => {
   const account = useStore((state) => state.account);
   const web3 = useStore((state) => state.web3);
 
-  const collection = myCollections.find((collection, idx) => {
+  const collection = myCollections.find((collection) => {
     if (collection.symbol === symbol) return true;
   });
 

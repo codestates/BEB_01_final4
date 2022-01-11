@@ -183,7 +183,7 @@ const NFTS = () => {
         </Text>
       ) : null}
     </div>
-  ); // TODO: DB에서 호출한 데이터 뿌리는 곳
+  );
 };
 
 export default NFTS;

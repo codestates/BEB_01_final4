@@ -22,7 +22,7 @@ const CButton = styled(Button)`
 const Layout = ({ children }) => {
   const [opened, setOpened] = useState(false);
   const [account, setAccount] = useStore((state) => [state.account, state.setAccount]);
-  const [user, setUser] = useStore((state) => [state.user, state.setUser]);
+  const setUser = useStore((state) => state.setUser);
   const theme = useMantineTheme();
 
   const connectWallet = async () => {
@@ -97,12 +97,11 @@ const Layout = ({ children }) => {
                 <CText>Explore</CText>
               </Link>
             </CButton>
-            {/* // TODO: 나의 컬렉션 리스트를 받을 수 있게 되면 복원 예정 */}
-            {/* <CButton variant="white" onClick={() => setOpened(!opened)}>
+            <CButton variant="white" onClick={() => setOpened(!opened)}>
               <Link href="/create" passHref>
                 <CText>Create</CText>
               </Link>
-            </CButton> */}
+            </CButton>
           </Navbar>
         </MediaQuery>
       }
@@ -148,10 +147,9 @@ const Layout = ({ children }) => {
                   <Link href="/explore-collections" passHref>
                     <CText>Explore</CText>
                   </Link>
-                  {/* // TODO: 나의 컬렉션 리스트를 받을 수 있게 되면 복원 예정 */}
-                  {/* <Link href="/create" passHref>
+                  <Link href="/create" passHref>
                     <CText>Create</CText>
-                  </Link> */}
+                  </Link>
                 </div>
               </MediaQuery>
             </div>
