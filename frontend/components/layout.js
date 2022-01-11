@@ -54,6 +54,11 @@ const Layout = ({ children }) => {
             width={{ sm: 300, lg: 400 }}
           >
             <CButton variant="white" onClick={() => setOpened(!opened)}>
+              <Link href="/" passHref>
+                <CText>Home</CText>
+              </Link>
+            </CButton>
+            <CButton variant="white" onClick={() => setOpened(!opened)}>
               <Link href="/explore-collections" passHref>
                 <CText>Explore</CText>
               </Link>
