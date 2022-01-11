@@ -14,6 +14,12 @@ module.exports = {
       token_ids: {
         type: Sequelize.INTEGER
       },
+      ownerAddress: {
+        type: Sequelize.STRING
+      },
+      creatorAddress: {
+        type: Sequelize.STRING
+      },
       tokenURI: {
         type: Sequelize.STRING
       },

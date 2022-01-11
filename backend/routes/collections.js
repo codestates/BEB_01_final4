@@ -99,9 +99,9 @@ router.post('/', async (req, res, next) => {
  *  required: contractAddress
  */
 router.post('/:collection_symbol', async (req, res, next) => {
-    console.log(req.params.collection_symbol);
     try {
         console.log(`======== [POST] /collection/<collection> ========`);
+        console.log(req.params.collection_symbol);
         //입력 인자 가공
         if (!req.body.contractAddress) {
             throw new SyntaxError("required: contractAddress");
@@ -121,12 +121,63 @@ router.post('/:collection_symbol', async (req, res, next) => {
         if(qRes[0] === 1) {
             res.status(200).json({
                 message: '업데이트 완료',
-                data: null
+                data: {
+                    collectionAddress : req.body.contractAddress
+                }
             });
         } else {
             throw new Error("해당 symbol 을 가진 collection 이 존재하지 않음");
         }
 
+    } catch (err) {
+        console.error(`에러 ${err}`);
+        res.status(400).json({
+            message: err.message,
+            data: null
+        });
+    }
+});
+
+/*
+ *  /collections/<collection>
+ *  컬랙션 조회 (+ 컬랙션에 소속된 NFTs 포함)
+ *  required:
+ */
+router.get('/:collection_symbol', async (req, res, next) => {
+    try {
+        console.log(`======== [GET] /collection/${req.params.collection_symbol} ========`);
+        //입력 인자 가공
+        reqSymbol = req.params.collection_symbol;
+        
+        //컬랙션 조회
+        let qCollection = await Collections.findOne({ 
+            where: {
+                symbol: reqSymbol,
+                is_created: true
+            }
+        });
+        let result = qCollection.dataValues; 
+        result.assets = [];
+
+        //컬랙션에 소속된 NFTs
+        let qNFTs = await NFTs.findAll({ 
+            where: {
+                contractAddress : qCollection.contractAddress
+            }
+        });
+        result.number_of_assets = qNFTs.length;
+        for(let i=0;i<qNFTs.length;i++) {
+            result.assets.push(qNFTs[i].dataValues);
+        }
+        
+        if(qCollection) {
+            res.status(200).json({
+                message: 'ok',
+                data: result
+            });
+        } else {
+            throw new Error("해당 symbol 을 가진 collection 이 존재하지 않음");
+        }
     } catch (err) {
         console.error(`에러 ${err}`);
         res.status(400).json({
