@@ -1,12 +1,14 @@
 const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
+var cors = require('cors')
 const { sequelize } = require('./models'); // db.sequelize
 const collectionsRouter = require('./routes/collections');
 const createRouters = require('./routes/create');
 const nftsRouters = require('./routes/nfts');
 const usersRouter = require('./routes/users');
 const metadataRouter = require('./routes/metadata');
+
 
 const app = express();
 
@@ -19,6 +21,11 @@ sequelize.sync({ force: false })
     });
 
 app.use(morgan('dev'));
+app.use(cors({
+    origin : "http://localhost:3000", // the origin of the requests - frontend address
+    credentials : true  
+}));
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
