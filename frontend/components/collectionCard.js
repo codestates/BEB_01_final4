@@ -31,7 +31,7 @@ const CollectionCard = ({ collection }) => {
       md={6}
       lg={4}
       onClick={() => {
-        router.push(`/collections/${collection.name}`);
+        router.push(`/collections/${collection.symbol}`);
       }}
     >
       <CollectionWrapper
