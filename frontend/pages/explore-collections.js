@@ -21,7 +21,6 @@ const Collections = () => {
     const {
       data: { data: collections },
     } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections`);
-    console.log(collections);
     if (collections) {
       setCollections(collections);
     }

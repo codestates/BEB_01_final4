@@ -1,6 +1,8 @@
 import { Button, Input, Text } from "@mantine/core";
+import { useState } from "react";
 import styled from "styled-components";
 import UploadFile from "../components/uploadFile";
+import { useStore } from "../utils/store";
 
 const Container = styled.div`
   && {
@@ -17,7 +19,12 @@ const TitleInput = styled.div`
   }
 `;
 
+const handleCreate = () => {};
+
 const MintNFT = () => {
+  const [collection, setCollection] = useState(null);
+  const myCollections = useStore((state) => state.myCollections);
+
   return (
     <Container>
       <Text style={{ fontSize: "35px", fontWeight: "bold", marginBottom: "30px" }} align="center">

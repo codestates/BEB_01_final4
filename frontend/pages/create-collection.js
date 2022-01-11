@@ -31,7 +31,7 @@ const CreateCollection = () => {
   const [description, setDescription] = useInputState("");
   const [web3, account] = useStore((state) => [state.web3, state.account]);
   const [visible, setVisible] = useState(false);
-  const [collections, setCollections] = useStore((state) => [state.collections, state.setCollections]);
+  const [myCollections, setMyCollections] = useStore((state) => [state.myCollections, state.setMyCollections]);
   const [logoUrl, setLogoUrl] = useState("");
   const [bannerUrl, setBannerUrl] = useState("");
 
@@ -48,7 +48,7 @@ const CreateCollection = () => {
     e.target.value = ("" + e.target.value).replace(/[^a-z\\-]/gi, "").toLowerCase();
   };
 
-  const handleCreateCollection = async (name, symbol, description, logoUrl, bannerUrl) => {
+  const handleCreateCollection = async ({ name, symbol, description, logoUrl, bannerUrl }) => {
     if (!account) {
       alert("지갑을 먼저 연결해주세요.");
       return;
@@ -61,24 +61,22 @@ const CreateCollection = () => {
 
     try {
       setVisible(true);
+      const newCollection = {
+        ownerAddress: account,
+        name,
+        symbol,
+        description,
+        image_url: logoUrl,
+        banner_url: bannerUrl,
+      };
 
       const {
         data: {
           data: { collectionURI },
         },
-      } = await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/collections`,
-        {
-          ownerAddress: account,
-          name,
-          symbol,
-          description,
-          image_url: logoUrl,
-          banner_url: bannerUrl,
-        },
-        { withCredentials: true },
-      );
-      console.log(collectionURI);
+      } = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections`, newCollection, {
+        withCredentials: true,
+      });
 
       if (collectionURI) {
         const contract = await new web3.eth.Contract(GGanbuCollection.abi)
@@ -89,25 +87,15 @@ const CreateCollection = () => {
           .send({ from: account });
 
         if (contract) {
-          console.log(contract._address);
           await axios.post(
             `${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`,
             { contractAddress: contract._address },
             { withCredentials: true },
           );
 
-          // const newCollection = {
-          //   contractAddress: contract._address,
-          //   ownerAddress: account,
-          //   name,
-          //   symbol,
-          //   description,
-          //   large_image_url: logoUrl,
-          //   banner_image_url: bannerUrl,
-          //   assets: [],
-          // };
-          // setCollections([...collections, newCollection]);
-          // router.push(`/collections/${name}`);
+          // TODO: DB에서 마이 컬렉션 가져올 수 있게되면 삭제 예정
+          setMyCollections([...myCollections, { ...newCollection, contractAddress: contract._address, assets: [] }]);
+          router.push(`/collections/${symbol}`);
         }
       }
     } catch (e) {
@@ -174,7 +162,7 @@ const CreateCollection = () => {
         <div style={{ width: "180px", margin: "0 auto" }}>
           <Button
             onClick={async () => {
-              await handleCreateCollection(name, symbol, description, logoUrl, bannerUrl);
+              await handleCreateCollection({ name, symbol, description, logoUrl, bannerUrl });
             }}
             variant="light"
             color="teal"

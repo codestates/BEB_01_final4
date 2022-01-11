@@ -17,10 +17,23 @@ const CImage = styled(Image)`
   border-top-right-radius: 10px;
 `;
 
-const NFTCard = ({ nft, idx }) => {
+const NFTCard = ({ collectionSymbol, nft, idx }) => {
   const router = useRouter();
   return (
-    <Grid.Col span={12} md={6} lg={4} onClick={() => router.push(`/assets/${nft.contractAddress}/${nft.token_ids}`)}>
+    <Grid.Col
+      span={12}
+      md={6}
+      lg={4}
+      onClick={() => {
+        if (nft.token_ids) {
+          router.push(`/assets/${collectionSymbol}/${nft.token_ids}`);
+        } else {
+          alert(
+            "더미 데이터 또는 데몬이 아직 업데이트 하지 않은 NFT를 선택하셨습니다. tokenId가 없어서 상세 정보 확인이 불가능합니다.",
+          );
+        }
+      }}
+    >
       <NftWrapper
         style={{
           width: 320,

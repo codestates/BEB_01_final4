@@ -6,6 +6,7 @@ import Link from "next/link";
 import styled from "styled-components";
 import Profile from "./profile";
 import { useStore } from "../utils/store";
+import axios from "axios";
 
 const CText = styled(Text)`
   && {
@@ -21,6 +22,7 @@ const CButton = styled(Button)`
 const Layout = ({ children }) => {
   const [opened, setOpened] = useState(false);
   const [account, setAccount] = useStore((state) => [state.account, state.setAccount]);
+  const [user, setUser] = useStore((state) => [state.user, state.setUser]);
   const theme = useMantineTheme();
 
   const connectWallet = async () => {
@@ -29,6 +31,38 @@ const Layout = ({ children }) => {
     });
 
     setAccount(accounts[0]);
+
+    try {
+      try {
+        const {
+          data: {
+            data: { user },
+          },
+        } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${accounts[0]}`);
+        // console.log(user);
+
+        if (user) {
+          setUser(user);
+          return;
+        }
+      } catch (e) {
+        console.log(e.response);
+      }
+
+      const {
+        data: { data: newUser },
+      } = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
+        address: accounts[0],
+        name: "anonymous",
+        email: "anonymous@beb.com",
+      });
+      console.log(newUser);
+      if (newUser) {
+        setUser(newUser);
+      }
+    } catch (e) {
+      console.log(e.response);
+    }
   };
 
   return (
@@ -63,11 +97,12 @@ const Layout = ({ children }) => {
                 <CText>Explore</CText>
               </Link>
             </CButton>
-            <CButton variant="white" onClick={() => setOpened(!opened)}>
+            {/* // TODO: 나의 컬렉션 리스트를 받을 수 있게 되면 복원 예정 */}
+            {/* <CButton variant="white" onClick={() => setOpened(!opened)}>
               <Link href="/create" passHref>
                 <CText>Create</CText>
               </Link>
-            </CButton>
+            </CButton> */}
           </Navbar>
         </MediaQuery>
       }
@@ -113,9 +148,10 @@ const Layout = ({ children }) => {
                   <Link href="/explore-collections" passHref>
                     <CText>Explore</CText>
                   </Link>
-                  <Link href="/create" passHref>
+                  {/* // TODO: 나의 컬렉션 리스트를 받을 수 있게 되면 복원 예정 */}
+                  {/* <Link href="/create" passHref>
                     <CText>Create</CText>
-                  </Link>
+                  </Link> */}
                 </div>
               </MediaQuery>
             </div>

@@ -1,12 +1,33 @@
-import { Button, Grid, SimpleGrid, Text } from "@mantine/core";
+import { Button, SimpleGrid, Text } from "@mantine/core";
+import axios from "axios";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import CollectionCard from "../components/collectionCard";
-import { axie } from "../public/collections/axie";
 import { useStore } from "../utils/store";
 
 const Collections = () => {
   const router = useRouter();
-  const collections = useStore((state) => state.collections);
+  const [myCollections, setMyCollections] = useStore((state) => [state.myCollections, state.setMyCollections]);
+  const account = useStore((state) => state.account);
+
+  const getMyCollections = async () => {
+    try {
+      const {
+        data: { data: myCollectionsData },
+      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}/collections`);
+      if (myCollectionsData) {
+        console.log(myCollectionsData);
+        setMyCollections(myCollectionsData);
+      }
+    } catch (e) {
+      console.log(e.response);
+      alert("지갑을 연결해주세요.");
+    }
+  };
+
+  useEffect(() => {
+    getMyCollections();
+  }, [account]);
 
   return (
     <div>
@@ -25,7 +46,7 @@ const Collections = () => {
           { maxWidth: 850, cols: 1, spacing: "sm" },
         ]}
       >
-        {collections.map((collection, i) => (
+        {myCollections.map((collection, i) => (
           <CollectionCard collection={collection} key={i} />
         ))}
         {/* <CollectionCard collection={axie} /> */}

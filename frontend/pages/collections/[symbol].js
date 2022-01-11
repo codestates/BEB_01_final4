@@ -70,19 +70,24 @@ const NFTS = () => {
   const router = useRouter();
   const { symbol } = router.query;
   const [collection, setCollection] = useState(null);
+  const account = useStore((state) => state.account);
 
   const getCollection = async () => {
+    console.log("object");
+    console.log(symbol);
     if (symbol) {
       const {
         data: { data: collection },
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`);
       console.log(collection);
-      setCollection(collection);
+      if (collection) {
+        setCollection(collection);
+      }
     }
   };
   useEffect(() => {
     getCollection();
-  }, []);
+  }, [symbol]);
 
   return (
     <div>
@@ -118,9 +123,11 @@ const NFTS = () => {
         </NameBox>
 
         <div style={{ position: "absolute", right: "30px", top: "330px" }}>
-          <Link href={`/assets/${collection?.contractAddress}/create`} passHref>
-            <Button size="lg">Add Item</Button>
-          </Link>
+          {account && collection?.ownerAddress === account ? (
+            <Link href={`/assets/${collection?.symbol}/create`} passHref>
+              <Button size="lg">Add Item</Button>
+            </Link>
+          ) : null}
         </div>
 
         <div>
@@ -165,7 +172,9 @@ const NFTS = () => {
         ]}
       >
         {collection?.assets.map((nft, i) => {
-          return nft.imageURI === null ? null : <NFTCard key={i} nft={nft} idx={i} />;
+          return nft.imageURI === null ? null : (
+            <NFTCard key={i} collectionSymbol={collection?.symbol} nft={nft} idx={i} />
+          );
         })}
       </SimpleGrid>
       {collection?.assets.length === 0 ? (
