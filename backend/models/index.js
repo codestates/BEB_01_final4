@@ -36,4 +36,22 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+db.collections = require('./collections')(sequelize, Sequelize);
+db.users = require("./users")(sequelize, Sequelize);
+db.nfts = require("./nfts")(sequelize, Sequelize);
+
+// // collections : nfts -> 1:N
+// db.collections.hasMany(db.nfts, { as: "nfts" });
+// db.nfts.belongsTo(db.collections, {
+//   foreignKey: 'contractAddress',
+//   as: "ca"
+// });
+
+// // users : collections -> 1:N
+// db.users.hasMany(db.collections, { as: "collections" });
+// db.collections.belongsTo(db.users, {
+//   foreignKey: 'address',
+//   as: 'ownerAddress'
+// });
+
 module.exports = db;
