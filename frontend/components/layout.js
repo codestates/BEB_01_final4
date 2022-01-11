@@ -14,6 +14,10 @@ const CText = styled(Text)`
   }
 `;
 
+const CButton = styled(Button)`
+  margin-bottom: 10px;
+`;
+
 const Layout = ({ children }) => {
   const [opened, setOpened] = useState(false);
   const [account, setAccount] = useStore((state) => [state.account, state.setAccount]);
@@ -49,7 +53,21 @@ const Layout = ({ children }) => {
             // width={{ sm: 200, lg: 300 }}
             width={{ sm: 300, lg: 400 }}
           >
-            <Text>Application navbar</Text>
+            <CButton variant="white" onClick={() => setOpened(!opened)}>
+              <Link href="/" passHref>
+                <CText>Home</CText>
+              </Link>
+            </CButton>
+            <CButton variant="white" onClick={() => setOpened(!opened)}>
+              <Link href="/explore-collections" passHref>
+                <CText>Explore</CText>
+              </Link>
+            </CButton>
+            <CButton variant="white" onClick={() => setOpened(!opened)}>
+              <Link href="/create" passHref>
+                <CText>Create</CText>
+              </Link>
+            </CButton>
           </Navbar>
         </MediaQuery>
       }
@@ -69,34 +87,37 @@ const Layout = ({ children }) => {
                 />
               </MediaQuery>
 
-              <div style={{ display: "flex", cursor: "pointer" }}>
-                <Image width="35" height="45" src="/images/gganbu.png" alt="" />
-                <Link href="/" passHref>
-                  <Text
-                    style={{
-                      fontWeight: "bold",
-                      fontSize: "25px",
-                      marginLeft: "10px",
-                      alignSelf: "center",
-                    }}
-                  >
-                    NFT GGanbu
-                  </Text>
-                </Link>
-              </div>
+              <MediaQuery smallerThan="sm" styles={{ display: "none !important" }}>
+                <div style={{ display: "flex", cursor: "pointer" }}>
+                  <Image width="35" height="45" src="/images/gganbu.png" alt="" />
+                  <Link href="/" passHref>
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: "25px",
+                        marginLeft: "10px",
+                        alignSelf: "center",
+                      }}
+                    >
+                      NFT GGanbu
+                    </Text>
+                  </Link>
+                </div>
+              </MediaQuery>
             </div>
 
             <div style={{ display: "flex", alignItems: "center" }}>
               <Input style={{ marginRight: "20px", width: "300px" }} variant="default" placeholder="Search" />
-
-              <div style={{ display: "flex" }}>
-                <Link href="/explore-collections" passHref>
-                  <CText>Collections</CText>
-                </Link>
-                <Link href="/create" passHref>
-                  <CText>Create</CText>
-                </Link>
-              </div>
+              <MediaQuery smallerThan="sm" styles={{ display: "none !important" }}>
+                <div style={{ display: "flex" }}>
+                  <Link href="/explore-collections" passHref>
+                    <CText>Explore</CText>
+                  </Link>
+                  <Link href="/create" passHref>
+                    <CText>Create</CText>
+                  </Link>
+                </div>
+              </MediaQuery>
             </div>
 
             <div style={{ display: "flex", alignItems: "center" }}>

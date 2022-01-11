@@ -2,9 +2,11 @@ import { Button, Grid, SimpleGrid, Text } from "@mantine/core";
 import { useRouter } from "next/router";
 import CollectionCard from "../components/collectionCard";
 import { axie } from "../public/collections/axie";
+import { useStore } from "../utils/store";
 
 const Collections = () => {
   const router = useRouter();
+  const collections = useStore((state) => state.collections);
 
   return (
     <div>
@@ -23,7 +25,10 @@ const Collections = () => {
           { maxWidth: 850, cols: 1, spacing: "sm" },
         ]}
       >
-        <CollectionCard collection={axie} />
+        {collections.map((collection, i) => (
+          <CollectionCard collection={collection} key={i} />
+        ))}
+        {/* <CollectionCard collection={axie} /> */}
       </SimpleGrid>
     </div>
   );

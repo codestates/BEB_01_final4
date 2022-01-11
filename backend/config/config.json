@@ -5,7 +5,8 @@
       "database": "gganbu",
       "host": "127.0.0.1",
       "dialect": "mysql",
-      "timezone": "+09:00"
+      "timezone": "+09:00",
+      "host_metadata": "http://localhost:4000"
   },
   "test": {
       "username": "root",
@@ -13,7 +14,8 @@
       "database": "gganbu",
       "host": "127.0.0.1",
       "dialect": "mysql",
-      "timezone": "+09:00"
+      "timezone": "+09:00",
+      "host_metadata": "http://localhost:4000"
   },
   "production": {
       "username": "root",
@@ -21,6 +23,7 @@
       "database": "gganbu",
       "host": "127.0.0.1",
       "dialect": "mysql",
-      "timezone": "+09:00"
+      "timezone": "+09:00",
+      "host_metadata": "http://localhost:4000"
   }
 }

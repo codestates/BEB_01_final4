@@ -19,8 +19,9 @@ module.exports = (sequelize, DataTypes) => {
     ownerAddress: DataTypes.STRING,
     name: DataTypes.STRING,
     symbol: DataTypes.STRING,
-    description: DataTypes.STRING,
-    image_url: DataTypes.STRING
+    description: DataTypes.TEXT,
+    image_url: DataTypes.STRING,
+    banner_url: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Collections',

@@ -24,10 +24,10 @@ module.exports = {
         type: Sequelize.STRING
       },
       description: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       traits: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       imageURI: {
         type: Sequelize.STRING
