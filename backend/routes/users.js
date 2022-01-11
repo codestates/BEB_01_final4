@@ -1,9 +1,14 @@
 const express = require('express');
-const { Users, Collections } = require('../models');
+const { Users, Collections, NFTs } = require('../models');
+const collections = require('../models/collections');
 const router = express.Router();
 
 
-// 마이 페이지
+/*
+ *  /users/<address>
+ *  마이 페이지 (유저정보 + 보유 collections + 보유 assets)
+ *  required: address
+ */
 router.get('/:address', async (req, res, next) => {
     console.log(req.params.address);
     const address = req.params.address;
@@ -13,6 +18,32 @@ router.get('/:address', async (req, res, next) => {
         res.status(400).json({ message: "address가 일치하는 user가 없습니다" });
         return;
     }
+
+    //유저가 보유한 collection
+    const myCollections = await Collections.findAll({ where: { 
+        ownerAddress: address,
+        is_created : true
+    }})
+
+    //유저가 보유한 NFTs
+    const myNFTs = await NFTs.findAll({ where: { 
+        ownerAddress: address,
+        is_minted: true
+    }})
+
+    let result = user.dataValues;
+    
+    result.num_of_collections = myCollections.length;
+    result.num_of_assets = myNFTs.length;
+    result.collections = [];
+    result.assets = [];
+    for(let i=0;i<myCollections.length;i++) {
+        result.collections.push(myCollections[i].dataValues);
+    }
+    for(let i=0;i<myNFTs.length;i++) {
+        result.assets.push(myNFTs[i].dataValues);
+    }
+
     res.status(200).json({ message: "ok", data: user });
 });
 
@@ -25,7 +56,12 @@ router.get('/:address/collections', async (req, res, next) => {
         res.status(400).json({ message: "address가 일치하는 user가 없습니다" });
         return;
     }
-    const myCollections = await Collections.findAll({ where: { ownerAddress: address } })
+    const myCollections = await Collections.findAll({ where: { 
+        ownerAddress: address,
+        is_created : true
+    }})
+
+    console.log(myCollections);
     res.status(200).json({ message: "ok", data: myCollections });
 });
 
@@ -38,7 +74,10 @@ router.get('/:address/assets', async (req, res, next) => {
         res.status(400).json({ message: "address가 일치하는 user가 없습니다" });
         return;
     }
-    const myNFTs = await NFTs.findAll({ where: { ownerAddress: address } })
+    const myNFTs = await NFTs.findAll({ where: { 
+        ownerAddress: address,
+        is_minted: true
+    }})
     res.status(200).json({ message: "ok", data: myNFTs });
 });
 
@@ -70,8 +109,12 @@ router.post('/:address', async (req, res, next) => {
         })
 });
 
-// 내 정보 생성
-// imageURL 이외에 address, name, eamil 필수
+/*
+ *  /users
+ *  내 정보 생성
+ *  required: address, name, email 필수
+ *  optional: imageURL
+ */
 router.post('/', async (req, res, next) => { // User: address, imageURL, name, email
     if (!req.body.address || !req.body.name || !req.body.email) {
         res.status(400).json({ message: "address, name, email이 정확히 기입되었는지 확인해 주세요" });
