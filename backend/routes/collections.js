@@ -1,5 +1,6 @@
 const express = require('express');
 const { NFTs, Collections } = require('../models');
+const { Op } = require("sequelize");
 const router = express.Router();
 const config = require('../config/config');
 const hostURI = config.development.host_metadata;
@@ -32,14 +33,39 @@ function hasUpperCase(str) {
     }
 }
 
-//All Collections List
+
+/*
+ *  /collections
+ *  All Collections List
+ *  optional: 
+ *  [컬랙션명으로 조건 검색] ?search=
+ *  [컬랙션명으로 조건 검색, 단 컬랙션명만 추출] ?searchname=
+ */
 router.get('/', async (req, res, next) => {
     try {
+        //쿼리 옵션
+        let options = {
+            is_created:true
+        };
+        let attr;
+
+        //검색
+        if(req.query.search) {
+            // LIKE '%특정 문자열%';
+            options.symbol = {[Op.like]: `%${req.query.search}%`}
+        }
+
+        //컬랙션명만 검색
+        if(req.query.searchname) {
+            options.symbol = {[Op.like]: `%${req.query.searchname}%`}
+            attr = ['name', 'symbol'];
+        }
+
         const allCollections = await Collections.findAll({
-            where: {
-                is_created:true
-            }
-        });
+            where: options,
+            attributes: attr
+        });        
+
         res.json({ message: "ok", data: allCollections });
     } catch (err) {
         console.error(err);
