@@ -1,9 +1,139 @@
 const express = require('express');
-const { NFTs } = require('../models');
+const { NFTs, Collections } = require('../models');
 const router = express.Router();
+const config = require('../config/config');
+const hostURI = config.development.host_metadata;
+
+// 공백이 있나 없나 체크 
+function hasSpace(str) { 
+    if(str.search(/\s/) != -1) { 
+        return true; 
+    } else { 
+        return false; 
+    } 
+} 
+
+// 특수 문자가 있나 없나 체크 
+function hasSpecial(str) { 
+    const special_pattern = /[`~!@#$%^&*|\\\'\";:\/?]/gi;
+    if(special_pattern.test(str) == true) { 
+        return true; 
+    } else { 
+        return false; 
+    } 
+}
+
+// 대문자 포함 여부
+function hasUpperCase(str) { 
+    if(str.toLowerCase() !== str) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 router.get('/', (req, res, next) => {
     res.json(`${req.method}: ${req.url}`);
+});
+
+/*
+ *  /collection
+ *  컬랙션 생성 (metadata 정보 회신)
+ *  required: ownerAddress, name, symbol, description, image_url, banner_url
+ */
+router.post('/', async (req, res, next) => {
+    try {
+        console.log(`======== [POST] /collection ========`);
+        //입력 인자 가공
+        if (!req.body.ownerAddress || !req.body.name ||
+            !req.body.symbol || !req.body.description ||
+            !req.body.image_url || !req.body.banner_url) {
+            throw new SyntaxError("required: ownerAddress, name, symbol, description, image_url, banner_url");
+        }
+
+        // symbol 은 '소문자 + dash' 조합만 가능
+        let reqSymbol = req.body.symbol;
+        if(hasSpace(reqSymbol) || hasSpecial(reqSymbol) || hasUpperCase(reqSymbol)) {
+            throw new Error('symbol 은 소문자 + dash 조합만 가능합니다');
+        }
+
+        const reqData = {
+            is_created: false,
+            ownerAddress: req.body.ownerAddress,
+            name: req.body.name,
+            symbol: reqSymbol,
+            description: req.body.description,
+            image_url: req.body.image_url,
+            banner_url: req.body.banner_url,
+        };
+
+        let qRes = await Collections.findOrCreate({where:{symbol:reqData.symbol},defaults:reqData});
+        if(qRes[1] === false) {
+            console.log('컬랙션 symbol 이 이미 존재합니다');
+            res.status(409).json({
+                message: '컬랙션 symbol 이 이미 존재합니다',
+                data: null
+            });
+        } else {
+            let collectionURI = `${hostURI}/metadata/collection/${qRes[0].dataValues.id}`;
+            console.log(`collectionURI 가 생성됨 : ${collectionURI}`); 
+            res.status(200).json({
+                message: 'ok',
+                data: {
+                    collectionURI
+                }
+            });
+        }
+    } catch (err) {
+        console.error(`에러 ${err}`);
+        res.status(400).json({
+            message: err.message,
+            data: null
+        });
+    }
+});
+
+/*
+ *  /collections/<collection>
+ *  컬랙션 생성 후 CA 저장
+ *  required: contractAddress
+ */
+router.post('/:collection_symbol', async (req, res, next) => {
+    console.log(req.params.collection_symbol);
+    try {
+        console.log(`======== [POST] /collection/<collection> ========`);
+        //입력 인자 가공
+        if (!req.body.contractAddress) {
+            throw new SyntaxError("required: contractAddress");
+        }
+
+        let reqData = {
+            contractAddress: req.body.contractAddress,
+            is_created: true
+        }
+
+        // DB 업데이트
+        let qRes = await Collections.update(reqData,
+            {where: {symbol: req.params.collection_symbol}}
+        );
+        console.log(qRes);
+        
+        if(qRes[0] === 1) {
+            res.status(200).json({
+                message: '업데이트 완료',
+                data: null
+            });
+        } else {
+            throw new Error("해당 symbol 을 가진 collection 이 존재하지 않음");
+        }
+
+    } catch (err) {
+        console.error(`에러 ${err}`);
+        res.status(400).json({
+            message: err.message,
+            data: null
+        });
+    }
 });
 
 module.exports = router;

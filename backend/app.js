@@ -5,7 +5,7 @@ const { sequelize } = require('./models'); // db.sequelize
 const collectionsRouter = require('./routes/collections');
 const createRouters = require('./routes/create');
 const nftsRouters = require('./routes/nfts');
-const userRouter = require('./routes/user');
+const usersRouter = require('./routes/users');
 const metadataRouter = require('./routes/metadata');
 
 const app = express();
@@ -26,7 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/collections', collectionsRouter);
 app.use('/create', createRouters);
 app.use('/nfts', nftsRouters);
-app.use('/user', userRouter);
+app.use('/users', usersRouter);
 app.use('/metadata', metadataRouter);
 
 
