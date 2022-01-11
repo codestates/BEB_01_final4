@@ -35,7 +35,11 @@ function hasUpperCase(str) {
 //All Collections List
 router.get('/', async (req, res, next) => {
     try {
-        const allCollections = await Collections.findAll({});
+        const allCollections = await Collections.findAll({
+            where: {
+                is_created:true
+            }
+        });
         res.json({ message: "ok", data: allCollections });
     } catch (err) {
         console.error(err);
