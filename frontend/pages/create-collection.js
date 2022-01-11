@@ -7,6 +7,7 @@ import { useStore } from "../utils/store";
 import UploadLogo from "../components/uploadLogo";
 import UploadBanner from "../components/uploadBanner";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 const Container = styled.div`
   && {
@@ -34,47 +35,86 @@ const CreateCollection = () => {
   const [logoUrl, setLogoUrl] = useState("");
   const [bannerUrl, setBannerUrl] = useState("");
 
+  const isHangul = (value) => {
+    const regExp = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g;
+    return regExp.test(value);
+  };
+
   const toInputAlphabet = (e) => {
     e.target.value = ("" + e.target.value).replace(/[^A-Za-z\\-\s]/gi, "");
   };
 
-  const toInputLowerCase = (e) => {
+  const toInputLowerCase = async (e) => {
     e.target.value = ("" + e.target.value).replace(/[^a-z\\-]/gi, "").toLowerCase();
   };
 
-  const handleCreateCollection = async (name, symbol, description) => {
+  const handleCreateCollection = async (name, symbol, description, logoUrl, bannerUrl) => {
     if (!account) {
       alert("지갑을 먼저 연결해주세요.");
       return;
     }
 
+    if (!name || !symbol || !description || !logoUrl || !bannerUrl) {
+      alert("모든 입력 값을 입력해주세요.");
+      return;
+    }
+
     try {
       setVisible(true);
-      const contract = await new web3.eth.Contract(GGanbuCollection.abi)
-        .deploy({
-          data: GGanbuCollection.bytecode,
-          arguments: [name, symbol, name], // Writing you arguments in the array
-        })
-        .send({ from: account });
 
-      if (contract) {
-        console.log(contract._address);
-        const newCollection = {
-          contractAddress: contract._address,
+      const {
+        data: {
+          data: { collectionURI },
+        },
+      } = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/collections`,
+        {
           ownerAddress: account,
           name,
           symbol,
           description,
-          large_image_url: logoUrl,
-          banner_image_url: bannerUrl,
-          assets: [],
-        };
-        console.log(newCollection);
-        setCollections([...collections, newCollection]);
-        router.push(`/collections/${name}`);
+          image_url: logoUrl,
+          banner_url: bannerUrl,
+        },
+        { withCredentials: true },
+      );
+      console.log(collectionURI);
+
+      if (collectionURI) {
+        const contract = await new web3.eth.Contract(GGanbuCollection.abi)
+          .deploy({
+            data: GGanbuCollection.bytecode,
+            arguments: [name, symbol, collectionURI], // Writing you arguments in the array
+          })
+          .send({ from: account });
+
+        if (contract) {
+          console.log(contract._address);
+          await axios.post(
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`,
+            { contractAddress: contract._address },
+            { withCredentials: true },
+          );
+
+          // const newCollection = {
+          //   contractAddress: contract._address,
+          //   ownerAddress: account,
+          //   name,
+          //   symbol,
+          //   description,
+          //   large_image_url: logoUrl,
+          //   banner_image_url: bannerUrl,
+          //   assets: [],
+          // };
+          // setCollections([...collections, newCollection]);
+          // router.push(`/collections/${name}`);
+        }
       }
     } catch (e) {
-      console.dir(e);
+      console.log(e);
+      if (e.response?.data?.message !== undefined) {
+        alert(e.response?.data?.message);
+      }
     } finally {
       setVisible(false);
     }
@@ -97,12 +137,34 @@ const CreateCollection = () => {
         <TitleInput>
           <Text style={{ marginBottom: "0px" }}>이름</Text>
           <Text style={{ color: "rgb(112, 122, 131)", fontSize: "13px" }}>영문, - 기호, 띄어쓰기만 가능합니다.</Text>
-          <Input value={name} onChange={setName} onInput={toInputAlphabet} variant="default" placeholder="이름" />
+          <Input
+            value={name}
+            onChange={(e) => {
+              if (e.nativeEvent.data && isHangul(e.nativeEvent.data)) {
+                alert("영문으로 입력해주세요.");
+              }
+              setName(e.currentTarget.value);
+            }}
+            onInput={toInputAlphabet}
+            variant="default"
+            placeholder="이름"
+          />
         </TitleInput>
         <TitleInput>
           <Text style={{ marginBottom: "0px" }}>심볼</Text>
           <Text style={{ color: "rgb(112, 122, 131)", fontSize: "13px" }}>영문 소문자, - 기호만 입력 가능합니다.</Text>
-          <Input value={symbol} onChange={setSymbol} onInput={toInputLowerCase} variant="default" placeholder="심볼" />
+          <Input
+            value={symbol}
+            onChange={(e) => {
+              if (e.nativeEvent.data && isHangul(e.nativeEvent.data)) {
+                alert("영문 소문자으로 입력해주세요.");
+              }
+              setSymbol(e.currentTarget.value);
+            }}
+            onInput={toInputLowerCase}
+            variant="default"
+            placeholder="심볼"
+          />
         </TitleInput>
         <TitleInput>
           <Text>설명</Text>
@@ -112,7 +174,7 @@ const CreateCollection = () => {
         <div style={{ width: "180px", margin: "0 auto" }}>
           <Button
             onClick={async () => {
-              await handleCreateCollection(name, symbol, description);
+              await handleCreateCollection(name, symbol, description, logoUrl, bannerUrl);
             }}
             variant="light"
             color="teal"
