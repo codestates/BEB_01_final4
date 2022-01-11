@@ -34,6 +34,14 @@ const CreateCollection = () => {
   const [logoUrl, setLogoUrl] = useState("");
   const [bannerUrl, setBannerUrl] = useState("");
 
+  const toInputAlphabet = (e) => {
+    e.target.value = ("" + e.target.value).replace(/[^A-Za-z\\-\s]/gi, "");
+  };
+
+  const toInputLowerCase = (e) => {
+    e.target.value = ("" + e.target.value).replace(/[^a-z\\-]/gi, "").toLowerCase();
+  };
+
   const handleCreateCollection = async (name, symbol, description) => {
     if (!account) {
       alert("지갑을 먼저 연결해주세요.");
@@ -87,12 +95,14 @@ const CreateCollection = () => {
           <UploadBanner bannerUrl={bannerUrl} setBannerUrl={setBannerUrl} />
         </TitleInput>
         <TitleInput>
-          <Text>이름</Text>
-          <Input value={name} onChange={setName} variant="default" placeholder="이름" />
+          <Text style={{ marginBottom: "0px" }}>이름</Text>
+          <Text style={{ color: "rgb(112, 122, 131)", fontSize: "13px" }}>영문, - 기호, 띄어쓰기만 가능합니다.</Text>
+          <Input value={name} onChange={setName} onInput={toInputAlphabet} variant="default" placeholder="이름" />
         </TitleInput>
         <TitleInput>
-          <Text>심볼</Text>
-          <Input value={symbol} onChange={setSymbol} variant="default" placeholder="심볼" />
+          <Text style={{ marginBottom: "0px" }}>심볼</Text>
+          <Text style={{ color: "rgb(112, 122, 131)", fontSize: "13px" }}>영문 소문자, - 기호만 입력 가능합니다.</Text>
+          <Input value={symbol} onChange={setSymbol} onInput={toInputLowerCase} variant="default" placeholder="심볼" />
         </TitleInput>
         <TitleInput>
           <Text>설명</Text>
