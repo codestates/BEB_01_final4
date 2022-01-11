@@ -11,8 +11,26 @@ import { decentraland } from "../public/collections/decentraland";
 import { illuvium } from "../public/collections/illuvium";
 import { nftWorlds } from "../public/collections/nft-worlds";
 import { sandbox } from "../public/collections/sandbox";
+import { useEffect } from "react";
+import axios from "axios";
+import { useStore } from "../utils/store";
 
 const Collections = () => {
+  const [collections, setCollections] = useStore((state) => [state.collections, state.setCollections]);
+  const getCollections = async () => {
+    const {
+      data: { data: collections },
+    } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections`);
+    console.log(collections);
+    if (collections) {
+      setCollections(collections);
+    }
+  };
+
+  useEffect(() => {
+    getCollections();
+  }, []);
+
   return (
     <div>
       <Text style={{ fontSize: "32px", margin: "40px 0", fontWeight: "bold" }} align="center">
@@ -27,7 +45,10 @@ const Collections = () => {
           { maxWidth: 850, cols: 1, spacing: "sm" },
         ]}
       >
-        <CollectionCard collection={aether} />
+        {collections?.map((collection) => (
+          <CollectionCard collection={collection} key={collection.id} />
+        ))}
+        {/* <CollectionCard collection={aether} />
         <CollectionCard collection={axie} />
         <CollectionCard collection={clonex} />
         <CollectionCard collection={cryptoavatars} />
@@ -36,7 +57,7 @@ const Collections = () => {
         <CollectionCard collection={decentraland} />
         <CollectionCard collection={illuvium} />
         <CollectionCard collection={nftWorlds} />
-        <CollectionCard collection={sandbox} />
+        <CollectionCard collection={sandbox} /> */}
       </SimpleGrid>
 
       {/* <Grid justify="space-between" style={{ padding: "0px 40px" }}>

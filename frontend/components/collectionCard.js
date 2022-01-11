@@ -24,7 +24,6 @@ const EllipsisDiv = styled.div`
 
 const CollectionCard = ({ collection }) => {
   const router = useRouter();
-  console.log(collection);
 
   return (
     <Grid.Col
@@ -44,11 +43,11 @@ const CollectionCard = ({ collection }) => {
         }}
       >
         <div>
-          {collection.banner_image_url && (
+          {collection.banner_url && (
             <CImage
               unoptimized={true}
               // src={collection.assets[0].tokenURI}
-              src={collection.banner_image_url}
+              src={collection.banner_url}
               width="380px"
               height="200px"
               layout="responsive"
@@ -77,7 +76,7 @@ const CollectionCard = ({ collection }) => {
               margin: "0 auto",
               marginTop: "3px",
               position: "relative",
-              backgroundImage: `url(${collection.large_image_url})`,
+              backgroundImage: `url(${collection.image_url})`,
               backgroundSize: "cover",
               // backgroundRepeat: "no-repeat",
             }}
