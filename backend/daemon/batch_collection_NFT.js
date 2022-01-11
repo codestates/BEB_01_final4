@@ -68,7 +68,6 @@ const main = async () => {
 
       nfts[j].token_URI = await insertNftMeta(inputData);
     }
-
   }
 
   //5. [프론트] mintNFT
