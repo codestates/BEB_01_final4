@@ -59,7 +59,7 @@ const ImageWrapper = styled.div`
   user-drag: none;
   border: 1px solid rgb(229, 232, 235);
   border-radius: 10px;
-  height: 425px;
+  // height: 425px;
   margin-bottom: 30px;
 `;
 
@@ -101,16 +101,18 @@ const Asset = () => {
                   <EmptyHeartIcon onClick={() => setClickedHeart(!clickedHeart)} style={{ cursor: "pointer" }} />
                 )}
               </div>
-              <Image className="nft-image" src={nft.tokenURI} width={500} height={385} alt="" />
-              <style jsx global>{`
-                .nft-image {
-                  -webkit-user-drag: none;
-                  -khtml-user-drag: none;
-                  -moz-user-drag: none;
-                  -o-user-drag: none;
-                  user-drag: none;
-                }
-              `}</style>
+              <div style={{ display: "flex", justifyContent: "center", paddingBottom: "20px" }}>
+                <Image className="nft-image" src={nft.tokenURI} width={500} height={385} alt="" />
+                <style jsx global>{`
+                  .nft-image {
+                    -webkit-user-drag: none;
+                    -khtml-user-drag: none;
+                    -moz-user-drag: none;
+                    -o-user-drag: none;
+                    user-drag: none;
+                  }
+                `}</style>
+              </div>
             </ImageWrapper>
             <Accordion iconPosition="right" iconSize={30}>
               <Accordion.Item
