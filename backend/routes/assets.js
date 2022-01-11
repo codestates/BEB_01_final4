@@ -4,13 +4,28 @@ const router = express.Router();
 const config = require('../config/config');
 const hostURI = config.development.host_metadata;
 
+// All NFTs List
 router.get('/', async (req, res, next) => {
+    console.log('?');
     try {
-        const nfts = await NFTs.findAll();
-        res.json({ nfts });
+        const allNFTs = await NFTs.findAll({});
+        console.log(allNFTs);
+        res.json({ message: "ok", data: allNFTs });
     } catch (err) {
         console.error(err);
     }
+});
+
+// NFT 1개 상세
+router.get('/:token_ids', async (req, res, next) => {
+    console.log(req.params.token_ids);
+    const token_ids = req.params.token_ids;
+    const nft = await NFTs.findAll({ where: { token_ids: token_ids } });
+    if (!nft) {
+        res.status(400).json({ message: "token_ids가 일치하는 NFT가 없습니다" });
+        return;
+    }
+    res.json({ message: "ok", data: nft });
 });
 
 /*
@@ -41,8 +56,8 @@ router.post('/', async (req, res, next) => {
 
         let qRes = await NFTs.create(reqData);
         let tokenURI = `${hostURI}/metadata/nft/${qRes.dataValues.id}`;
-        
-        console.log(`tokenURI 가 생성됨 : ${tokenURI}`); 
+
+        console.log(`tokenURI 가 생성됨 : ${tokenURI}`);
         res.status(200).json({
             message: 'ok',
             data: {
