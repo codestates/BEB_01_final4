@@ -123,7 +123,7 @@ const NFTS = () => {
         </NameBox>
 
         <div style={{ position: "absolute", right: "30px", top: "330px" }}>
-          {account && collection?.ownerAddress === account ? (
+          {account && collection?.ownerAddress.toLowerCase() === account.toLowerCase() ? (
             <Link href={`/assets/${collection?.symbol}/create`} passHref>
               <Button size="lg">Add Item</Button>
             </Link>
