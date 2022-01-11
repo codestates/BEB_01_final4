@@ -57,13 +57,12 @@ contract GGanbuCollection is ERC721URIStorage, Ownable {
         //getApproved()로 contract address 가져올 수 있다.
     }
 
-    function cancel(uint256 tokenId,address contractAddr) public {
+    function cancel(uint256 tokenId,address payable contractAddr) public {
         require(msg.sender == ownerOf(tokenId),"Collection: This address is not owner");//해당 nft의 owner만 취소 할 수 있다.
         require(auction[tokenId],"Collection: Can not sell this NFT");//판매중일때만 취소가능
-        if(contractAddr.balance != 0){
-
-        }
-        //취소(잔액이 0이 아니면 돌려주고 )
+        trade target = trade(contractAddr);
+        target.setInvalid(msg.sender);//취소
+        _approve(address(0x0), tokenId);//tradeContract에서 transferFrom 막음
         auction[tokenId] = false;
         //trade contract 비활성화
         emit _cancel(contractAddr,address(this),tokenId);//event 발생
