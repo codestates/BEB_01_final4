@@ -70,10 +70,9 @@ function UploadLogo({ logoUrl, setLogoUrl }) {
             console.log(`received: ${prog}`);
           },
         });
-        console.log(addedImg);
         const url = `https://ipfs.infura.io/ipfs/${addedImg.path}`;
         // const url = `https://ipfs.io/ipfs/${addedImg.path}`;
-        console.log(url);
+        // console.log(url);
         setLogoUrl(url);
       } catch (e) {
         console.dir(`ipfs upload error: ${e}`);
