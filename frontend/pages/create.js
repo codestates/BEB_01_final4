@@ -7,7 +7,7 @@ import styled from "styled-components";
 import UploadFile from "../components/uploadFile";
 import { GGanbuCollection } from "../public/compiledContracts/GGanbuCollection";
 import { useStore } from "../utils/store";
-import { isHangul, toInputAlphabet } from "./create-collection";
+import { isHangul, toInputAlphabetDecimal } from "./create-collection";
 
 const Container = styled.div`
   && {
@@ -23,6 +23,10 @@ const TitleInput = styled.div`
     margin-bottom: 10px;
   }
 `;
+
+export const hangulToAlphabet = (e) => {
+  e.target.value = ("" + e.target.value).replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/gi, "");
+};
 
 const MintNFT = () => {
   const router = useRouter();
@@ -135,7 +139,7 @@ const MintNFT = () => {
             }
             setName(e.currentTarget.value);
           }}
-          onInput={toInputAlphabet}
+          onInput={hangulToAlphabet}
           variant="default"
           placeholder="이름"
         />
@@ -150,7 +154,7 @@ const MintNFT = () => {
             }
             setDescription(e.currentTarget.value);
           }}
-          onInput={toInputAlphabet}
+          onInput={hangulToAlphabet}
           variant="default"
           placeholder="설명"
         />

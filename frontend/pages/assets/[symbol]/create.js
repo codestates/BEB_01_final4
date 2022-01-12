@@ -7,6 +7,8 @@ import { useInputState } from "@mantine/hooks";
 import { useState } from "react";
 import axios from "axios";
 import { GGanbuCollection } from "../../../public/compiledContracts/GGanbuCollection";
+import { hangulToAlphabet } from "../../create";
+import { isHangul } from "../../create-collection";
 
 const Container = styled.div`
   && {
@@ -98,11 +100,33 @@ const MintNFT = () => {
       <UploadFile imageURI={imageURI} setImageURI={setImageURI} />
       <TitleInput>
         <Text>이름</Text>
-        <Input value={name} onChange={setName} variant="default" placeholder="이름" />
+        <Input
+          value={name}
+          onChange={(e) => {
+            if (e.nativeEvent.data && isHangul(e.nativeEvent.data)) {
+              alert("영문으로 입력해주세요.");
+            }
+            setName(e.currentTarge.value);
+          }}
+          onInput={hangulToAlphabet}
+          variant="default"
+          placeholder="이름"
+        />
       </TitleInput>
       <TitleInput>
         <Text>설명</Text>
-        <Input value={description} onChange={setDescription} variant="default" placeholder="설명" />
+        <Input
+          value={description}
+          onChange={(e) => {
+            if (e.nativeEvent.data && isHangul(e.nativeEvent.data)) {
+              alert("영문으로 입력해주세요.");
+            }
+            setDescription(e.currentTarge.value);
+          }}
+          onInput={hangulToAlphabet}
+          variant="default"
+          placeholder="설명"
+        />
       </TitleInput>
       <TitleInput>
         <Text>Collection</Text>

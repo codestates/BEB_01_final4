@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AppShell, Burger, Button, Header, MediaQuery, Navbar, Text, useMantineTheme } from "@mantine/core";
+import { AppShell, Badge, Burger, Button, Header, MediaQuery, Navbar, Text, useMantineTheme } from "@mantine/core";
 import Image from "next/image";
 import { Input } from "@mantine/core";
 import Link from "next/link";
@@ -30,7 +30,7 @@ const Layout = ({ children }) => {
       method: "eth_requestAccounts",
     });
 
-    setAccount(accounts[0]);
+    setAccount(accounts[0].toLowerCase());
 
     try {
       // try {
@@ -154,6 +154,7 @@ const Layout = ({ children }) => {
             </div>
 
             <div style={{ display: "flex", alignItems: "center" }}>
+              {account && <Badge>{account.slice(0, 4).toLowerCase() + "..." + account.slice(-4).toLowerCase()}</Badge>}
               {account && <Profile />}
 
               {!account && (
