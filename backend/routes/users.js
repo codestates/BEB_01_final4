@@ -111,39 +111,37 @@ router.post('/:address', async (req, res, next) => {
 
 /*
  *  /users
- *  내 정보 생성
- *  required: address, name, email 필수
- *  optional: imageURL
+ *  로그인 or 사용자 생성
+ *  required: address 필수
  */
 router.post('/', async (req, res, next) => { // User: address, imageURL, name, email
-    if (!req.body.address || !req.body.name || !req.body.email) {
-        res.status(400).json({ message: "address, name, email이 정확히 기입되었는지 확인해 주세요" });
+    if (!req.body.address) {
+        res.status(400).json({ message: "address 입력이 없습니다" });
         return;
     }
 
     const isExistAddress = await Users.findOne({ where: { address: req.body.address } });
     if (isExistAddress) {
-        res.status(400).json({ message: "이미 존재하는 address입니다" });
+        res.status(200).json({ 
+            message: "login",
+            data: {}
+        });
         return;
     }
-
-    const isExistEmail = await Users.findOne({ where: { email: req.body.email } });
-    if (isExistAddress) {
-        res.status(400).json({ message: "이미 존재하는 email입니다" });
-        return;
-    }
-
 
     const newUser = {
         address: req.body.address,
-        imageURL: req.body.imageURL,
-        name: req.body.name,
-        email: req.body.email,
+        //imageURL: req.body.imageURL,
+        //name: req.body.name,
+        //email: req.body.email,
     }
     Users.create(newUser)
         .then(result => {
             console.log('DB 저장 완료');
-            res.status(200).json({ message: "ok", data: newUser });
+            res.status(200).json({ 
+                message: "new user",
+                data: newUser 
+            });
         })
         .catch(err => {
             console.log(err);
