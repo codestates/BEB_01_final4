@@ -16,6 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   NFTs.init({
     is_minted: DataTypes.BOOLEAN,
     token_ids: DataTypes.INTEGER,
+    ownerAddress: DataTypes.STRING,
+    creatorAddress: DataTypes.STRING,
     tokenURI: DataTypes.STRING,
     contractAddress: DataTypes.STRING,
     name: DataTypes.STRING,

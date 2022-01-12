@@ -70,10 +70,9 @@ function UploadBanner({ bannerUrl, setBannerUrl }) {
             console.log(`received: ${prog}`);
           },
         });
-        console.log(addedImg);
         const url = `https://ipfs.infura.io/ipfs/${addedImg.path}`;
         // const url = `https://ipfs.io/ipfs/${addedImg.path}`;
-        console.log(url);
+        // console.log(url);
         setBannerUrl(url);
       } catch (e) {
         console.dir(`ipfs upload error: ${e}`);
