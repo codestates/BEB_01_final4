@@ -26,11 +26,11 @@ const basePath = __dirname;
   const abi = require("./MyERC721_ABI");
 
   // 조회를 원하는 시작 블록 번호
-  //let startBlockNumber = 0; 
-  let startBlockNumber = Number(
-    fs.readFileSync(path.join(basePath, '/blockNumber'), {
-      encoding: 'utf-8',
-    }),) + 1;
+  let startBlockNumber = 0; 
+  // let startBlockNumber = Number(
+  //   fs.readFileSync(path.join(basePath, '/blockNumber'), {
+  //     encoding: 'utf-8',
+  //   }),) + 1;
  /*=======================================================*/
 
 const abiDecoder = require('abi-decoder'); // NodeJS
@@ -90,11 +90,12 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
 
       //해당 tokenURI 를 가진 데이터를 DB에서 확인 후 업데이트
       let targetId = inputData.tokenURI.replace('http://localhost:4000/metadata/nft/','');    
+      
       let result = await NFTs.update(inputData,
         {
           where: {
             id: targetId,
-            is_minted: false
+            is_minted: null
           }
         }
       );
@@ -163,10 +164,10 @@ const monitByCollection = async (MyAbi, START_BLOCK) => {
     // 가장 마지막에 확인한 블록번호 저장
     if(curBlkNum >= START_BLOCK)
       console.log(`==== 해당 블록 모니터링 완료 : ${START_BLOCK} ~ ${curBlkNum} ====`);
-    fs.writeFileSync(
-      path.join(basePath, '/blockNumber'),
-      String(curBlkNum),
-    );
+      fs.writeFileSync(
+        path.join(basePath, '/blockNumber'),
+        String(curBlkNum),
+      );
     
     sequelize.close();
   }

@@ -52,7 +52,7 @@ const main = async () => {
 
   //4. [백앤드] NFT metadata insert 및 tokenURI 회신
   //required: ca, name, description, traits, imageURI
-  for(let i=0;i<dummy_data.length;i++) {
+  for(let i=0;i<5;i++) {
     //각 collection 에 속한 NFT
     let nfts = dummy_data[i].assets;
     for(let j=0;j<nfts.length;j++) {
@@ -75,7 +75,7 @@ const main = async () => {
   //5. [프론트] mintNFT
   //required:
   const mintNftSlowly = async (delayTime) => {
-    for(let i=0;i<dummy_data.length;i++) {
+    for(let i=0;i<5;i++) {
       for(let j=0;j<dummy_data[i].assets.length;j++) {
         //console.log(dummy_data[i].assets[j].token_URI);
         console.log(`NFT생성 중 ${dummy_data[i].assets[j].token_URI}`);
