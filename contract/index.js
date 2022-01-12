@@ -1,16 +1,41 @@
 import Web3 from "web3";
 import abi from "./abi.js";
-
-//const contractAddr = "0x2Fe4fC57e21a74928641B03FB1411B1fc1D4F97F";//ropsten
-//const account = "0x459F501012aD38d0cC52C0fd0669B1F7764f3814";
-//const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545/%22));
-const ropsten = '';//infura에서 제공하는 연결 url
+import byteCode from "./bytecode.js";
+const contractAddr = "";//ropsten
+const account = "";
+//const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+const ropsten = ``;
 const web3 = new Web3(ropsten);
 const privateKey = "";
+
 const contract = new web3.eth.Contract(abi, contractAddr, { from: account });
-//const tradeAddr = "0x7B9Aeca6e0D327312DfEf102bea7b70d960359De";
+/**
+ //collection 생성할 때 마다 새로운 collection 배포하는 코드
+
+    var collectionName = ""  ;
+    var collectionSymbol ="" ;
+    var _collectionURI = ""  ;
+    var gganbucollectionContract = new web3.eth.Contract(abi);
+    var gganbucollection = gganbucollectionContract.deploy({
+     data: `0x${byteCode.object}`,
+      arguments: [
+          collectionName,
+          collectionSymbol,     
+          _collectionURI,
+     ]
+}).send({
+     from: web3.eth.accounts[0], 
+     gas: '4700000'
+   }, function (e, contract){
+    console.log(e, contract);
+    if (typeof contract.address !== 'undefined') {
+         console.log('Contract mined! address: ' + contract.address + ' transactionHash: ' + contract.transactionHash);
+    }
+ })
+
+ 주의!! .send이후 contract.address 값이 collection 주소랑 다를 수 있다. => 이런경우 보통 contract.to가 collection 주소
+ */
 const mint = async () => {
-    //nft mint
     try {
         const mintMethod = await contract.methods.mintNFT("test nft uri");
         const encodedAbi = mintMethod.encodeABI();
@@ -46,7 +71,7 @@ const mint = async () => {
 const _sell = async (tokenId, price) => {
     //거래 등록
     try {
-        const mintMethod = await contract.methods.sell(tokenId, web3.utils.toWei(String(price),"ether"));
+        const mintMethod = await contract.methods.sell(tokenId, web3.utils.toWei(String(price), "ether"));
         const encodedAbi = mintMethod.encodeABI();
         const tx = {
             from: account,
@@ -75,25 +100,29 @@ const _sell = async (tokenId, price) => {
 
 }
 
+
 const total = async () => {
-    //최신 tokenId 가져옴
     console.log(await contract.methods.totalSupply().call());
 }
 
-const tradeAddress = async (tokenId) => {
-    //거래중인 tokenId의 trade contract address 가져옴
+const isSell = async (tokenId) => {
+    console.log(await contract.methods.getIsSelling(tokenId).call());
+}
+const getOwnerOfNft = async (tokenId) => {
+    console.log(await contract.methods.ownerOf(tokenId).call());
+}
+const getTradeContract = async (tokenId) => {
     console.log(await contract.methods.getApproved(tokenId).call());
 }
 
-const _cancel= async (tokenId, addr) => {
-    //거래취소
+const cancelSale = async (tokenId, tradecontract) => {
     try {
-        const mintMethod = await contract.methods.cancel(tokenId, addr);
+        const mintMethod = await contract.methods.cancel(tokenId, tradecontract);
         const encodedAbi = mintMethod.encodeABI();
         const tx = {
             from: account,
             to: contractAddr,
-            gas: 200000,
+            gas: 2000000,
             data: encodedAbi
         };
         const signed = await web3.eth.accounts.signTransaction(tx, privateKey);
@@ -114,11 +143,10 @@ const _cancel= async (tokenId, addr) => {
     } catch (error) {
         console.log(error);
     }
-
 }
-
 //mint();
 _sell(1, 0.01);
-//tradeAddress(1);
-//_cancel(1,tradeAddr);
+//isSell(1);
+//getOwnerOfNft(1);
+//cancelSale(1, tradeContract);
 //total();

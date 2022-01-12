@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract trade {
     using SafeMath for uint256;
-    address private to;
+
     address private from;
     address private collection;
     uint256 private tokenId;
@@ -16,6 +16,8 @@ contract trade {
     bool private _canTrade;
     address private company = 0x459F501012aD38d0cC52C0fd0669B1F7764f3814;
     uint256 private tradeFees = 10;
+
+    event endTrade(uint256 indexed tokenId, address newOwner);
 
     constructor(
         address _from,
@@ -66,22 +68,25 @@ contract trade {
         return true;
     }
 
-    function trading() public payable isValid canTrade returns (bytes memory) {
+    function trading() public payable isValid canTrade {
         _canTrade = true;
         _balance = _balance + msg.value;
         require(_balance == price, "Trade: Does not match the price");
+
         (bool checkDiv, uint256 fee) = SafeMath.tryDiv(_balance, tradeFees);
         require(checkDiv, "Trade: Trade fee error");
         _balance = _balance - fee;
-        (bool checkSendCompany, ) = address(company).call{value: fee}(""); //회사에 수수료 납부
+        (bool checkSendCompany, ) = payable(company).call{value: fee}(""); //회사에 수수료 납부
         require(checkSendCompany, "Trade: Send trade fee fail");
-        (bool checkSend, ) = from.call{value: _balance}(""); //from에게 금액 전송
+
+        (bool checkSend, ) = payable(from).call{value: _balance}(""); //from에게 금액 전송
         require(checkSend, "Trade: Send Eth fail");
-        (bool check, bytes memory data) = collection.delegatecall(
+        address _to = msg.sender;
+        (bool check, ) = collection.call(
             abi.encodeWithSignature(
                 "transferFrom(address,address,uint256)",
                 from,
-                msg.sender,
+                _to,
                 tokenId
             )
         ); //from,to id 구매자에게 nft 전달
@@ -91,7 +96,7 @@ contract trade {
         isAble = false; //비활성화
         _canTrade = false;
 
-        return data;
+        emit endTrade(tokenId, _to);
     }
 
     function setInvalid(address owner) public isValid {
