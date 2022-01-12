@@ -1,6 +1,7 @@
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
 const { Transactions, Collections, NFTs, sequelize } = require(".././models");
+const { Op } = require("sequelize");
 const fs = require('fs');
 const path = require("path");
 const basePath = __dirname;
@@ -26,11 +27,11 @@ const basePath = __dirname;
   const abi = require("./MyERC721_ABI");
 
   // 조회를 원하는 시작 블록 번호
-  let startBlockNumber = 0; 
-  // let startBlockNumber = Number(
-  //   fs.readFileSync(path.join(basePath, '/blockNumber'), {
-  //     encoding: 'utf-8',
-  //   }),) + 1;
+  //let startBlockNumber = 0; 
+  let startBlockNumber = Number(
+    fs.readFileSync(path.join(basePath, '/blockNumber'), {
+      encoding: 'utf-8',
+    }),) + 1;
  /*=======================================================*/
 
 const abiDecoder = require('abi-decoder'); // NodeJS
@@ -95,10 +96,14 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
         {
           where: {
             id: targetId,
-            is_minted: null
+            is_minted: {
+              [Op.not]: true
+            }
+            //is_minted: null
           }
         }
       );
+      console.log(`number of minted NFTs : ${result}`);
     }
   }
   catch(err) {
