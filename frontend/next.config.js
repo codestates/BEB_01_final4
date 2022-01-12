@@ -9,6 +9,7 @@ module.exports = {
       "encrypted-tbn0.gstatic.com",
       "api.sandbox.game",
       "lh3.googleusercontent.com",
+      "ipfs.infura.io",
     ],
   },
   webpack: (config) => {

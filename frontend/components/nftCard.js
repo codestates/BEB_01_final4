@@ -17,10 +17,23 @@ const CImage = styled(Image)`
   border-top-right-radius: 10px;
 `;
 
-const NFTCard = ({ collectionName, nft, idx }) => {
+const NFTCard = ({ collectionSymbol, nft, idx }) => {
   const router = useRouter();
   return (
-    <Grid.Col span={12} md={6} lg={4} onClick={() => router.push(`/assets/${collectionName}/${idx}`)}>
+    <Grid.Col
+      span={12}
+      md={6}
+      lg={4}
+      onClick={() => {
+        if (nft.token_ids) {
+          router.push(`/assets/${collectionSymbol}/${nft.token_ids}`);
+        } else {
+          alert(
+            "데몬이 아직 업데이트 하지 않은 NFT를 선택하셨습니다. 데몬이 tokenId 정보를 DB에 가져올 때까지 잠시만 기다려주세요.",
+          );
+        }
+      }}
+    >
       <NftWrapper
         style={{
           width: 320,
@@ -30,10 +43,10 @@ const NFTCard = ({ collectionName, nft, idx }) => {
         }}
       >
         <div>
-          {nft?.tokenURI && (
+          {nft?.imageURI && (
             <CImage
               unoptimized={true}
-              src={nft.tokenURI}
+              src={nft?.imageURI}
               width="320px"
               height="320px"
               layout="responsive"
@@ -53,7 +66,7 @@ const NFTCard = ({ collectionName, nft, idx }) => {
             fontSize: "13px",
           }}
         >
-          <div style={{ width: "70%" }}>{nft.name}</div>
+          <div style={{ width: "70%" }}>{nft?.name}</div>
 
           <div style={{ display: "flex", width: "30%", flexDirection: "column", alignItems: "flex-end" }}>
             <span>Price</span>

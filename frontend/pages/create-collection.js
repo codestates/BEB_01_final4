@@ -24,6 +24,19 @@ const TitleInput = styled.div`
   }
 `;
 
+export const isHangul = (value) => {
+  const regExp = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g;
+  return regExp.test(value);
+};
+
+export const toInputAlphabet = (e) => {
+  e.target.value = ("" + e.target.value).replace(/[^A-Za-z\\-\s]/gi, "");
+};
+
+export const toInputLowerCase = async (e) => {
+  e.target.value = ("" + e.target.value).replace(/[^a-z\\-]/gi, "").toLowerCase();
+};
+
 const CreateCollection = () => {
   const router = useRouter();
   const [name, setName] = useInputState("");
@@ -31,54 +44,39 @@ const CreateCollection = () => {
   const [description, setDescription] = useInputState("");
   const [web3, account] = useStore((state) => [state.web3, state.account]);
   const [visible, setVisible] = useState(false);
-  const [collections, setCollections] = useStore((state) => [state.collections, state.setCollections]);
+  const [myCollections, setMyCollections] = useStore((state) => [state.myCollections, state.setMyCollections]);
   const [logoUrl, setLogoUrl] = useState("");
   const [bannerUrl, setBannerUrl] = useState("");
 
-  const isHangul = (value) => {
-    const regExp = /[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/g;
-    return regExp.test(value);
-  };
-
-  const toInputAlphabet = (e) => {
-    e.target.value = ("" + e.target.value).replace(/[^A-Za-z\\-\s]/gi, "");
-  };
-
-  const toInputLowerCase = async (e) => {
-    e.target.value = ("" + e.target.value).replace(/[^a-z\\-]/gi, "").toLowerCase();
-  };
-
-  const handleCreateCollection = async (name, symbol, description, logoUrl, bannerUrl) => {
+  const handleCreateCollection = async ({ name, symbol, description, logoUrl, bannerUrl }) => {
     if (!account) {
       alert("지갑을 먼저 연결해주세요.");
       return;
     }
 
     if (!name || !symbol || !description || !logoUrl || !bannerUrl) {
-      alert("모든 입력 값을 입력해주세요.");
+      alert("모든 값을 입력해주세요.");
       return;
     }
 
     try {
       setVisible(true);
+      const newCollection = {
+        ownerAddress: account,
+        name,
+        symbol,
+        description,
+        image_url: logoUrl,
+        banner_url: bannerUrl,
+      };
 
       const {
         data: {
           data: { collectionURI },
         },
-      } = await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/collections`,
-        {
-          ownerAddress: account,
-          name,
-          symbol,
-          description,
-          image_url: logoUrl,
-          banner_url: bannerUrl,
-        },
-        { withCredentials: true },
-      );
-      console.log(collectionURI);
+      } = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections`, newCollection, {
+        withCredentials: true,
+      });
 
       if (collectionURI) {
         const contract = await new web3.eth.Contract(GGanbuCollection.abi)
@@ -89,25 +87,14 @@ const CreateCollection = () => {
           .send({ from: account });
 
         if (contract) {
-          console.log(contract._address);
           await axios.post(
             `${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`,
             { contractAddress: contract._address },
             { withCredentials: true },
           );
 
-          // const newCollection = {
-          //   contractAddress: contract._address,
-          //   ownerAddress: account,
-          //   name,
-          //   symbol,
-          //   description,
-          //   large_image_url: logoUrl,
-          //   banner_image_url: bannerUrl,
-          //   assets: [],
-          // };
-          // setCollections([...collections, newCollection]);
-          // router.push(`/collections/${name}`);
+          setMyCollections([...myCollections, { ...newCollection, contractAddress: contract._address, assets: [] }]);
+          router.push(`/collections/${symbol}`);
         }
       }
     } catch (e) {
@@ -174,7 +161,7 @@ const CreateCollection = () => {
         <div style={{ width: "180px", margin: "0 auto" }}>
           <Button
             onClick={async () => {
-              await handleCreateCollection(name, symbol, description, logoUrl, bannerUrl);
+              await handleCreateCollection({ name, symbol, description, logoUrl, bannerUrl });
             }}
             variant="light"
             color="teal"

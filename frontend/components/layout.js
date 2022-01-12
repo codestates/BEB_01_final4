@@ -6,6 +6,7 @@ import Link from "next/link";
 import styled from "styled-components";
 import Profile from "./profile";
 import { useStore } from "../utils/store";
+import axios from "axios";
 
 const CText = styled(Text)`
   && {
@@ -21,6 +22,7 @@ const CButton = styled(Button)`
 const Layout = ({ children }) => {
   const [opened, setOpened] = useState(false);
   const [account, setAccount] = useStore((state) => [state.account, state.setAccount]);
+  const setUser = useStore((state) => state.setUser);
   const theme = useMantineTheme();
 
   const connectWallet = async () => {
@@ -29,6 +31,37 @@ const Layout = ({ children }) => {
     });
 
     setAccount(accounts[0]);
+
+    try {
+      // try {
+      //   const {
+      //     data: {
+      //       data: { user },
+      //     },
+      //   } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${accounts[0]}`);
+      //   // console.log(user);
+
+      //   if (user) {
+      //     console.log(user);
+      //     setUser(user);
+      //     return;
+      //   }
+      // } catch (e) {
+      //   console.log(e.response);
+      // }
+
+      const {
+        data: { data: newUser },
+      } = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
+        address: accounts[0],
+      });
+      console.log(newUser);
+      if (newUser) {
+        setUser(newUser);
+      }
+    } catch (e) {
+      console.log(e.response);
+    }
   };
 
   return (

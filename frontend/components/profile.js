@@ -56,7 +56,7 @@ const Profile = () => {
       trigger="hover"
       delay={200}
     >
-      <Menu.Item onClick={() => router.push("/collections")}>My Collections</Menu.Item>
+      <Menu.Item onClick={() => router.push("/my-collections")}>My Collections</Menu.Item>
     </Menu>
   );
 };
