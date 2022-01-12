@@ -29,7 +29,7 @@ const NFTCard = ({ collectionSymbol, nft, idx }) => {
           router.push(`/assets/${collectionSymbol}/${nft.token_ids}`);
         } else {
           alert(
-            "더미 데이터 또는 데몬이 아직 업데이트 하지 않은 NFT를 선택하셨습니다. tokenId가 없어서 상세 정보 확인이 불가능합니다.",
+            "데몬이 아직 업데이트 하지 않은 NFT를 선택하셨습니다. 데몬이 tokenId 정보를 DB에 가져올 때까지 잠시만 기다려주세요.",
           );
         }
       }}
