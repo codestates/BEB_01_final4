@@ -62,15 +62,17 @@ contract GGanbuCollection is ERC721URIStorage, Ownable {
         require(auction[tokenId],"Collection: Can not sell this NFT");//판매중일때만 취소가능
         trade target = trade(contractAddr);
         target.setInvalid(msg.sender);//취소
-        _approve(address(0x0), tokenId);//tradeContract에서 transferFrom 막음
+        _approve(address(0x0), tokenId);//tradeContract에서 transferFrom 사용할 수 있게 함
         auction[tokenId] = false;
         //trade contract 비활성화
         emit _cancel(contractAddr,address(this),tokenId);//event 발생
         
     }
+
+    
    
-   function getIsSelling(uint256 tokenId)public view returns(bool){
+    function getIsSelling(uint256 tokenId)public view returns(bool){
        return auction[tokenId] ;
-   }
+    }
         
 }

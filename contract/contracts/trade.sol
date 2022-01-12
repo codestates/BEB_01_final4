@@ -69,13 +69,15 @@ contract trade {
     function trading() public payable isValid canTrade returns (bytes memory) {
         _canTrade = true;
         _balance = _balance + msg.value;
-        require(_balance == price, "Trade: Does not match the price");
+        require(_balance  == price, "Trade: Does not match the price");
+
         (bool checkDiv, uint256 fee) = SafeMath.tryDiv(_balance, tradeFees);
         require(checkDiv, "Trade: Trade fee error");
         _balance = _balance - fee;
         (bool checkSendCompany, ) = address(company).call{value: fee}(""); //회사에 수수료 납부
+
         require(checkSendCompany, "Trade: Send trade fee fail");
-        (bool checkSend, ) = from.call{value: _balance}(""); //from에게 금액 전송
+        (bool checkSend, ) = payable(from).call{value: _balance}(""); //from에게 금액 전송
         require(checkSend, "Trade: Send Eth fail");
         (bool check, bytes memory data) = collection.delegatecall(
             abi.encodeWithSignature(
