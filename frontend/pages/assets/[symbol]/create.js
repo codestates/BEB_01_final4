@@ -106,7 +106,7 @@ const MintNFT = () => {
             if (e.nativeEvent.data && isHangul(e.nativeEvent.data)) {
               alert("영문으로 입력해주세요.");
             }
-            setName(e.currentTarge.value);
+            setName(e.currentTarget.value);
           }}
           onInput={hangulToAlphabet}
           variant="default"
@@ -121,7 +121,7 @@ const MintNFT = () => {
             if (e.nativeEvent.data && isHangul(e.nativeEvent.data)) {
               alert("영문으로 입력해주세요.");
             }
-            setDescription(e.currentTarge.value);
+            setDescription(e.currentTarget.value);
           }}
           onInput={hangulToAlphabet}
           variant="default"
