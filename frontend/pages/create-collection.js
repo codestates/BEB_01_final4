@@ -29,8 +29,8 @@ export const isHangul = (value) => {
   return regExp.test(value);
 };
 
-export const toInputAlphabet = (e) => {
-  e.target.value = ("" + e.target.value).replace(/[^A-Za-z\\-\s]/gi, "");
+export const toInputAlphabetDecimal = (e) => {
+  e.target.value = ("" + e.target.value).replace(/[^A-Za-z0-9\\-\s]/gi, "");
 };
 
 export const toInputLowerCase = async (e) => {
@@ -123,7 +123,9 @@ const CreateCollection = () => {
         </TitleInput>
         <TitleInput>
           <Text style={{ marginBottom: "0px" }}>이름</Text>
-          <Text style={{ color: "rgb(112, 122, 131)", fontSize: "13px" }}>영문, - 기호, 띄어쓰기만 가능합니다.</Text>
+          <Text style={{ color: "rgb(112, 122, 131)", fontSize: "13px" }}>
+            영문, 숫자, - 기호, 띄어쓰기만 가능합니다.
+          </Text>
           <Input
             value={name}
             onChange={(e) => {
@@ -132,14 +134,16 @@ const CreateCollection = () => {
               }
               setName(e.currentTarget.value);
             }}
-            onInput={toInputAlphabet}
+            onInput={toInputAlphabetDecimal}
             variant="default"
             placeholder="이름"
           />
         </TitleInput>
         <TitleInput>
           <Text style={{ marginBottom: "0px" }}>심볼</Text>
-          <Text style={{ color: "rgb(112, 122, 131)", fontSize: "13px" }}>영문 소문자, - 기호만 입력 가능합니다.</Text>
+          <Text style={{ color: "rgb(112, 122, 131)", fontSize: "13px" }}>
+            영문 소문자, 숫자, - 기호만 입력 가능합니다.
+          </Text>
           <Input
             value={symbol}
             onChange={(e) => {

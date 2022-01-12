@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AppShell, Burger, Button, Header, MediaQuery, Navbar, Text, useMantineTheme } from "@mantine/core";
+import { AppShell, Badge, Burger, Button, Header, MediaQuery, Navbar, Text, useMantineTheme } from "@mantine/core";
 import Image from "next/image";
 import { Input } from "@mantine/core";
 import Link from "next/link";
@@ -19,50 +19,50 @@ const CButton = styled(Button)`
   margin-bottom: 10px;
 `;
 
+export const connectWallet = async ({ setAccount, setUser }) => {
+  let accounts = await window.ethereum.request({
+    method: "eth_requestAccounts",
+  });
+
+  setAccount(accounts[0].toLowerCase());
+
+  try {
+    // try {
+    //   const {
+    //     data: {
+    //       data: { user },
+    //     },
+    //   } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${accounts[0]}`);
+    //   // console.log(user);
+
+    //   if (user) {
+    //     console.log(user);
+    //     setUser(user);
+    //     return;
+    //   }
+    // } catch (e) {
+    //   console.log(e.response);
+    // }
+
+    const {
+      data: { data: newUser },
+    } = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
+      address: accounts[0],
+    });
+    console.log(newUser);
+    if (newUser) {
+      setUser(newUser);
+    }
+  } catch (e) {
+    console.log(e.response);
+  }
+};
+
 const Layout = ({ children }) => {
   const [opened, setOpened] = useState(false);
   const [account, setAccount] = useStore((state) => [state.account, state.setAccount]);
   const setUser = useStore((state) => state.setUser);
   const theme = useMantineTheme();
-
-  const connectWallet = async () => {
-    let accounts = await window.ethereum.request({
-      method: "eth_requestAccounts",
-    });
-
-    setAccount(accounts[0]);
-
-    try {
-      // try {
-      //   const {
-      //     data: {
-      //       data: { user },
-      //     },
-      //   } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${accounts[0]}`);
-      //   // console.log(user);
-
-      //   if (user) {
-      //     console.log(user);
-      //     setUser(user);
-      //     return;
-      //   }
-      // } catch (e) {
-      //   console.log(e.response);
-      // }
-
-      const {
-        data: { data: newUser },
-      } = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
-        address: accounts[0],
-      });
-      console.log(newUser);
-      if (newUser) {
-        setUser(newUser);
-      }
-    } catch (e) {
-      console.log(e.response);
-    }
-  };
 
   return (
     <AppShell
@@ -154,10 +154,16 @@ const Layout = ({ children }) => {
             </div>
 
             <div style={{ display: "flex", alignItems: "center" }}>
+              {account && <Badge>{account.slice(0, 4).toLowerCase() + "..." + account.slice(-4).toLowerCase()}</Badge>}
               {account && <Profile />}
 
               {!account && (
-                <Button style={{ marginLeft: "20px" }} onClick={connectWallet} variant="light" color="orange">
+                <Button
+                  style={{ marginLeft: "20px" }}
+                  onClick={() => connectWallet({ setAccount, setUser })}
+                  variant="light"
+                  color="orange"
+                >
                   <Image width={28} height={28} src="https://docs.metamask.io/metamask-fox.svg" alt="" />
                   <span style={{ marginLeft: "10px" }}>지갑 연결</span>
                 </Button>
