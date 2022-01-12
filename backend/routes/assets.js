@@ -33,29 +33,36 @@ router.get('/:symbol/:token_ids', async (req, res, next) => {
     console.log(req.params.token_ids);
     const reqSymbol = req.params.symbol;
     const reqID = req.params.token_ids;
-    
+
     //join해줘야 되는데 sequelize로 어떻게 하지?
     const collection = await Collections.findOne({
         where: {
             symbol: reqSymbol
         }
     });
-    
-    const nft = await NFTs.findOne({ where: {
-        contractAddress: collection.dataValues.contractAddress, 
-        token_ids: reqID,
-        is_minted: true
-    }});
-    
-    //user 정보도 추가할 필요 있음
-    let result = nft.dataValues;
-    result.collection = collection.dataValues;
-    console.log(result);
+
+    if (!collection) {
+        res.status(400).json({ message: "symbol이 일치하는 Collection이 없습니다" });
+        return;
+    }
+
+    const nft = await NFTs.findOne({
+        where: {
+            contractAddress: collection.dataValues.contractAddress,
+            token_ids: reqID,
+            is_minted: true
+        }
+    });
 
     if (!nft) {
         res.status(400).json({ message: "token_ids가 일치하는 NFT가 없습니다" });
         return;
     }
+    //user 정보도 추가할 필요 있음
+    let result = nft.dataValues;
+    result.collection = collection.dataValues;
+    console.log(result);
+
     res.json({ message: "ok", data: result });
 });
 
