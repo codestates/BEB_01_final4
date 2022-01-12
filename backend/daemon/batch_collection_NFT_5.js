@@ -6,8 +6,8 @@ const path = require("path");
 const basePath = __dirname;
 
 /*============ Collection owner 지갑 주소 필요 =================*/
-const ownerAddress = '0x37dF256a4977f8A5FB7044e7D60E669F14b23283';
-const privateKey = 'df9619608102d2e5e560aaf59c0e9c46beac1276b3441ec45b36a0837c3394f0';
+const ownerAddress = '0x5c20CC9d4c08d76c61Fbb43eA78CB2C4323CC5cE';
+const privateKey = '2ac04f0ba843abba2d9027a7007c5dbadf972d431059dcff31eff576c2b2a2af';
 
 const abi = require("./MyERC721_ABI");
 const bytecode = require("./MyERC721_Bytecode");
@@ -52,11 +52,12 @@ const main = async () => {
 
   //4. [백앤드] NFT metadata insert 및 tokenURI 회신
   //required: ca, name, description, traits, imageURI
-  for(let i=0;i<5;i++) {
+  for(let i=0;i<dummy_data.length;i++) {
     //각 collection 에 속한 NFT
     let nfts = dummy_data[i].assets;
-    for(let j=0;j<nfts.length;j++) {
-      let inputData = {
+    //for(let j=0;j<nfts.length;j++) {
+    for(let j=0;j<5;j++) {
+        let inputData = {
         contractAddress: collections[i].contractAddress,
         metadata: {
           name: nfts[j].name,
@@ -75,9 +76,10 @@ const main = async () => {
   //5. [프론트] mintNFT
   //required:
   const mintNftSlowly = async (delayTime) => {
-    for(let i=0;i<5;i++) {
-      for(let j=0;j<dummy_data[i].assets.length;j++) {
-        //console.log(dummy_data[i].assets[j].token_URI);
+    for(let i=0;i<dummy_data.length;i++) {
+      //for(let j=0;j<dummy_data[i].assets.length;j++) {
+      for(let j=0;j<5;j++) {
+          //console.log(dummy_data[i].assets[j].token_URI);
         console.log(`NFT생성 중 ${dummy_data[i].assets[j].token_URI}`);
         mintNFT(abi, collections[i].contractAddress, ownerAddress, privateKey, dummy_data[i].assets[j].token_URI);
         await new Promise(res => setTimeout(res,delayTime));

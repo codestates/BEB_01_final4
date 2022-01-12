@@ -198,7 +198,8 @@ router.get('/:collection_symbol', async (req, res, next) => {
         //컬랙션에 소속된 NFTs
         let qNFTs = await NFTs.findAll({
             where: {
-                contractAddress: qCollection.contractAddress
+                contractAddress: qCollection.contractAddress,
+                is_minted : true
             }
         });
         result.number_of_assets = qNFTs.length;
