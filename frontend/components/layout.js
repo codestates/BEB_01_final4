@@ -7,6 +7,7 @@ import styled from "styled-components";
 import Profile from "./profile";
 import { useStore } from "../utils/store";
 import axios from "axios";
+import Web3 from "web3";
 
 const CText = styled(Text)`
   && {
@@ -24,7 +25,7 @@ export const connectWallet = async ({ setAccount, setUser }) => {
     method: "eth_requestAccounts",
   });
 
-  setAccount(accounts[0].toLowerCase());
+  setAccount(Web3.utils.toChecksumAddress(accounts[0]));
 
   try {
     // try {
@@ -154,7 +155,7 @@ const Layout = ({ children }) => {
             </div>
 
             <div style={{ display: "flex", alignItems: "center" }}>
-              {account && <Badge>{account.slice(0, 4).toLowerCase() + "..." + account.slice(-4).toLowerCase()}</Badge>}
+              {account && <Badge>{account.slice(0, 4) + "..." + account.slice(-4)}</Badge>}
               {account && <Profile />}
 
               {!account && (
