@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   Trades.init({
     token_ids: DataTypes.INTEGER,
+    collectionAddress: DataTypes.STRING,
     status: DataTypes.STRING,
     trade_ca: DataTypes.STRING,
     price: DataTypes.INTEGER,
