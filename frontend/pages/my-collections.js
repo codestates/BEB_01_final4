@@ -21,12 +21,14 @@ const Collections = () => {
       }
     } catch (e) {
       console.log(e.response);
-      alert("지갑을 연결해주세요.");
     }
   };
 
   useEffect(() => {
     getMyCollections();
+    if (!account) {
+      alert("지갑을 연결해주세요.");
+    }
   }, [account]);
 
   return (
