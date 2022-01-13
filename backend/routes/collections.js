@@ -233,9 +233,8 @@ router.get('/:collection_symbol', async (req, res, next) => {
             }
             result.assets.push(NFT);
         }
-<<<<<<< HEAD
+
         //console.log(result);
-=======
         // owners 
         /*
         에러 SequelizeDatabaseError: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column
@@ -249,11 +248,14 @@ router.get('/:collection_symbol', async (req, res, next) => {
             where: {
                 contractAddress: qCollection.contractAddress
             },
-            group: 'ownerAddress'
+            group: 'ownerAddress',
+            attributes: ['ownerAddress']
         });
         result.number_of_owners = owners.length;
         console.log(owners);
->>>>>>> dd9d4dc57dc995073325fdec9edaa7bddb8f5679
+
+        console.log(`흐음`);
+        console.log(result);
 
         if (qCollection) {
             res.status(200).json({
