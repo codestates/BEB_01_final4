@@ -73,13 +73,11 @@ const NFTS = () => {
   const account = useStore((state) => state.account);
 
   const getCollection = async () => {
-    console.log("object");
-    console.log(symbol);
     if (symbol) {
       const {
         data: { data: collection },
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`);
-      console.log(collection);
+      // console.log(collection);
       if (collection) {
         setCollection(collection);
       }
@@ -123,7 +121,7 @@ const NFTS = () => {
         </NameBox>
 
         <div style={{ position: "absolute", right: "30px", top: "330px" }}>
-          {account && collection?.ownerAddress.toLowerCase() === account.toLowerCase() ? (
+          {account && collection?.ownerAddress === account ? (
             <Link href={`/assets/${collection?.symbol}/create`} passHref>
               <Button size="lg">Add Item</Button>
             </Link>

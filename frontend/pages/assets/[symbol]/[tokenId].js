@@ -1,4 +1,4 @@
-import { Accordion, Button, Grid, SimpleGrid, Text } from "@mantine/core";
+import { Accordion, Button, Divider, Grid, SimpleGrid, Text } from "@mantine/core";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import {
@@ -18,6 +18,8 @@ import { useEffect, useState } from "react";
 import { BsFillGrid3X3GapFill } from "react-icons/bs";
 import NFTCard from "../../../components/nftCard";
 import axios from "axios";
+import { useStore } from "../../../utils/store";
+import { GGanbuCollection } from "../../../public/compiledContracts/GGanbuCollection";
 
 const EmptyHeartIcon = styled(AiOutlineHeart)`
   &&:hover {
@@ -42,7 +44,7 @@ const ImageWrapper = styled.div`
 `;
 
 const BuyBox = styled.div`
-  padding: 5px 10px;
+  padding: 15px;
   border: 1px solid rgb(229, 232, 235);
   border-radius: 10px;
   margin: 5px 0;
@@ -54,17 +56,20 @@ const Asset = () => {
   const [clickedHeart, setClickedHeart] = useState(false);
   const [nft, setNft] = useState(null);
   const [nfts, setNfts] = useState(null);
+  const [web3, account] = useStore((state) => [state.web3, state.account]);
+  const [isSelling, setIsSelling] = useState(false);
+  const [nftOwner, setNftOwner] = useState("");
 
   const getNft = async () => {
     try {
       if (symbol && tokenId) {
-        console.log(symbol, tokenId);
+        // console.log(symbol, tokenId);
         const {
           data: { data: nftData },
         } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/assets/${symbol}/${tokenId}`, {
           withCredentials: true,
         });
-        console.log(nftData);
+        // console.log(nftData);
 
         if (nftData) {
           setNft(nftData);
@@ -73,7 +78,7 @@ const Asset = () => {
         const {
           data: { data: nftsData },
         } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}/`, { withCredentials: true });
-        console.log(nftsData);
+        // console.log(nftsData);
 
         if (nftsData) {
           setNfts(nftsData.assets);
@@ -84,9 +89,37 @@ const Asset = () => {
     }
   };
 
+  const getNftFromContract = async () => {
+    try {
+      if (web3 && nft?.contractAddress) {
+        const contract = await new web3.eth.Contract(GGanbuCollection.abi, nft?.contractAddress, {
+          from: account,
+        });
+        setIsSelling(await contract.methods.getIsSelling(tokenId).call());
+
+        setNftOwner(await contract.methods.ownerOf(tokenId).call());
+      }
+    } catch (e) {
+      alert("DB, 블록체인 네트워크 상태를 확인해주세요.");
+    }
+
+    // const result = await contract.methods.mintNFT(tokenURI).send({ from: account });
+  };
+
+  const handleBuy = (e) => {
+    if (account === nftOwner) {
+      alert("판매자는 구매할 수 없습니다.");
+      return;
+    }
+  };
+
   useEffect(() => {
     getNft();
-  }, [symbol, tokenId]);
+  }, [symbol, tokenId, web3]);
+
+  useEffect(() => {
+    getNftFromContract();
+  }, [nft, account]);
 
   return (
     <div style={{ padding: "30px 0" }}>
@@ -172,34 +205,46 @@ const Asset = () => {
             </span>
           </Link>
           <Text style={{ fontSize: "32px", fontWeight: "bold", margin: "20px 0" }}>{nft?.name}</Text>
+
           <BuyBox>
-            <div
-              style={{
-                borderBottomStyle: "solid",
-                borderBottomColor: "rgb(229, 232, 235)",
-                borderBottomWidth: "1px",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", padding: "12px" }}>
-                <MdOutlineWatchLater style={{ color: "rgb(112, 122, 131)" }} />
-                <Text style={{ color: "rgb(112, 122, 131)", marginLeft: "10px" }}>
-                  Sale ends July 9, 2022 at 12:53pm KST
-                </Text>
-              </div>
-            </div>
-            <div style={{ padding: "12px" }}>
-              <Text>Current price</Text>
-              <div style={{ display: "flex", margin: "12px 0" }}>
-                <Image src="/images/eth.svg" width={16} height={16} alt="" />
-                <Text style={{ fontSize: "28px", fontWeight: "bold", marginLeft: "10px" }}>0.259</Text>
-              </div>
-
-              <Button color="teal" size="lg">
-                Buy now
+            <Text>판매 중인 NFT가 아닙니다.</Text>
+            {account && account === nftOwner && !isSelling && (
+              <Button
+                style={{ marginTop: "15px" }}
+                onClick={() => {
+                  router.push(`${router.asPath}/sell`);
+                }}
+                color="teal"
+                size="lg"
+              >
+                Sell
               </Button>
-            </div>
+            )}
           </BuyBox>
+          {isSelling && (
+            <BuyBox onClick={handleBuy}>
+              <div>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <MdOutlineWatchLater style={{ color: "rgb(112, 122, 131)" }} />
+                  <Text style={{ color: "rgb(112, 122, 131)", marginLeft: "10px" }}>
+                    Sale ends July 9, 2022 at 12:53pm KST
+                  </Text>
+                </div>
+              </div>
+              <Divider style={{ margin: "15px 0" }} />
+              <div>
+                <Text>Current price</Text>
+                <div style={{ display: "flex", margin: "12px 0" }}>
+                  <Image src="/images/eth.svg" width={16} height={16} alt="" />
+                  <Text style={{ fontSize: "28px", fontWeight: "bold", marginLeft: "10px" }}>0.259</Text>
+                </div>
 
+                <Button color="teal" size="lg">
+                  Buy now
+                </Button>
+              </div>
+            </BuyBox>
+          )}
           <Accordion style={{ margin: "20px 0" }} iconPosition="right">
             <Accordion.Item
               label={
@@ -222,7 +267,6 @@ const Asset = () => {
               </div>
             </Accordion.Item>
           </Accordion>
-
           <Accordion style={{ margin: "20px 0" }} iconPosition="right">
             <Accordion.Item
               label={
@@ -245,7 +289,6 @@ const Asset = () => {
               </div>
             </Accordion.Item>
           </Accordion>
-
           <Accordion style={{ margin: "20px 0" }} iconPosition="right">
             <Accordion.Item
               label={
