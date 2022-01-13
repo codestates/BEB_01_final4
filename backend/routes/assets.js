@@ -1,5 +1,5 @@
 const express = require('express');
-const { NFTs, Collections } = require('../models');
+const { NFTs, Collections, Trades, Users } = require('../models');
 const router = express.Router();
 const config = require('../config/config');
 const hostURI = config.development.host_metadata;
@@ -12,12 +12,47 @@ const hostURI = config.development.host_metadata;
 router.get('/', async (req, res, next) => {
     console.log('?');
     try {
-        const allNFTs = await NFTs.findAll({
+        const qNFTs = await NFTs.findAll({
             where: {
                 is_minted: true
             }
         });
-        res.json({ message: "ok", data: allNFTs });
+
+        let result = [];
+
+        //각 NFT 에 대하여 추가 정보 추출
+        for (let i = 0; i < qNFTs.length; i++) {
+            let NFT = qNFTs[i].dataValues;
+
+            //해당 NFT 의 trade 정보
+            let qTrades = await Trades.findAll({
+                where: {
+                    token_ids : NFT.token_ids,
+                    collectionAddress : NFT.contractAddress
+                }
+            });
+
+            //만약 Trade 내역이 존재한다면
+            NFT.isSelling = false;
+            NFT.price = null;
+            NFT.trade_ca = null;
+            NFT.seller = null;
+
+            if(qTrades.length > 0) {
+                for (let j = 0; j < qTrades.length; j++) {
+                    //selling 중인 trade 가 있다면
+                    if(qTrades[j].status === 'selling') {
+                        NFT.isSelling = true;
+                        NFT.price = qTrades[j].price;
+                        NFT.trade_ca = qTrades[j].trade_ca;
+                        NFT.seller = qTrades[j].seller;
+                    }
+                }
+            }
+            result.push(NFT);
+        }
+
+        res.json({ message: "ok", data: result });
     } catch (err) {
         console.error(err);
     }
@@ -46,7 +81,7 @@ router.get('/:symbol/:token_ids', async (req, res, next) => {
         return;
     }
 
-    const nft = await NFTs.findOne({
+    const nftResult = await NFTs.findOne({
         where: {
             contractAddress: collection.dataValues.contractAddress,
             token_ids: reqID,
@@ -54,16 +89,50 @@ router.get('/:symbol/:token_ids', async (req, res, next) => {
         }
     });
 
-    if (!nft) {
+    if (!nftResult) {
         res.status(400).json({ message: "token_ids가 일치하는 NFT가 없습니다" });
         return;
     }
-    //user 정보도 추가할 필요 있음
-    let result = nft.dataValues;
-    result.collection = collection.dataValues;
-    console.log(result);
+    let NFT = nftResult.dataValues;
 
-    res.json({ message: "ok", data: result });
+    //user 정보도 추가할 필요 있음
+
+    //컬랙션 정보 추가
+    NFT.collection = collection.dataValues;
+    NFT.isSelling = false;
+    NFT.price = null;
+    NFT.trade_ca = null;
+    NFT.seller = null;
+    NFT.trade_selling = null;
+    NFT.trade_history = [];
+
+    //트레이드 정보 추가
+    let qTrades = await Trades.findAll({
+        where: {
+            token_ids : NFT.token_ids,
+            collectionAddress : NFT.contractAddress
+        }
+    });
+    
+    //만약 Trade 내역이 존재한다면
+    if(qTrades.length > 0) {
+        for (let j = 0; j < qTrades.length; j++) {
+            //selling 중인 trade 가 있다면
+            if(qTrades[j].status === 'selling') {
+                NFT.isSelling = true;
+                NFT.price = qTrades[j].price;
+                NFT.trade_ca = qTrades[j].trade_ca;
+                NFT.seller = qTrades[j].seller;
+                NFT.trade_selling = qTrades[j].dataValues;
+                NFT.trade_history.push(qTrades[j].dataValues);
+            } else {
+                NFT.trade_history.push(qTrades[j].dataValues);
+            }
+        }
+    }
+    console.log(NFT);
+
+    res.json({ message: "ok", data: NFT });
 });
 
 /*

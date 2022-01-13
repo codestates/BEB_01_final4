@@ -1,5 +1,5 @@
 const express = require('express');
-const { NFTs, Collections } = require('../models');
+const { NFTs, Collections, Trades, Users } = require('../models');
 const { Op } = require("sequelize");
 const router = express.Router();
 const config = require('../config/config');
@@ -204,8 +204,36 @@ router.get('/:collection_symbol', async (req, res, next) => {
         });
         result.number_of_assets = qNFTs.length;
         for (let i = 0; i < qNFTs.length; i++) {
-            result.assets.push(qNFTs[i].dataValues);
+            let NFT = qNFTs[i].dataValues;
+
+            //해당 NFT 의 trade 정보
+            let qTrades = await Trades.findAll({
+                where: {
+                    token_ids : NFT.token_ids,
+                    collectionAddress : qCollection.contractAddress
+                }
+            });
+
+            //만약 Trade 내역이 존재한다면
+            NFT.isSelling = false;
+            NFT.price = null;
+            NFT.trade_ca = null;
+            NFT.seller = null;
+            
+            if(qTrades.length > 0) {
+                for (let j = 0; j < qTrades.length; j++) {
+                    //selling 중인 trade 가 있다면
+                    if(qTrades[j].status === 'selling') {
+                        NFT.isSelling = true;
+                        NFT.price = qTrades[j].price;
+                        NFT.trade_ca = qTrades[j].trade_ca;
+                        NFT.seller = qTrades[j].seller;
+                    }
+                }
+            }
+            result.assets.push(NFT);
         }
+        //console.log(result);
 
         if (qCollection) {
             res.status(200).json({

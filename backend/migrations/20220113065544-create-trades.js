@@ -11,6 +11,9 @@ module.exports = {
       token_ids: {
         type: Sequelize.INTEGER
       },
+      collectionAddress: {
+        type: Sequelize.STRING
+      },
       status: {
         type: Sequelize.STRING
       },
