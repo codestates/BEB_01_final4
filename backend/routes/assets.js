@@ -82,6 +82,7 @@ router.post('/', async (req, res, next) => {
         }
 
         let reqData = {
+            is_minted: false,
             ownerAddress: req.body.ownerAddress,
             creatorAddress: req.body.ownerAddress,
             contractAddress: req.body.contractAddress,
