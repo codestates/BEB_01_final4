@@ -4,6 +4,11 @@ import { BiDollar } from "react-icons/bi";
 import { MdOutlineWatchLater, MdOutlineInfo } from "react-icons/md";
 import Image from "next/image";
 import { IoIosArrowDown } from "react-icons/io";
+import axios from "axios";
+import { GGanbuCollection } from "../../../../public/compiledContracts/GGanbuCollection";
+import { useStore } from "../../../../utils/store";
+import { useRouter } from "next/router";
+import { useEffect } from "react/cjs/react.development";
 
 const TitleText = styled(Text)`
   font-size: 26px;
@@ -44,6 +49,40 @@ const CInput = styled(Input)`
 `;
 
 const Sell = () => {
+  const [web3, account] = useStore((state) => [state.web3, state.account]);
+  const router = useRouter();
+
+  const checkCanSell = async () => {
+    const splitted = router.asPath.split("/");
+
+    // splitted[2]는 symbol, splitted[3]는 tokenId
+    if (splitted[1] === "assets" && !isNaN(splitted[3]) && splitted[4] === "sell") {
+      const {
+        data: { data: nftsData },
+      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${splitted[2]}/`, {
+        withCredentials: true,
+      });
+
+      // console.log(nftsData);
+      if (web3) {
+        const contract = await new web3.eth.Contract(GGanbuCollection.abi, nftsData?.contractAddress, {
+          from: account,
+        });
+        const nftOwner = await contract.methods.ownerOf(splitted[3]).call();
+        if (nftOwner === account) {
+          return;
+        }
+      }
+
+      alert("NFT 소유자가 아닙니다.");
+      router.push("/");
+    }
+  };
+
+  useEffect(() => {
+    checkCanSell();
+  }, []);
+
   return (
     <Container>
       <SimpleGrid cols={2} style={{ gap: "200px" }}>

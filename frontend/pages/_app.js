@@ -30,35 +30,6 @@ export default function App(props) {
     }
   }, []);
 
-  const handleRouteChange = async (url) => {
-    const splitted = url.split("/");
-
-    // splitted[2]는 symbol, splitted[3]는 tokenId
-    if (splitted[1] === "assets" && !isNaN(splitted[3]) && splitted[4] === "sell") {
-      const {
-        data: { data: nftsData },
-      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${splitted[2]}/`, {
-        withCredentials: true,
-      });
-      // console.log(nftsData);
-      if (web3) {
-        const contract = await new web3.eth.Contract(GGanbuCollection.abi, nftsData?.contractAddress, {
-          from: account,
-        });
-        const nftOwner = await contract.methods.ownerOf(splitted[3]).call();
-        console.log(nftOwner, account);
-        if (nftOwner !== account) {
-          alert("NFT 소유자가 아닙니다.");
-          router.push("/");
-        }
-      }
-    }
-  };
-
-  useEffect(() => {
-    router.events.on("routeChangeStart", handleRouteChange);
-  }, [web3]);
-
   return (
     <>
       <Head>
