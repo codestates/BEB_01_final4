@@ -45,26 +45,26 @@ router.get('/', async (req, res, next) => {
     try {
         //쿼리 옵션
         let options = {
-            is_created:true
+            is_created: true
         };
         let attr;
 
         //검색
-        if(req.query.search) {
+        if (req.query.search) {
             // LIKE '%특정 문자열%';
-            options.symbol = {[Op.like]: `%${req.query.search}%`}
+            options.symbol = { [Op.like]: `%${req.query.search}%` }
         }
 
         //컬랙션명만 검색
-        if(req.query.searchname) {
-            options.symbol = {[Op.like]: `%${req.query.searchname}%`}
+        if (req.query.searchname) {
+            options.symbol = { [Op.like]: `%${req.query.searchname}%` }
             attr = ['name', 'symbol'];
         }
 
         const allCollections = await Collections.findAll({
             where: options,
             attributes: attr
-        });        
+        });
 
         res.json({ message: "ok", data: allCollections });
     } catch (err) {
@@ -199,7 +199,7 @@ router.get('/:collection_symbol', async (req, res, next) => {
         let qNFTs = await NFTs.findAll({
             where: {
                 contractAddress: qCollection.contractAddress,
-                is_minted : true
+                is_minted: true
             }
         });
         result.number_of_assets = qNFTs.length;
@@ -233,7 +233,27 @@ router.get('/:collection_symbol', async (req, res, next) => {
             }
             result.assets.push(NFT);
         }
+<<<<<<< HEAD
         //console.log(result);
+=======
+        // owners 
+        /*
+        에러 SequelizeDatabaseError: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column
+        위와 같은 오류가 난다면 mysql에서 아래 명령어를 입력
+
+        SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
+        */
+        console.log(qCollection.contractAddress)
+        const owners = await NFTs.findAll({
+            where: {
+                contractAddress: qCollection.contractAddress
+            },
+            group: 'ownerAddress'
+        });
+        result.number_of_owners = owners.length;
+        console.log(owners);
+>>>>>>> dd9d4dc57dc995073325fdec9edaa7bddb8f5679
 
         if (qCollection) {
             res.status(200).json({
