@@ -1,6 +1,6 @@
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
-const { Transactions, Collections, NFTs, sequelize } = require(".././models");
+const { Transactions, Collections, NFTs, Trades, sequelize } = require(".././models");
 const { Op } = require("sequelize");
 const fs = require('fs');
 const path = require("path");
@@ -44,13 +44,6 @@ const getTranByCollection = async (tx_id, collection_id) => {
     let tx = await web3.eth.getTransaction(tx_id);
 
     if (tx.from === collection_id || tx.to === collection_id) {
-      const decodedData = abiDecoder.decodeMethod(tx.input);
-      
-      //input 가공
-      tx.input_name = decodedData.name;
-      tx.input_params_name = decodedData.params[0].name;
-      tx.input_params_value = decodedData.params[0].value;
-      
       return tx;
     }
   }
@@ -79,8 +72,14 @@ const getTokenID = async(MyAbi, MyCA, targetTokenURI) => {
 //트랜잭션 정보 받아서, NFT 검증(token_ids확인) 후 update
 const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
   try {
+    const decodedData = abiDecoder.decodeMethod(tx.input);
+    tx.input_name = decodedData.name;
+
     // 만약 mintNFT 트랜잭션이라면
     if(tx.input_name === 'mintNFT') {
+      tx.input_params_name = decodedData.params[0].name;
+      tx.input_params_value = decodedData.params[0].value;
+      
       //토큰ID 조회
       let tokenID = await getTokenID(MyAbi, MyCA, tx.input_params_value);
       const inputData = {
@@ -104,6 +103,49 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
         }
       );
       console.log(`number of minted NFTs : ${result}`);
+    }
+    // 만약 sell 트랜잭션이라면
+    else if(tx.input_name === 'sell') {
+      //tx[decodedData.params[0].id] = decodedData.params[0].value;
+      tx.input_tokenId = decodedData.params[0].value;
+      tx.input_price = decodedData.params[1].value;
+
+      //trade contractAddress 조회
+      const contractObj = new web3.eth.Contract(
+        MyAbi, MyCA,
+      );
+      const getApproved = await contractObj.methods.getApproved(tx.input_tokenId).call();
+      const getIsSelling = await contractObj.methods.getIsSelling(tx.input_tokenId).call();
+      
+      let status = '';
+      if(getIsSelling == true) {
+        status = 'selling';
+      }
+
+      //토큰ID 조회
+      const inputData = {
+        token_ids: tx.input_tokenId,
+        status: status,
+        trade_ca: getApproved,
+        price: tx.input_price,
+        seller: tx.from,
+        buyer: null
+      };
+
+      let result = await Trades.findOrCreate({
+        where:{
+          trade_ca: getApproved
+        },
+        defaults:inputData
+      });
+      console.log(`========== New trade has been enrolled=======');
+      console.log(result[0].dataValues);
+      
+      // if(result[1] === false) {
+      //   console.log('Trade 가 이미 존재합니다');
+      // } else {
+      //   console.log(`number of trade enrolled : ${result[0].dataValues}`);
+      // }
     }
   }
   catch(err) {
