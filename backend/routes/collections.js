@@ -300,10 +300,12 @@ router.get('/:collection_symbol', async (req, res, next) => {
             result.assets.push(NFT);
         }
       }
-
+      
       //sort
+      result.assets = result.assets.sort((a, b) => a.isSelling > b.isSelling ? -1 : 1);
+
       if(req.query.sort == 'price-high') {
-        result = result.assets.sort(function(a, b)  {
+        result.assets = result.assets.sort(function(a, b)  {
           return b.price - a.price;
         });
       }

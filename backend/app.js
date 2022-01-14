@@ -4,7 +4,6 @@ const morgan = require('morgan');
 var cors = require('cors')
 const { sequelize } = require('./models'); // db.sequelize
 const collectionsRouter = require('./routes/collections');
-const createRouters = require('./routes/create');
 const nftsRouters = require('./routes/nfts');
 const assetsRouter = require('./routes/assets');
 const usersRouter = require('./routes/users');
@@ -32,7 +31,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/collections', collectionsRouter);
-app.use('/create', createRouters);
 app.use('/nfts', nftsRouters);
 app.use('/assets', assetsRouter);
 app.use('/users', usersRouter);

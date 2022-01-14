@@ -60,10 +60,15 @@ router.get('/:address', async (req, res, next) => {
     }
 
     //유저가 보유한 collection
-    const myCollections = await Collections.findAll({ where: { 
+    const myCollections = await Collections.findAll({ 
+      where: { 
         ownerAddress: address,
         is_created : true
-    }})
+      },
+      order: [
+        ['createdAt', 'DESC']
+      ],
+    })
 
     let result = user.dataValues;
     
@@ -83,7 +88,12 @@ router.get('/:address', async (req, res, next) => {
     }
 
     //유저가 보유한 NFTs
-    const myNFTs = await NFTs.findAll({ where: whereOption_NFT})
+    const myNFTs = await NFTs.findAll({ 
+      where: whereOption_NFT,
+      order: [
+        ['createdAt', 'DESC']
+      ],
+    })
 
     result.num_of_assets = myNFTs.length;
 
@@ -141,10 +151,11 @@ router.get('/:address', async (req, res, next) => {
             result.assets.push(NFT);
         }
       }
-
       //sort
+      result.assets = result.assets.sort((a, b) => a.isSelling > b.isSelling ? -1 : 1);
+
       if(req.query.sort == 'price-high') {
-        result = result.assets.sort(function(a, b)  {
+        result.assets = result.assets.sort(function(a, b)  {
           return b.price - a.price;
         });
       }
@@ -202,10 +213,15 @@ router.get('/:address/collections', async (req, res, next) => {
         res.status(400).json({ message: "address가 일치하는 user가 없습니다" });
         return;
     }
-    const myCollections = await Collections.findAll({ where: { 
+    const myCollections = await Collections.findAll({ 
+      where: { 
         ownerAddress: address,
         is_created : true
-    }})
+      },
+      order: [
+        ['createdAt', 'DESC']
+      ],
+    })
 
     console.log(myCollections);
     res.status(200).json({ message: "ok", data: myCollections });
@@ -220,10 +236,15 @@ router.get('/:address/assets', async (req, res, next) => {
         res.status(400).json({ message: "address가 일치하는 user가 없습니다" });
         return;
     }
-    const myNFTs = await NFTs.findAll({ where: { 
+    const myNFTs = await NFTs.findAll({ 
+      where: { 
         ownerAddress: address,
         is_minted: true
-    }})
+      },
+      order: [
+        ['createdAt', 'DESC']
+      ],
+    })
     res.status(200).json({ message: "ok", data: myNFTs });
 });
 
