@@ -15,7 +15,10 @@ router.get('/', async (req, res, next) => {
         const qNFTs = await NFTs.findAll({
             where: {
                 is_minted: true
-            }
+            },
+            order: [
+                ['createdAt', 'DESC']
+            ],
         });
 
         let result = [];
