@@ -9,7 +9,7 @@ const nftsRouters = require('./routes/nfts');
 const assetsRouter = require('./routes/assets');
 const usersRouter = require('./routes/users');
 const metadataRouter = require('./routes/metadata');
-
+const tradesRouter = require('./routes/trades');
 
 const app = express();
 
@@ -37,7 +37,7 @@ app.use('/nfts', nftsRouters);
 app.use('/assets', assetsRouter);
 app.use('/users', usersRouter);
 app.use('/metadata', metadataRouter);
-
+app.use('/trades', tradesRouter);
 
 
 app.get('/', (req, res) => {

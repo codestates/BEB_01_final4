@@ -130,6 +130,7 @@ router.get('/:symbol/:token_ids', async (req, res, next) => {
             }
         }
     }
+    console.log('왜 안보여');
     console.log(NFT);
 
     res.json({ message: "ok", data: NFT });
