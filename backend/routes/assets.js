@@ -118,20 +118,18 @@ router.get('/:symbol/:token_ids', async (req, res, next) => {
     if(qTrades.length > 0) {
         for (let j = 0; j < qTrades.length; j++) {
             //selling 중인 trade 가 있다면
-            if(qTrades[j].status === 'selling') {
+            if(qTrades[j].status == 'selling') {
                 NFT.isSelling = true;
                 NFT.price = qTrades[j].price;
                 NFT.trade_ca = qTrades[j].trade_ca;
                 NFT.seller = qTrades[j].seller;
                 NFT.trade_selling = qTrades[j].dataValues;
-                NFT.trade_history.push(qTrades[j].dataValues);
-            } else {
+                //NFT.trade_history.push(qTrades[j].dataValues);
+            } else if(qTrades[j].dataValues.status == 'completed') {
                 NFT.trade_history.push(qTrades[j].dataValues);
             }
         }
     }
-    console.log('왜 안보여');
-    console.log(NFT);
 
     res.json({ message: "ok", data: NFT });
 });
