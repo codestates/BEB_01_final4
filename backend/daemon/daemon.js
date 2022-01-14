@@ -122,6 +122,9 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
         status = 'selling';
       }
 
+      //wei -> ether
+      tx.input_price = await web3.utils.fromWei(tx.input_price, "ether");
+      
       //토큰ID 조회
       const inputData = {
         token_ids: tx.input_tokenId,
