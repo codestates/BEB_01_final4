@@ -9,6 +9,8 @@ import { GGanbuCollection } from "../../../../public/compiledContracts/GGanbuCol
 import { useStore } from "../../../../utils/store";
 import { useRouter } from "next/router";
 import { useEffect } from "react/cjs/react.development";
+import { useInputState } from "@mantine/hooks";
+import { useState } from "react";
 
 const TitleText = styled(Text)`
   font-size: 26px;
@@ -50,38 +52,56 @@ const CInput = styled(Input)`
 
 const Sell = () => {
   const [web3, account] = useStore((state) => [state.web3, state.account]);
+  const [sellPrice, setSellPrice] = useInputState("");
+  // const [nft, setNft] = useState(null);
+  const [contract, setContract] = useState(null);
   const router = useRouter();
+  const { symbol, tokenId } = router.query;
 
   const checkCanSell = async () => {
-    const splitted = router.asPath.split("/");
-
-    // splitted[2]는 symbol, splitted[3]는 tokenId
-    if (splitted[1] === "assets" && !isNaN(splitted[3]) && splitted[4] === "sell") {
+    if (symbol && tokenId && account) {
+      console.log(symbol, tokenId);
       const {
-        data: { data: nftsData },
-      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${splitted[2]}/`, {
+        data: { data: nftData },
+      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/assets/${symbol}/${tokenId}`, {
         withCredentials: true,
       });
 
-      // console.log(nftsData);
       if (web3) {
-        const contract = await new web3.eth.Contract(GGanbuCollection.abi, nftsData?.contractAddress, {
+        const contract = await new web3.eth.Contract(GGanbuCollection.abi, nftData?.contractAddress, {
           from: account,
         });
-        const nftOwner = await contract.methods.ownerOf(splitted[3]).call();
+        setContract(contract);
+        const nftOwner = await contract.methods.ownerOf(tokenId).call();
         if (nftOwner === account) {
           return;
         }
       }
-
-      alert("NFT 소유자가 아닙니다.");
-      router.push("/");
     }
+
+    // setNft(nftData);
+
+    // console.log(nftData);
+
+    alert("NFT 소유자가 아닙니다.");
+    router.push("/");
   };
 
   useEffect(() => {
     checkCanSell();
-  }, []);
+  }, [account]);
+
+  const handleClickSell = async () => {
+    try {
+      console.log(contract.methods);
+      const unitPrice = web3.utils.toWei(sellPrice, "ether");
+      const txResult = await contract.methods.sell(tokenId, unitPrice).send();
+      console.log(txResult);
+      router.push(`/assets/${symbol}/${tokenId}`);
+    } catch (e) {
+      console.dir(e);
+    }
+  };
 
   return (
     <Container>
@@ -127,7 +147,7 @@ const Sell = () => {
               <IoIosArrowDown />
             </div>
             <div style={{ flex: "60%" }}>
-              <CInput variant="default" placeholder="Amount" />
+              <CInput value={sellPrice} onChange={setSellPrice} variant="default" placeholder="Amount" />
             </div>
           </PriceWrapper>
           <div>
@@ -140,7 +160,7 @@ const Sell = () => {
               <Text style={{ fontWeight: "bold", color: "rgb(112, 122, 131)" }}>10%</Text>
             </div>
           </div>
-          <Button size="lg" style={{ marginTop: "30px" }} color="teal">
+          <Button onClick={handleClickSell} size="lg" style={{ marginTop: "30px" }} color="teal">
             Complete Listing
           </Button>
         </div>

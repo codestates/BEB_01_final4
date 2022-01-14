@@ -20,6 +20,7 @@ import NFTCard from "../../../components/nftCard";
 import axios from "axios";
 import { useStore } from "../../../utils/store";
 import { GGanbuCollection } from "../../../public/compiledContracts/GGanbuCollection";
+import { Trade } from "../../../public/compiledContracts/Trade";
 
 const EmptyHeartIcon = styled(AiOutlineHeart)`
   &&:hover {
@@ -59,6 +60,23 @@ const Asset = () => {
   const [web3, account] = useStore((state) => [state.web3, state.account]);
   const [isSelling, setIsSelling] = useState(false);
   const [nftOwner, setNftOwner] = useState("");
+  const [collectionContract, setCollectionContract] = useState(null);
+  const [price, setPrice] = useState(null);
+
+  const getCollection = async () => {
+    try {
+      if (symbol) {
+        const {
+          data: { data: collectionData },
+        } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`, {
+          withCredentials: true,
+        });
+        console.log(collectionData);
+      }
+    } catch (e) {
+      console.dir(e);
+    }
+  };
 
   const getNft = async () => {
     try {
@@ -69,11 +87,9 @@ const Asset = () => {
         } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/assets/${symbol}/${tokenId}`, {
           withCredentials: true,
         });
-        // console.log(nftData);
+        console.log(nftData);
 
-        if (nftData) {
-          setNft(nftData);
-        }
+        setNft(nftData);
 
         const {
           data: { data: nftsData },
@@ -92,12 +108,14 @@ const Asset = () => {
   const getNftFromContract = async () => {
     try {
       if (web3 && nft?.contractAddress) {
-        const contract = await new web3.eth.Contract(GGanbuCollection.abi, nft?.contractAddress, {
+        const collectionContract = await new web3.eth.Contract(GGanbuCollection.abi, nft?.contractAddress, {
           from: account,
         });
-        setIsSelling(await contract.methods.getIsSelling(tokenId).call());
+        // setCollectionContract(contract);
 
-        setNftOwner(await contract.methods.ownerOf(tokenId).call());
+        setIsSelling(await collectionContract.methods.getIsSelling(tokenId).call());
+
+        setNftOwner(await collectionContract.methods.ownerOf(tokenId).call());
       }
     } catch (e) {
       alert("DB, 블록체인 네트워크 상태를 확인해주세요.");
@@ -106,20 +124,42 @@ const Asset = () => {
     // const result = await contract.methods.mintNFT(tokenURI).send({ from: account });
   };
 
-  const handleBuy = (e) => {
-    if (account === nftOwner) {
-      alert("판매자는 구매할 수 없습니다.");
-      return;
-    }
-  };
-
   useEffect(() => {
     getNft();
+    // getCollection();
   }, [symbol, tokenId, web3]);
 
   useEffect(() => {
     getNftFromContract();
   }, [nft, account]);
+
+  const checkNftPriceFromContract = async () => {
+    if (isSelling && nft) {
+      const tradeContract = await new web3.eth.Contract(Trade.abi, nft?.trade_ca, { from: account });
+
+      const nftPrice = await tradeContract.methods.getPrice().call();
+
+      console.log(nftPrice);
+
+      setPrice(web3.utils.fromWei(nftPrice, "ether"));
+    }
+  };
+
+  useEffect(() => {
+    checkNftPriceFromContract();
+  }, [isSelling]);
+
+  const handleClickBuy = () => {
+    if (!account) {
+      alert("지갑을 먼저 연결해주세요.");
+      return;
+    }
+
+    if (account === nftOwner) {
+      alert("판매자는 구매할 수 없습니다.");
+      return;
+    }
+  };
 
   return (
     <div style={{ padding: "30px 0" }}>
@@ -225,7 +265,7 @@ const Asset = () => {
           )}
 
           {isSelling && (
-            <TradeBox onClick={handleBuy}>
+            <TradeBox>
               <div>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <MdOutlineWatchLater style={{ color: "rgb(112, 122, 131)" }} />
@@ -239,10 +279,10 @@ const Asset = () => {
                 <Text>Current price</Text>
                 <div style={{ display: "flex", margin: "12px 0" }}>
                   <Image src="/images/eth.svg" width={16} height={16} alt="" />
-                  <Text style={{ fontSize: "28px", fontWeight: "bold", marginLeft: "10px" }}>0.259</Text>
+                  {price && <Text style={{ fontSize: "28px", fontWeight: "bold", marginLeft: "10px" }}>{price}</Text>}
                 </div>
 
-                <Button color="teal" size="lg">
+                <Button onClick={handleClickBuy} color="teal" size="lg">
                   Buy now
                 </Button>
               </div>

@@ -4,15 +4,11 @@ import { MantineProvider } from "@mantine/core";
 import Layout, { connectWallet } from "../components/layout";
 import Web3 from "web3";
 import { useStore } from "../utils/store";
-import { useRouter } from "next/router";
-import { GGanbuCollection } from "../public/compiledContracts/GGanbuCollection";
-import axios from "axios";
 
 export default function App(props) {
   const { Component, pageProps } = props;
-  const [web3, setWeb3] = useStore((state) => [state.web3, state.setWeb3]);
-  const [account, setAccount, setUser] = useStore((state) => [state.account, state.setAccount, state.setUser]);
-  const router = useRouter();
+  const setWeb3 = useStore((state) => state.setWeb3);
+  const [setAccount, setUser] = useStore((state) => [state.setAccount, state.setUser]);
 
   useEffect(() => {
     if (typeof window.ethereum !== "undefined") {
