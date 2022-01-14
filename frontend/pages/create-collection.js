@@ -33,8 +33,8 @@ export const toInputAlphabetDecimal = (e) => {
   e.target.value = ("" + e.target.value).replace(/[^A-Za-z0-9\\-\s]/gi, "");
 };
 
-export const toInputLowerCase = async (e) => {
-  e.target.value = ("" + e.target.value).replace(/[^a-z\\-]/gi, "").toLowerCase();
+export const toInputLowerCaseDecimal = async (e) => {
+  e.target.value = ("" + e.target.value).replace(/[^a-z0-9\\-]/gi, "").toLowerCase();
 };
 
 const CreateCollection = () => {
@@ -152,7 +152,7 @@ const CreateCollection = () => {
               }
               setSymbol(e.currentTarget.value);
             }}
-            onInput={toInputLowerCase}
+            onInput={toInputLowerCaseDecimal}
             variant="default"
             placeholder="심볼"
           />

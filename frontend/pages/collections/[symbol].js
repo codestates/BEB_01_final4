@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Divider, Grid, SimpleGrid, Text } from "@mantine/core";
+import { Button, Divider, SimpleGrid, Text } from "@mantine/core";
 import styled from "styled-components";
 import Image from "next/image";
 import { useRouter } from "next/router";

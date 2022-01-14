@@ -28,23 +28,6 @@ export const connectWallet = async ({ setAccount, setUser }) => {
   setAccount(Web3.utils.toChecksumAddress(accounts[0]));
 
   try {
-    // try {
-    //   const {
-    //     data: {
-    //       data: { user },
-    //     },
-    //   } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${accounts[0]}`);
-    //   // console.log(user);
-
-    //   if (user) {
-    //     console.log(user);
-    //     setUser(user);
-    //     return;
-    //   }
-    // } catch (e) {
-    //   console.log(e.response);
-    // }
-
     const {
       data: { data: newUser },
     } = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
