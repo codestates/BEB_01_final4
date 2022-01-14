@@ -43,8 +43,10 @@ router.get('/:address', async (req, res, next) => {
     for(let i=0;i<myNFTs.length;i++) {
         result.assets.push(myNFTs[i].dataValues);
     }
+    console.log(result)
 
-    res.status(200).json({ message: "ok", data: user });
+    //res.status(200).json({ message: "ok", data: user });
+    res.status(200).json({ message: "ok", data: result });
 });
 
 // 내 보유 컬렉션

@@ -1,0 +1,198 @@
+const express = require('express');
+const { NFTs, Collections, Trades, Users } = require('../models');
+const { Op } = require("sequelize");
+const router = express.Router();
+const config = require('../config/config');
+const hostURI = config.development.host_metadata;
+
+/*
+ *  /trades
+ *  All Trades List
+ *  optional: none
+ */
+router.get('/', async (req, res, next) => {
+  try {
+    const qTrades = await Trades.findAll({
+      include: [
+        {
+          model: NFTs,
+          as: "asset",
+          attributes: ["name"]
+        }
+      ]
+    });
+
+    if (qTrades) {
+      // qTrades.dataValues;
+      // for(let i=0;i<qTrades.length;i++) {
+        
+      // }
+
+      //컬랙션 정보 추가 (name, symbol)
+      // const qCollection = await Trades.findOne({
+      //   where: {contractAddress: collectionAddress}
+      // });
+
+      //assets 정보 추가 (name, imageURI)
+
+
+
+
+      res.status(200).json({
+          message: 'ok',
+          data: result
+      });
+    } else {
+      throw new Error("trade 가 존재하지 않음");
+    }
+} catch (err) {
+  console.error(`에러 ${err}`);
+  res.status(400).json({
+      message: err.message,
+      data: null
+    });
+  }
+});
+
+
+/*
+ *  /trades
+ *  All Trades List
+ *  optional: none
+ *  none [컬랙션명으로 조건 검색] ?search=
+ *  none [컬랙션명으로 조건 검색, 단 컬랙션명만 추출] ?searchname=
+ */
+router.get('/', async (req, res, next) => {
+    try {
+        //쿼리 옵션
+        let options = {
+            is_created: true
+        };
+        let attr;
+
+        //검색
+        if (req.query.search) {
+            // LIKE '%특정 문자열%';
+            options.symbol = { [Op.like]: `%${req.query.search}%` }
+        }
+
+        //컬랙션명만 검색
+        if (req.query.searchname) {
+            options.symbol = { [Op.like]: `%${req.query.searchname}%` }
+            attr = ['name', 'symbol'];
+        }
+
+        const allCollections = await Collections.findAll({
+            where: options,
+            attributes: attr
+        });
+
+        res.json({ message: "ok", data: allCollections });
+    } catch (err) {
+        console.error(err);
+    }
+});
+
+
+
+/*
+ *  /collections/<collection>
+ *  컬랙션 조회 (+ 컬랙션에 소속된 NFTs 포함)
+ *  required:
+ */
+router.get('/:collection_symbol', async (req, res, next) => {
+    try {
+        console.log(`======== [GET] /collection/${req.params.collection_symbol} ========`);
+        //입력 인자 가공
+        reqSymbol = req.params.collection_symbol;
+
+        //컬랙션 조회
+        let qCollection = await Collections.findOne({
+            where: {
+                symbol: reqSymbol,
+                is_created: true
+            }
+        });
+        let result = qCollection.dataValues;
+        result.assets = [];
+
+        //컬랙션에 소속된 NFTs
+        let qNFTs = await NFTs.findAll({
+            where: {
+                contractAddress: qCollection.contractAddress,
+                is_minted: true
+            }
+        });
+        result.number_of_assets = qNFTs.length;
+        for (let i = 0; i < qNFTs.length; i++) {
+            let NFT = qNFTs[i].dataValues;
+
+            //해당 NFT 의 trade 정보
+            let qTrades = await Trades.findAll({
+                where: {
+                    token_ids : NFT.token_ids,
+                    collectionAddress : qCollection.contractAddress
+                }
+            });
+
+            //만약 Trade 내역이 존재한다면
+            NFT.isSelling = false;
+            NFT.price = null;
+            NFT.trade_ca = null;
+            NFT.seller = null;
+            
+            if(qTrades.length > 0) {
+                for (let j = 0; j < qTrades.length; j++) {
+                    //selling 중인 trade 가 있다면
+                    if(qTrades[j].status === 'selling') {
+                        NFT.isSelling = true;
+                        NFT.price = qTrades[j].price;
+                        NFT.trade_ca = qTrades[j].trade_ca;
+                        NFT.seller = qTrades[j].seller;
+                    }
+                }
+            }
+            result.assets.push(NFT);
+        }
+
+        //console.log(result);
+        // owners 
+        /*
+        에러 SequelizeDatabaseError: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column
+        위와 같은 오류가 난다면 mysql에서 아래 명령어를 입력
+
+        SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
+        */
+        console.log(qCollection.contractAddress)
+        const owners = await NFTs.findAll({
+            where: {
+                contractAddress: qCollection.contractAddress
+            },
+            group: 'ownerAddress',
+            attributes: ['ownerAddress']
+        });
+        result.number_of_owners = owners.length;
+        console.log(owners);
+
+        console.log(`흐음`);
+        console.log(result);
+
+        if (qCollection) {
+            res.status(200).json({
+                message: 'ok',
+                data: result
+            });
+        } else {
+            throw new Error("해당 symbol 을 가진 collection 이 존재하지 않음");
+        }
+    } catch (err) {
+        console.error(`에러 ${err}`);
+        res.status(400).json({
+            message: err.message,
+            data: null
+        });
+    }
+});
+
+module.exports = router;
