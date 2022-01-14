@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     collectionAddress: DataTypes.STRING,
     status: DataTypes.STRING,
     trade_ca: DataTypes.STRING,
-    price: DataTypes.INTEGER,
+    price: DataTypes.FLOAT,
     seller: DataTypes.STRING,
     buyer: DataTypes.STRING
   }, {
