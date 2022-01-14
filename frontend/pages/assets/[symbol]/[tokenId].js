@@ -43,7 +43,7 @@ const ImageWrapper = styled.div`
   margin-bottom: 30px;
 `;
 
-const BuyBox = styled.div`
+const TradeBox = styled.div`
   padding: 15px;
   border: 1px solid rgb(229, 232, 235);
   border-radius: 10px;
@@ -206,23 +206,26 @@ const Asset = () => {
           </Link>
           <Text style={{ fontSize: "32px", fontWeight: "bold", margin: "20px 0" }}>{nft?.name}</Text>
 
-          <BuyBox>
-            <Text>판매 중인 NFT가 아닙니다.</Text>
-            {account && account === nftOwner && !isSelling && (
-              <Button
-                style={{ marginTop: "15px" }}
-                onClick={() => {
-                  router.push(`${router.asPath}/sell`);
-                }}
-                color="teal"
-                size="lg"
-              >
-                Sell
-              </Button>
-            )}
-          </BuyBox>
+          {!isSelling && (
+            <TradeBox>
+              <Text>판매 중인 NFT가 아닙니다.</Text>
+              {account && account === nftOwner && !isSelling && (
+                <Button
+                  style={{ marginTop: "15px" }}
+                  onClick={() => {
+                    router.push(`${router.asPath}/sell`);
+                  }}
+                  color="teal"
+                  size="lg"
+                >
+                  Sell
+                </Button>
+              )}
+            </TradeBox>
+          )}
+
           {isSelling && (
-            <BuyBox onClick={handleBuy}>
+            <TradeBox onClick={handleBuy}>
               <div>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <MdOutlineWatchLater style={{ color: "rgb(112, 122, 131)" }} />
@@ -243,7 +246,7 @@ const Asset = () => {
                   Buy now
                 </Button>
               </div>
-            </BuyBox>
+            </TradeBox>
           )}
           <Accordion style={{ margin: "20px 0" }} iconPosition="right">
             <Accordion.Item
