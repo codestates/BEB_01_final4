@@ -39,19 +39,27 @@ db.Sequelize = Sequelize;
 db.collections = require('./collections')(sequelize, Sequelize);
 db.users = require("./users")(sequelize, Sequelize);
 db.nfts = require("./nfts")(sequelize, Sequelize);
+db.trades = require("./trades")(sequelize, Sequelize);
 
-// // collections : nfts -> 1:N
-// db.collections.hasMany(db.nfts, { as: "nfts" });
-// db.nfts.belongsTo(db.collections, {
-//   foreignKey: 'contractAddress',
-//   as: "ca"
-// });
+// collections : nfts -> 1:N
+db.collections.hasMany(db.nfts, { as: "nfts" });
+db.nfts.belongsTo(db.collections, {
+  foreignKey: 'contractAddress',
+  as: "collection"
+});
 
-// // users : collections -> 1:N
-// db.users.hasMany(db.collections, { as: "collections" });
-// db.collections.belongsTo(db.users, {
-//   foreignKey: 'address',
-//   as: 'ownerAddress'
-// });
+// users : collections -> 1:N
+db.users.hasMany(db.collections, { as: "collections" });
+db.collections.belongsTo(db.users, {
+  foreignKey: 'address',
+  as: 'user'
+});
+
+// nfts: trades -> 1:N
+db.nfts.hasMany(db.trades, { as: "trades" });
+db.trades.belongsTo(db.nfts, {
+  foreignKey: ['token_ids','contractAddress'],
+  as: 'asset'
+});
 
 module.exports = db;
