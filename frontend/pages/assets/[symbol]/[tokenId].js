@@ -61,6 +61,7 @@ const Asset = () => {
   const [isSelling, setIsSelling] = useState(false);
   const [nftOwner, setNftOwner] = useState("");
   const [collectionContract, setCollectionContract] = useState(null);
+  const [tradeContract, setTradeContract] = useState(null);
   const [price, setPrice] = useState(null);
 
   const getCollection = async () => {
@@ -137,6 +138,8 @@ const Asset = () => {
     if (isSelling && nft) {
       const tradeContract = await new web3.eth.Contract(Trade.abi, nft?.trade_ca, { from: account });
 
+      setTradeContract(tradeContract);
+
       const nftPrice = await tradeContract.methods.getPrice().call();
 
       console.log(nftPrice);
@@ -149,7 +152,7 @@ const Asset = () => {
     checkNftPriceFromContract();
   }, [isSelling]);
 
-  const handleClickBuy = () => {
+  const handleClickBuy = async () => {
     if (!account) {
       alert("지갑을 먼저 연결해주세요.");
       return;
@@ -158,6 +161,23 @@ const Asset = () => {
     if (account === nftOwner) {
       alert("판매자는 구매할 수 없습니다.");
       return;
+    }
+    try {
+      const txResult = await web3.eth.sendTransaction({
+        from: account,
+        to: nft?.trade_ca,
+        value: web3.utils.toWei(price, "ether"),
+      });
+
+      let event = await tradeContract.getPastEvents("endTrade", {
+        fromBlock: txResult.blockNumber,
+        toBlock: txResult.blockNumber,
+      });
+
+      let log = event.find((log) => log.transactionHash == txResult.transactionHash);
+      console.log(log.returnValues); // t
+    } catch (e) {
+      console.dir(e);
     }
   };
 
