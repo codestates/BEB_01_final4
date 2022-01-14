@@ -8,6 +8,8 @@ import Profile from "./profile";
 import { useStore } from "../utils/store";
 import axios from "axios";
 import Web3 from "web3";
+import { useInputState } from "@mantine/hooks";
+import { useRouter } from "next/router";
 
 const CText = styled(Text)`
   && {
@@ -46,6 +48,8 @@ const Layout = ({ children }) => {
   const [opened, setOpened] = useState(false);
   const [account, setAccount] = useStore((state) => [state.account, state.setAccount]);
   const setUser = useStore((state) => state.setUser);
+  const [search, setSearch] = useInputState("");
+  const router = useRouter();
   const theme = useMantineTheme();
 
   return (
@@ -124,7 +128,18 @@ const Layout = ({ children }) => {
             </div>
 
             <div style={{ display: "flex", alignItems: "center" }}>
-              <Input style={{ marginRight: "20px", width: "300px" }} variant="default" placeholder="Search" />
+              <Input
+                value={search}
+                onChange={setSearch}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    router.push(`/explore-collections?search=${search}`);
+                  }
+                }}
+                style={{ marginRight: "20px", width: "300px" }}
+                variant="default"
+                placeholder="Search"
+              />
               <MediaQuery smallerThan="sm" styles={{ display: "none !important" }}>
                 <div style={{ display: "flex" }}>
                   <Link href="/explore-collections" passHref>

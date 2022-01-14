@@ -3,16 +3,6 @@ import { Button, Divider, SimpleGrid, Text } from "@mantine/core";
 import styled from "styled-components";
 import Image from "next/image";
 import { useRouter } from "next/router";
-// import { aether } from "../../public/collections/aether";
-// import { axie } from "../../public/collections/axie";
-// import { clonex } from "../../public/collections/clonex";
-// import { cryptoavatars } from "../../public/collections/cryptoavatars";
-// import { decentralandNames } from "../../public/collections/decentraland-names";
-// import { decentralandWearables } from "../../public/collections/decentraland-wearables";
-// import { decentraland } from "../../public/collections/decentraland";
-// import { illuvium } from "../../public/collections/illuvium";
-// import { nftWorlds } from "../../public/collections/nft-worlds";
-// import { sandbox } from "../../public/collections/sandbox";
 import NFTCard from "../../components/nftCard";
 import { useStore } from "../../utils/store";
 import Link from "next/link";
@@ -47,19 +37,6 @@ const Description = styled.div`
   margin: 0 auto;
 `;
 
-// const staticCollections = {
-//   Aether: aether,
-//   Axie: axie,
-//   Clonex: clonex,
-//   Cryptoavatars: cryptoavatars,
-//   "Decentraland Names": decentralandNames,
-//   "Decentraland Wearables": decentralandWearables,
-//   Decentraland: decentraland,
-//   Illuvium: illuvium,
-//   "NFT Worlds": nftWorlds,
-//   "The Sandbox": sandbox,
-// };
-
 const NameBox = styled.div`
   display: flex;
   justify-content: center;
@@ -78,7 +55,7 @@ const NFTS = () => {
         data: { data: collection },
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`);
       // console.log(collection);
-      console.log(collection);
+      // console.log(collection);
       setCollection(collection);
     }
   };

@@ -81,7 +81,6 @@ const Asset = () => {
   };
 
   const getNft = async () => {
-    console.log("getNft");
     try {
       if (symbol && tokenId) {
         // console.log(symbol, tokenId);
@@ -107,7 +106,6 @@ const Asset = () => {
   };
 
   const getNftFromContract = async () => {
-    console.log("getNftFromContract");
     try {
       if (web3 && nft?.contractAddress) {
         const collectionContract = await new web3.eth.Contract(GGanbuCollection.abi, nft?.contractAddress, {
@@ -242,7 +240,7 @@ const Asset = () => {
                 </div>
               }
             >
-              Colors, fonts, shadows and many other parts are customizable to fit your design needs
+              {nft?.description}
             </Accordion.Item>
 
             <Accordion.Item

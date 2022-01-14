@@ -1,34 +1,32 @@
 import { SimpleGrid, Text } from "@mantine/core";
-// import { Grid } from "@mantine/core";
 import CollectionCard from "../components/collectionCard";
-// import { aether } from "../public/collections/aether";
-// import { axie } from "../public/collections/axie";
-// import { clonex } from "../public/collections/clonex";
-// import { cryptoavatars } from "../public/collections/cryptoavatars";
-// import { decentralandNames } from "../public/collections/decentraland-names";
-// import { decentralandWearables } from "../public/collections/decentraland-wearables";
-// import { decentraland } from "../public/collections/decentraland";
-// import { illuvium } from "../public/collections/illuvium";
-// import { nftWorlds } from "../public/collections/nft-worlds";
-// import { sandbox } from "../public/collections/sandbox";
 import { useEffect } from "react";
 import axios from "axios";
 import { useStore } from "../utils/store";
+import { useRouter } from "next/router";
 
 const Collections = () => {
   const [collections, setCollections] = useStore((state) => [state.collections, state.setCollections]);
+  const router = useRouter();
+  const { search } = router.query;
+
   const getCollections = async () => {
-    const {
-      data: { data: collections },
-    } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections`);
-    if (collections) {
+    if (search) {
+      const {
+        data: { data: collections },
+      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections?search=${search}`);
+      setCollections(collections);
+    } else {
+      const {
+        data: { data: collections },
+      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections`);
       setCollections(collections);
     }
   };
 
   useEffect(() => {
     getCollections();
-  }, []);
+  }, [search]);
 
   return (
     <div>
