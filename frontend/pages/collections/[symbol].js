@@ -78,9 +78,8 @@ const NFTS = () => {
         data: { data: collection },
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`);
       // console.log(collection);
-      if (collection) {
-        setCollection(collection);
-      }
+      console.log(collection);
+      setCollection(collection);
     }
   };
   useEffect(() => {
@@ -131,11 +130,11 @@ const NFTS = () => {
         <div>
           <div style={{ display: "flex", margin: "15px auto", width: "580px", height: "90px" }}>
             <StatBox style={{ borderTopLeftRadius: "8px", borderBottomLeftRadius: "8px", borderRightWidth: "0px" }}>
-              <StatCount>30</StatCount>
+              <StatCount>{collection?.number_of_assets}</StatCount>
               <StatTitle>items</StatTitle>
             </StatBox>
             <StatBox style={{ borderRightWidth: "0px" }}>
-              <StatCount>103</StatCount>
+              <StatCount>{collection?.number_of_owners}</StatCount>
               <StatTitle>owners</StatTitle>
             </StatBox>
             <StatBox style={{ borderRightWidth: "0px" }}>
