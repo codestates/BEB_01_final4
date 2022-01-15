@@ -45,30 +45,7 @@ const Collections = () => {
         {collections?.map((collection) => (
           <CollectionCard collection={collection} key={collection.id} />
         ))}
-        {/* <CollectionCard collection={aether} />
-        <CollectionCard collection={axie} />
-        <CollectionCard collection={clonex} />
-        <CollectionCard collection={cryptoavatars} />
-        <CollectionCard collection={decentralandNames} />
-        <CollectionCard collection={decentralandWearables} />
-        <CollectionCard collection={decentraland} />
-        <CollectionCard collection={illuvium} />
-        <CollectionCard collection={nftWorlds} />
-        <CollectionCard collection={sandbox} /> */}
       </SimpleGrid>
-
-      {/* <Grid justify="space-between" style={{ padding: "0px 40px" }}>
-        <CollectionCard collection={aether} />
-        <CollectionCard collection={axie} />
-        <CollectionCard collection={clonex} />
-        <CollectionCard collection={cryptoavatars} />
-        <CollectionCard collection={decentralandNames} />
-        <CollectionCard collection={decentralandWearables} />
-        <CollectionCard collection={decentraland} />
-        <CollectionCard collection={illuvium} />
-        <CollectionCard collection={nftWorlds} />
-        <CollectionCard collection={sandbox} />
-      </Grid> */}
     </div>
   );
 };

@@ -13,11 +13,10 @@ const Collections = () => {
   const getMyCollections = async () => {
     try {
       const {
-        data: { data: myCollectionsData },
-      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}/collections`);
-      if (myCollectionsData) {
-        console.log(myCollectionsData);
-        setMyCollections(myCollectionsData);
+        data: { data: myData },
+      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}`);
+      if (myData?.collections) {
+        setMyCollections(myData?.collections);
       }
     } catch (e) {
       console.log(e.response);
