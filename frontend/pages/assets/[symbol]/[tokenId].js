@@ -303,7 +303,8 @@ const Asset = () => {
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <MdOutlineWatchLater style={{ color: "rgb(112, 122, 131)" }} />
                   <Text style={{ color: "rgb(112, 122, 131)", marginLeft: "10px" }}>
-                    Sale ends July 9, 2022 at 12:53pm KST
+                    Sale starts {new Date(nft?.trade_history.slice(-1)[0].updatedAt).toDateString()}{" "}
+                    {new Date(nft?.trade_history.slice(-1)[0].updatedAt).toLocaleTimeString()}
                   </Text>
                 </div>
               </div>
