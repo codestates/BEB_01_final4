@@ -299,16 +299,17 @@ const Asset = () => {
 
           {isSelling && tradeCA && (
             <TradeBox>
-              <div>
+              {/* <div>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <MdOutlineWatchLater style={{ color: "rgb(112, 122, 131)" }} />
+
                   <Text style={{ color: "rgb(112, 122, 131)", marginLeft: "10px" }}>
-                    Sale starts {new Date(nft?.trade_history.slice(-1)[0].updatedAt).toDateString()}{" "}
-                    {new Date(nft?.trade_history.slice(-1)[0].updatedAt).toLocaleTimeString()}
+                    Sale starts {new Date(nft?.updatedAt).toDateString()}{" "}
+                    {new Date(nft?.updatedAt).toLocaleTimeString()}
                   </Text>
                 </div>
               </div>
-              <Divider style={{ margin: "15px 0" }} />
+              <Divider style={{ margin: "15px 0" }} /> */}
               <div>
                 <Text>Current price</Text>
                 <div style={{ display: "flex", margin: "12px 0" }}>
