@@ -81,7 +81,6 @@ const Asset = () => {
   };
 
   const getNft = async () => {
-    console.log("getNft");
     try {
       if (symbol && tokenId) {
         // console.log(symbol, tokenId);
@@ -107,7 +106,6 @@ const Asset = () => {
   };
 
   const getNftFromContract = async () => {
-    console.log("getNftFromContract");
     try {
       if (web3 && nft?.contractAddress) {
         const collectionContract = await new web3.eth.Contract(GGanbuCollection.abi, nft?.contractAddress, {
@@ -242,7 +240,7 @@ const Asset = () => {
                 </div>
               }
             >
-              Colors, fonts, shadows and many other parts are customizable to fit your design needs
+              {nft?.description}
             </Accordion.Item>
 
             <Accordion.Item
@@ -305,7 +303,8 @@ const Asset = () => {
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <MdOutlineWatchLater style={{ color: "rgb(112, 122, 131)" }} />
                   <Text style={{ color: "rgb(112, 122, 131)", marginLeft: "10px" }}>
-                    Sale ends July 9, 2022 at 12:53pm KST
+                    Sale starts {new Date(nft?.trade_history.slice(-1)[0].updatedAt).toDateString()}{" "}
+                    {new Date(nft?.trade_history.slice(-1)[0].updatedAt).toLocaleTimeString()}
                   </Text>
                 </div>
               </div>
