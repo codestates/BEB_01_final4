@@ -5,6 +5,41 @@ const router = express.Router();
 const config = require('../config/config');
 const hostURI = config.development.host_metadata;
 
+//trade instance 넣으면 colection / asset 정보 추가해 줌
+const addTradeInfo = async (trade) => {
+  try {
+    //NFT 데이터 (name, imageURI)
+    const qNFT = await NFTs.findOne({
+      where: {
+        contractAddress: trade.collectionAddress,
+        token_ids: trade.token_ids
+      }
+    });
+    trade.asset = {};
+    if(qNFT) {
+      trade.asset.name = qNFT.dataValues.name;
+      trade.asset.imageURI = qNFT.dataValues.imageURI;
+    }
+
+    //collection 데이터 (name, symbol)
+    const qCollection = await Collections.findOne({
+      where: {
+        contractAddress: trade.collectionAddress
+      }
+    });
+    trade.collection = {};
+    if(qCollection) {
+      trade.collection.name = qCollection.dataValues.name;
+      trade.collection.symbol = qCollection.dataValues.symbol;
+    }
+
+    return trade;
+  } 
+  catch (err) {
+    return err;
+  }
+}
+
 // 공백이 있나 없나 체크 
 function hasSpace(str) {
     if (str.search(/\s/) != -1) {
@@ -63,6 +98,9 @@ router.get('/', async (req, res, next) => {
 
         const allCollections = await Collections.findAll({
             where: options,
+            order: [
+              ['createdAt', 'DESC']
+            ],
             attributes: attr
         });
 
@@ -177,101 +215,164 @@ router.post('/:collection_symbol', async (req, res, next) => {
 /*
  *  /collections/<collection>
  *  컬랙션 조회 (+ 컬랙션에 소속된 NFTs 포함)
- *  required:
+ *  required: none
+ *  option:
+ *  ?tab=selling        <= 판매 중만
+ *  ?tab=history        <= 거래 내역만
+ *  ?sort=price-high    <= 정렬 옵션
  */
 router.get('/:collection_symbol', async (req, res, next) => {
-    try {
-        console.log(`======== [GET] /collection/${req.params.collection_symbol} ========`);
-        //입력 인자 가공
-        reqSymbol = req.params.collection_symbol;
+  try {
+    console.log(`======== [GET] /collection/${req.params.collection_symbol} ========`);
+    //입력 인자 가공
+    reqSymbol = req.params.collection_symbol;
 
-        //컬랙션 조회
-        let qCollection = await Collections.findOne({
-            where: {
-                symbol: reqSymbol,
-                is_created: true
-            }
+    //컬랙션 조회
+    let qCollection = await Collections.findOne({
+        where: {
+            symbol: reqSymbol,
+            is_created: true
+        }
+    });
+    let result = qCollection.dataValues;
+    
+    //컬랙션에 소속된 NFTs
+    let qNFTs = await NFTs.findAll({
+        where: {
+          contractAddress: qCollection.contractAddress,
+          is_minted: true
+        },
+        order: [
+          ['createdAt', 'DESC']
+        ]
+    });
+    result.number_of_assets = qNFTs.length;
+    
+    // case 보유 NFT: /collection/<coln>, /collection/<coln>?tab=selling
+    if(!req.query.tab || req.query.tab == 'selling') {
+      result.assets = [];
+    
+      for (let i = 0; i < qNFTs.length; i++) {
+        let NFT = qNFTs[i].dataValues;
+
+        //만약 Trade 내역이 존재한다면
+        NFT.isSelling = false;
+        NFT.price = null;
+        NFT.trade_ca = null;
+        NFT.seller = null;
+        NFT.trade_selling = null;
+        //NFT.trade_history = null;
+        //NFT.trade_cancelled = null;
+
+        //trade sort 옵션
+        let whereOption = {
+            token_ids : NFT.token_ids,
+            collectionAddress : NFT.contractAddress
+        };
+        if(req.query.tab == 'selling') {
+            whereOption.status = 'selling';
+        }
+        
+        //트레이드 정보 추가
+        let qTrades = await Trades.findAll({
+          where: whereOption,
         });
-        let result = qCollection.dataValues;
-        result.assets = [];
 
-        //컬랙션에 소속된 NFTs
-        let qNFTs = await NFTs.findAll({
-            where: {
-                contractAddress: qCollection.contractAddress,
-                is_minted: true
+        //만약 Trade 내역이 존재한다면
+        if(qTrades.length > 0) {
+          for (let j = 0; j < qTrades.length; j++) {
+            //selling 중인 trade 가 있다면
+            if(qTrades[j].status === 'selling') {
+              NFT.isSelling = true;
+              NFT.price = qTrades[j].price;
+              NFT.trade_ca = qTrades[j].trade_ca;
+              NFT.seller = qTrades[j].seller;
+              NFT.trade_selling = qTrades[j].dataValues;
             }
-        });
-        result.number_of_assets = qNFTs.length;
-        for (let i = 0; i < qNFTs.length; i++) {
-            let NFT = qNFTs[i].dataValues;
+          }
+        }
 
-            //해당 NFT 의 trade 정보
-            let qTrades = await Trades.findAll({
-                where: {
-                    token_ids : NFT.token_ids,
-                    collectionAddress : qCollection.contractAddress
-                }
-            });
-
-            //만약 Trade 내역이 존재한다면
-            NFT.isSelling = false;
-            NFT.price = null;
-            NFT.trade_ca = null;
-            NFT.seller = null;
-            
-            if(qTrades.length > 0) {
-                for (let j = 0; j < qTrades.length; j++) {
-                    //selling 중인 trade 가 있다면
-                    if(qTrades[j].status === 'selling') {
-                        NFT.isSelling = true;
-                        NFT.price = qTrades[j].price;
-                        NFT.trade_ca = qTrades[j].trade_ca;
-                        NFT.seller = qTrades[j].seller;
-                    }
-                }
-            }
+        //제공할 NFT 선택
+        if(req.query.tab == 'selling' && NFT.isSelling == true) {
+          // 모든 NFT 제공
+          result.assets.push(NFT);
+        } else if(!req.query.tab || req.query.tab == 'mint') {
             result.assets.push(NFT);
         }
+      }
+      
+      //sort
+      result.assets = result.assets.sort((a, b) => a.isSelling > b.isSelling ? -1 : 1);
 
-        //console.log(result);
-        // owners 
-        /*
-        에러 SequelizeDatabaseError: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column
-        위와 같은 오류가 난다면 mysql에서 아래 명령어를 입력
-
-        SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
-
-        */
-        console.log(qCollection.contractAddress)
-        const owners = await NFTs.findAll({
-            where: {
-                contractAddress: qCollection.contractAddress
-            },
-            group: 'ownerAddress',
-            attributes: ['ownerAddress']
+      if(req.query.sort == 'price-high') {
+        result.assets = result.assets.sort(function(a, b)  {
+          return b.price - a.price;
         });
-        result.number_of_owners = owners.length;
-        console.log(owners);
+      }
+    } else if(req.query.tab == 'history') {
+      result.trades = [];
 
-        console.log(`흐음`);
-        console.log(result);
+      //sort 옵션
+      let orderOption = [['id', 'DESC']];
+      if(req.query.sort == 'price-high') {
+        orderOption = [['price', 'DESC']];
+      }
 
-        if (qCollection) {
-            res.status(200).json({
-                message: 'ok',
-                data: result
-            });
-        } else {
-            throw new Error("해당 symbol 을 가진 collection 이 존재하지 않음");
+      const qTrades = await Trades.findAll({
+        where: {
+          status: 'completed',
+          collectionAddress: qCollection.contractAddress
+        },
+        order: orderOption
+      });
+  
+      //존재한다면
+      if (qTrades.length > 0) {
+        for(let i=0;i<qTrades.length;i++) {
+          let trade = qTrades[i].dataValues;
+          trade = await addTradeInfo(trade);
+  
+          //트레이드 데이터
+          result.trades.push(trade);
         }
-    } catch (err) {
-        console.error(`에러 ${err}`);
-        res.status(400).json({
-            message: err.message,
-            data: null
-        });
+      }
     }
+
+    //console.log(result);
+    // owners 
+    /*
+    에러 SequelizeDatabaseError: Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column
+    위와 같은 오류가 난다면 mysql에서 아래 명령어를 입력
+
+    SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
+    */
+    console.log(qCollection.contractAddress)
+    const owners = await NFTs.findAll({
+        where: {
+            contractAddress: qCollection.contractAddress
+        },
+        group: 'ownerAddress',
+        attributes: ['ownerAddress']
+    });
+    result.number_of_owners = owners.length;
+    console.log(owners);
+
+    if (qCollection) {
+        res.status(200).json({
+            message: 'ok',
+            data: result
+        });
+    } else {
+        throw new Error("해당 symbol 을 가진 collection 이 존재하지 않음");
+    }
+  } catch (err) {
+      console.error(`에러 ${err}`);
+      res.status(400).json({
+          message: err.message,
+          data: null
+      });
+  }
 });
 
 module.exports = router;
