@@ -118,8 +118,9 @@ const Asset = () => {
         if (isSelling) {
           setTradeCA(await collectionContract.methods.getApproved(tokenId).call());
         }
-
-        setNftOwner(await collectionContract.methods.ownerOf(tokenId).call());
+        const owner = await collectionContract.methods.ownerOf(tokenId).call();
+        console.log(owner);
+        setNftOwner(owner);
       }
     } catch (e) {
       alert("DB, 블록체인 네트워크 상태를 확인해주세요.");
