@@ -21,6 +21,8 @@ import axios from "axios";
 import { useStore } from "../../../utils/store";
 import { GGanbuCollection } from "../../../public/compiledContracts/GGanbuCollection";
 import { Trade } from "../../../public/compiledContracts/Trade";
+import History from "../../../components/history";
+import Listings from "../../../components/listings";
 
 const EmptyHeartIcon = styled(AiOutlineHeart)`
   &&:hover {
@@ -60,25 +62,25 @@ const Asset = () => {
   const [web3, account] = useStore((state) => [state.web3, state.account]);
   const [isSelling, setIsSelling] = useState(false);
   const [nftOwner, setNftOwner] = useState("");
-  const [collectionContract, setCollectionContract] = useState(null);
+  // const [collectionContract, setCollectionContract] = useState(null);
   const [tradeContract, setTradeContract] = useState(null);
   const [price, setPrice] = useState(null);
   const [tradeCA, setTradeCA] = useState(null);
 
-  const getCollection = async () => {
-    try {
-      if (symbol) {
-        const {
-          data: { data: collectionData },
-        } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`, {
-          withCredentials: true,
-        });
-        // console.log(collectionData);
-      }
-    } catch (e) {
-      console.dir(e);
-    }
-  };
+  // const getCollection = async () => {
+  //   try {
+  //     if (symbol) {
+  //       const {
+  //         data: { data: collectionData },
+  //       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`, {
+  //         withCredentials: true,
+  //       });
+  //       // console.log(collectionData);
+  //     }
+  //   } catch (e) {
+  //     console.dir(e);
+  //   }
+  // };
 
   const getNft = async () => {
     try {
@@ -89,7 +91,7 @@ const Asset = () => {
         } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/assets/${symbol}/${tokenId}`, {
           withCredentials: true,
         });
-        // console.log(nftData);
+        console.log(nftData);
 
         setNft(nftData);
 
@@ -368,8 +370,14 @@ const Asset = () => {
                   padding: "15px",
                 }}
               >
-                <Image src="/images/price-history.svg" width={668} height={100} alt="" />
-                <Text style={{ marginTop: "15px" }}>No item activity yet</Text>
+                {nft?.trade_history.length > 0 ? (
+                  <Listings elements={nft?.trade_history} />
+                ) : (
+                  <>
+                    <Image src="/images/price-history.svg" width={668} height={100} alt="" />
+                    <Text style={{ marginTop: "15px" }}>No item activity yet</Text>
+                  </>
+                )}
               </div>
             </Accordion.Item>
           </Accordion>
