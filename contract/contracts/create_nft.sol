@@ -3,7 +3,7 @@ pragma solidity 0.8.10;
 
 import "./multiOwner.sol";
 import "./trade.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "./ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -53,7 +53,7 @@ contract GGanbuCollection is ERC721URIStorage, Ownable {
 
     function burn(uint256 tokenId) public onlyOwner {
         require(
-            msg.sender == ownerOf(tokenId),
+            msg.sender == _owners[tokenId],
             "Collection: This address is not owner"
         ); //해당 nft의 owner만 삭제 할 수 있다.
         ERC721URIStorage._burn(tokenId);
@@ -66,7 +66,11 @@ contract GGanbuCollection is ERC721URIStorage, Ownable {
 
     function sell(uint256 tokenId, uint256 price) public {
         require(
-            msg.sender == ownerOf(tokenId),
+            _isRent(tokenId, _msgSender()),
+            "Collection: This NFT is rent now"
+        ); //대여중인 nft는 판매할 수 없다.
+        require(
+            msg.sender == _owners[tokenId],
             "Collection: This address is not owner"
         ); //해당 nft의 owner만 판매등록 할 수 있다.
         require(!auction[tokenId], "Collection: Can not sell this NFT"); //이미 판매중인지 검사
@@ -83,7 +87,7 @@ contract GGanbuCollection is ERC721URIStorage, Ownable {
 
     function cancel(uint256 tokenId, address payable contractAddr) public {
         require(
-            msg.sender == ownerOf(tokenId),
+            msg.sender == _owners[tokenId],
             "Collection: This address is not owner"
         ); //해당 nft의 owner만 취소 할 수 있다.
         require(auction[tokenId], "Collection: Can not sell this NFT"); //판매중일때만 취소가능
@@ -108,6 +112,18 @@ contract GGanbuCollection is ERC721URIStorage, Ownable {
 
         _transfer(from, to, tokenId);
         auction[tokenId] = false;
+    }
+
+    function setRent(
+        uint256 tokenId,
+        address _to,
+        address _from
+    ) public {
+        _setRent(tokenId, _to, _from);
+    }
+
+    function returnNFT(uint256 tokenId, address _owner) public {
+        _returnNFT(tokenId, _owner);
     }
 
     function getIsSelling(uint256 tokenId) public view returns (bool) {
