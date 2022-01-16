@@ -24,6 +24,11 @@ const PriceHistory = ({ labels, priceArr }) => {
         text: "Price History",
       },
     },
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
+    },
   };
 
   const data = {
