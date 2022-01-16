@@ -86,6 +86,7 @@ const NFTS = () => {
           width: "100%",
           height: "220px",
           backgroundImage: `url(${collection?.banner_url})`,
+          backgroundPosition: "center",
         }}
       ></div>
       <div
@@ -97,6 +98,7 @@ const NFTS = () => {
           height: "126px",
           backgroundImage: `url(${collection?.image_url})`,
           backgroundSize: "cover",
+          backgroundPosition: "center",
           borderRadius: "50%",
           border: "1px solid white",
         }}
