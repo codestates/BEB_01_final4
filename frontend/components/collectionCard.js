@@ -78,7 +78,7 @@ const CollectionCard = ({ collection }) => {
               position: "relative",
               backgroundImage: `url(${collection.image_url})`,
               backgroundSize: "cover",
-              // backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
             }}
           ></div>
         </div>

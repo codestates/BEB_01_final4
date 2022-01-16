@@ -43,6 +43,23 @@ const NameBox = styled.div`
   align-items: center;
 `;
 
+const getFloorPrice = (assets) => {
+  let floor = null;
+
+  if (assets.length === 0) return "-";
+
+  for (let asset of assets) {
+    if (floor === null && asset.trade_selling) {
+      floor = asset.trade_selling.price;
+    }
+    if (floor > asset.trade_selling?.price) {
+      floor = asset.trade_selling?.price;
+    }
+  }
+
+  return floor === null ? "-" : floor;
+};
+
 const NFTS = () => {
   const router = useRouter();
   const { symbol } = router.query;
@@ -54,8 +71,7 @@ const NFTS = () => {
       const {
         data: { data: collection },
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`);
-      // console.log(collection);
-      // console.log(collection);
+      console.log(collection);
       setCollection(collection);
     }
   };
@@ -70,6 +86,7 @@ const NFTS = () => {
           width: "100%",
           height: "220px",
           backgroundImage: `url(${collection?.banner_url})`,
+          backgroundPosition: "center",
         }}
       ></div>
       <div
@@ -81,6 +98,7 @@ const NFTS = () => {
           height: "126px",
           backgroundImage: `url(${collection?.image_url})`,
           backgroundSize: "cover",
+          backgroundPosition: "center",
           borderRadius: "50%",
           border: "1px solid white",
         }}
@@ -117,7 +135,9 @@ const NFTS = () => {
             <StatBox style={{ borderRightWidth: "0px" }}>
               <StatCount>
                 <Image width={23} height={23} src="/images/eth.svg" alt="" />
-                <span style={{ marginLeft: "3px" }}>200</span>
+                <span style={{ marginLeft: "3px" }}>
+                  {Boolean(collection?.assets) === true ? getFloorPrice(collection?.assets) : "-"}
+                </span>
               </StatCount>
               <StatTitle>floor price</StatTitle>
             </StatBox>
@@ -146,7 +166,7 @@ const NFTS = () => {
         ]}
       >
         {collection?.assets.map((nft, i) => {
-          console.log(nft);
+          // console.log(nft);
           return nft.imageURI === null ? null : (
             <NFTCard key={i} collectionSymbol={collection?.symbol} nft={nft} idx={i} />
           );

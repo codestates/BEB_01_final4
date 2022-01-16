@@ -15,6 +15,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import NFTCard from "../components/nftCard";
+import History from "../components/history";
 
 const Description = styled.div`
   max-width: 720px;
@@ -44,6 +45,7 @@ const MyPage = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [createdAssets, setCreatedAssets] = useState([]);
   const [sellingAssets, setSellingAssets] = useState([]);
+  const [activityAssets, setActivityAssets] = useState([]);
 
   const getDataOnTabChange = async () => {
     if (activeTab === 0) {
@@ -55,6 +57,7 @@ const MyPage = () => {
       const {
         data: { data: myData },
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}?tab=mint`);
+      console.log(myData);
       setCreatedAssets(myData.assets);
     } else if (activeTab === 3) {
       // For Sale
@@ -68,6 +71,7 @@ const MyPage = () => {
         data: { data: myData },
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}?tab=history`);
       console.log(myData);
+      setActivityAssets(myData.trades);
     } else if (activeTab === 5) {
       // Canceled
       const {
@@ -176,7 +180,7 @@ const MyPage = () => {
               ]}
             >
               {myData?.assets.map((nft, i) => {
-                console.log(nft);
+                // console.log(nft);
                 return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={""} nft={nft} idx={i} />;
               })}
             </SimpleGrid>
@@ -208,17 +212,17 @@ const MyPage = () => {
               ]}
             >
               {sellingAssets.map((nft, i) => {
-                console.log(nft);
+                // console.log(nft);
                 return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={""} nft={nft} idx={i} />;
               })}
             </SimpleGrid>
           </CTabs.Tab>
-          <CTabs.Tab icon={<MdOutlineHistory style={{ width: 18, height: 18 }} />} label="Trade History">
-            Third tab content
+          <CTabs.Tab icon={<MdOutlineHistory style={{ width: 18, height: 18 }} />} label="Activity">
+            <History elements={activityAssets} />
           </CTabs.Tab>
-          <CTabs.Tab icon={<MdOutlineCancelPresentation style={{ width: 18, height: 18 }} />} label="Canceled">
+          {/* <CTabs.Tab icon={<MdOutlineCancelPresentation style={{ width: 18, height: 18 }} />} label="Canceled">
             Third tab content
-          </CTabs.Tab>
+          </CTabs.Tab> */}
         </CTabs>
       </Container>
     </div>
