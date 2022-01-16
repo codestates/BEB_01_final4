@@ -87,6 +87,8 @@ const MyPage = () => {
 
   const getMyData = async () => {
     try {
+      await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, { address: account });
+
       const {
         data: { data: myData },
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}`);

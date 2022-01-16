@@ -4,7 +4,7 @@ import UploadFile from "../../../components/uploadFile";
 import { useRouter } from "next/router";
 import { useStore } from "../../../utils/store";
 import { useInputState } from "@mantine/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { GGanbuCollection } from "../../../public/compiledContracts/GGanbuCollection";
 import { hangulToAlphabet } from "../../create";
@@ -25,19 +25,44 @@ const TitleInput = styled.div`
   }
 `;
 
+const CText = styled(Text)`
+  background-color: #f1f3f5;
+  color: #909296;
+  opacity: 0.6;
+  cursor: not-allowed;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  padding: 0 12px;
+  line-height: 34px;
+`;
+
 const MintNFT = () => {
   const router = useRouter();
   const { symbol } = router.query;
-  const myCollections = useStore((state) => state.myCollections);
   const [name, setName] = useInputState("");
   const [description, setDescription] = useInputState("");
   const [imageURI, setImageURI] = useState("");
   const account = useStore((state) => state.account);
   const web3 = useStore((state) => state.web3);
+  const [collection, setCollection] = useState(null);
 
-  const collection = myCollections.find((collection) => {
-    if (collection.symbol === symbol) return true;
-  });
+  const getCollection = async () => {
+    try {
+      if (symbol) {
+        const {
+          data: { data: collectionData },
+        } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`);
+        console.log(collectionData);
+        setCollection(collectionData);
+      }
+    } catch (e) {
+      console.dir(e);
+    }
+  };
+
+  useEffect(() => {
+    getCollection();
+  }, []);
 
   const handleCreate = async ({ ownerAddress, contractAddress, name, description, imageURI }) => {
     // console.log(collection);
@@ -130,7 +155,8 @@ const MintNFT = () => {
       </TitleInput>
       <TitleInput>
         <Text>Collection</Text>
-        <Input disabled variant="default" placeholder="Collection" value={collection?.name} onChange={() => {}} />
+        <CText>{collection?.name}</CText>
+        {/* <Input disabled variant="default" placeholder="Collection" value={collection?.name} /> */}
       </TitleInput>
 
       <div style={{ width: "180px", margin: "0 auto" }}>
