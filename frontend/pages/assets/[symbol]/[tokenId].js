@@ -23,6 +23,7 @@ import { GGanbuCollection } from "../../../public/compiledContracts/GGanbuCollec
 import { Trade } from "../../../public/compiledContracts/Trade";
 import History from "../../../components/history";
 import Listings from "../../../components/listings";
+import PriceHistory from "../../../components/priceHistory";
 
 const EmptyHeartIcon = styled(AiOutlineHeart)`
   &&:hover {
@@ -348,8 +349,17 @@ const Asset = () => {
                   padding: "15px",
                 }}
               >
-                <Image src="/images/price-history.svg" width={668} height={100} alt="" />
-                <Text style={{ marginTop: "15px" }}>No item activity yet</Text>
+                {nft?.trade_history.length > 0 ? (
+                  <PriceHistory
+                    labels={nft?.trade_history.map((asset) => new Date(asset.updatedAt).toLocaleDateString())}
+                    priceArr={nft?.trade_history.map((asset) => asset.price)}
+                  />
+                ) : (
+                  <>
+                    <Image src="/images/price-history.svg" width={668} height={100} alt="" />
+                    <Text style={{ marginTop: "15px" }}>No item activity yet</Text>
+                  </>
+                )}
               </div>
             </Accordion.Item>
           </Accordion>
