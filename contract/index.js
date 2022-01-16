@@ -1,12 +1,45 @@
 import Web3 from "web3";
-import abi from "./abi.js";
-import byteCode from "./bytecode.js";
-const contractAddr = "";//ropsten
-const account = "";
+//import abi from "./abi.js";
+//import byteCode from "./bytecode.js";
+const contractAddr = "0x5dA39Bd3cf655F96F48E02b0C29018D61C09F390";//ropsten
+const account = "0x459F501012aD38d0cC52C0fd0669B1F7764f3814";
 //const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
-const ropsten = ``;
+const ropsten = `https://ropsten.infura.io/v3/7e62d3d0edb8465499fa21ad70873a3f`;
 const web3 = new Web3(ropsten);
-const privateKey = "";
+const privateKey = "05dd38f9da2e154155095c993ed63acfaa3955f1e6419e1f09bb8b68321aecf2";
+const abi = [
+	{
+		"inputs": [],
+		"stateMutability": "payable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "val",
+				"type": "uint256"
+			}
+		],
+		"name": "test",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "token",
+				"type": "uint256"
+			}
+		],
+		"name": "trading",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	}
+];
 
 const contract = new web3.eth.Contract(abi, contractAddr, { from: account });
 /**
@@ -37,13 +70,14 @@ const contract = new web3.eth.Contract(abi, contractAddr, { from: account });
  */
 const mint = async () => {
     try {
-        const mintMethod = await contract.methods.mintNFT("test nft uri");
+        const mintMethod = await contract.methods.trading(2);
         const encodedAbi = mintMethod.encodeABI();
         const tx = {
             from: account,
             to: contractAddr,
             gas: 200000,
-            data: encodedAbi
+            data: encodedAbi,
+            value:web3.utils.toWei("1", "ether")
         };
         const signed = await web3.eth.accounts.signTransaction(tx, privateKey);
         const tran = web3.eth.sendSignedTransaction(signed.rawTransaction);
@@ -144,8 +178,8 @@ const cancelSale = async (tokenId, tradecontract) => {
         console.log(error);
     }
 }
-//mint();
-_sell(1, 0.01);
+mint();
+//_sell(1, 0.01);
 //isSell(1);
 //getOwnerOfNft(1);
 //cancelSale(1, tradeContract);

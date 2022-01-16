@@ -14,6 +14,7 @@
   "author": "mindol8",
   "license": "ISC",
   "dependencies": {
+  
     "web3": "^1.6.1"
   }
 }
