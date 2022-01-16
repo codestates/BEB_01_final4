@@ -1,10 +1,11 @@
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
 const { Transactions, Collections, NFTs, Trades, sequelize } = require(".././models");
-const { Op } = require("sequelize");
+const { Op, ConnectionTimedOutError } = require("sequelize");
 const fs = require('fs');
 const path = require("path");
 const basePath = __dirname;
+
 /*
  *  블록 처음부터 검색하려면 "./blockNumber" 파일 수정 필요 to 0 
  *  [한번 실행] node daemon.js
@@ -38,6 +39,13 @@ const { mainModule } = require('process');
 const { default: cluster } = require('cluster');
 abiDecoder.addABI(abi);
 let curBlkNum = 0;
+
+let COUNT = {
+  "minted" : 0,
+  "sell" : 0,
+  "buy" : 0,
+  "cancel" : 0
+};
 
 //트랜잭션 가져오기
 const fetchTranIDs = async (startBlkNum, curBlkNum) => {
@@ -110,7 +118,10 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
           }
         }
       );
-      console.log(`number of minted NFTs : ${result}`);
+      if(result > 0) {
+        console.log(`========== New NFT has been enrolled =======`);
+        COUNT.minted++;
+      }
     }
     // 만약 sell 트랜잭션이라면
     else if(tx.input_name === 'sell') {
@@ -152,8 +163,12 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
         },
         defaults:inputData
       });
-      console.log(`========== New trade has been enrolled=======`);
-      console.log(result[0].dataValues);
+      if(result[1] === true) {
+        console.log(`========== New trade has been enrolled=======`);
+        console.log(result[0].dataValues);
+        COUNT.sell++;
+      }
+
       
       // if(result[1] === false) {
       //   console.log('Trade 가 이미 존재합니다');
@@ -176,45 +191,62 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
 * Trades(status 를 'completed' 로 업데이트)
 * Trades(buyer 를 tx.from 으로 업데이트) 
 */
-const monitAndUpdateTrade = async (MyAbi, MyCA, tradeCA, MyToken_ids, startBlkNum) => {
+const updateTrade = async (tx, MyCA, MyAbi, tradeCA, trade) => {
   try {
-    //let tx = await web3.eth.getTransactionReceipt(tran_id);
-    let tx = await web3.eth.getTransaction(tran_id);
     console.log(tx);
 
-    if(web3.utils.toChecksumAddress(tx.to) == tradeCA) {
-      console.log('찾았다');
+    //가격 정보 확인
+    tx.input_price = await web3.utils.fromWei(tx.value, "ether");
+    console.log(`가격 : ${tx.input_price} eth`);
 
-      //가격 정보 확인
-      tx.input_price = await web3.utils.fromWei(tx.value, "ether");
-      console.log(`가격 : ${tx.input_price} eth`);
-
-      //DB의 가격정보와 같은지 확인필요
-
-      //token  거래 상태 및 owner 확인
-      const contractObj = new web3.eth.Contract(
-        MyAbi, MyCA,
-      );
-      const ownerOf = await contractObj.methods.ownerOf(MyToken_ids).call();
-      const getIsSelling = await contractObj.methods.getIsSelling(MyToken_ids).call();
-      
-      if(ownerOf == tx.from) {
-        //검증 완료
-        console.log('NFT 소유자 변경됨');
-      }
-      if(getIsSelling == false) {
-        //사자마자 다시 판매등록 할수는 있지만, 앱에서는 불가능하다(이 로직이 완료되어야 판매가능하다)
-        //검증 완료
-        console.log('판매 상태가 false 임');
-      }
-
-      //DB업데이트
-
-
-
-    } else {
-      console.log('트레이드와 관련없는 트랙잭션임');
+    //DB의 가격정보와 같은지 확인필요
+    if(trade.price != tx.input_price) {
+      console.log('가격 불일치');
+      throw new Error('가격 불일치');
     }
+
+    const contractObj = new web3.eth.Contract(
+      MyAbi, MyCA,
+    );
+    const ownerOf = await contractObj.methods.ownerOf(trade.token_ids).call();
+    const getIsSelling = await contractObj.methods.getIsSelling(trade.token_ids).call();
+    
+    //현재 owner 가 buy 요청한 사람과 동일한지 확인
+    if(ownerOf != tx.from) {
+      console.log('NFT 소융자 불일치');
+      throw new Error('NFT 소융자 불일치');
+    }
+
+    //현재 selling 이 false 인지 확인
+    if(getIsSelling != false) {
+      //사자마자 다시 판매등록 할수는 있지만, 앱에서는 불가능하다(이 로직이 완료되어야 판매가능하다)
+      console.log('판매 중임. 즉 거래가 완료되지 않았음');
+      throw new Error('판매 중임. 즉 거래가 완료되지 않았음');
+    }
+
+    //DB업데이트
+    await NFTs.update(
+      {
+        ownerAddress: tx.from
+      },
+      {
+        where: {contractAddress: trade.collectionAddress}
+      }
+    );
+
+    await Trades.update(
+      {
+        status: 'completed',
+        buyer: tx.from
+      },
+      {
+        where: {id: trade.id, status: 'selling'},
+      }
+    );
+
+    console.log(`========== Trade has been dealed =======`);
+    console.log(tx);
+    COUNT.buy++;
   }
   catch(e) {
     console.log(`에러 : ${e.message}`);
@@ -227,7 +259,7 @@ const main = async (MyAbi, START_BLOCK) => {
     //블록체인 상의 마지막 블록 번호 조회
     let curBlkNum = await web3.eth.getBlockNumber();
     if(START_BLOCK > curBlkNum) {
-      console.log(`최신 블록까지 이미 조회 완료 : ${curBlkNum}`);
+      console.log(`==== 최신 블록까지 이미 조회 완료 : ${curBlkNum} ====`);
       return;
     }
 
@@ -251,37 +283,33 @@ const main = async (MyAbi, START_BLOCK) => {
         if (tx.from === MyCA || tx.to === MyCA) {
           //DB 업데이트
           await Transactions.findOrCreate({
-            where:{
-              hash:tx.hash
-            },
+            where:{hash:tx.hash},
             defaults:tx
           });
           await updateNFTtoDB(tx, MyCA, MyAbi);
         }
       }
 
-      //컬랙션 별로 신규 mintNFT, 신규 trade 관련 TX 인지 확인
+      //트레이드CA 별로 buy, cancel 관련 TX 인지 검사
       for(let j=0;j<trades.length;j++) {
-        if (tx.to === trades[j].trade_ca) {
-          console.log('트레이드 관련 tx 찾았다');
-          //업데이트
-        // await monitAndUpdateTrade(
-        //   MyAbi, 
-        //   trades[i].collectionAddress,      //컬랙션 CA 
-        //   trades[i].trade_ca,               //NFT 거래 CA
-        //   trades[i].token_ids,              //NFT 토큰ID
-        //   START_BLOCK,
-        //   END_BLOCK);
+        let tradeCA = trades[j].trade_ca;
+
+        if (tx.to === tradeCA) {
+          //DB 업데이트
+          await Transactions.findOrCreate({
+            where:{hash:tx.hash},
+            defaults:tx
+          });
+
+          await updateTrade(
+            tx,
+            trades[j].collectionAddress,      //컬랙션 CA 
+            MyAbi, 
+            tradeCA,                             //NFT 거래 CA
+            trades[j]);             //NFT 토큰ID 
         }
       }
-    }
-
-      // // Transactions 테이블 insert
-      // await Transactions.create(arrTrans[i]);
-    
-      // // NFTs 테이블 update
-      // await updateNFTtoDB(arrTrans[i], MyCA, MyAbi);
-    
+    }    
 
     // 가장 마지막에 확인한 블록번호 저장
     if(curBlkNum >= START_BLOCK) {
@@ -291,6 +319,13 @@ const main = async (MyAbi, START_BLOCK) => {
         String(curBlkNum),
       );
     }
+    console.log(`# of minted          : ${COUNT.minted}`);
+    console.log(`# of sell enrollment : ${COUNT.sell}`);
+    console.log(`# of traded          : ${COUNT.buy}`);
+    console.log(`# of sell cancelled  : ${COUNT.cancel}`);
+    
+      
+
     
     sequelize.close();
   }
