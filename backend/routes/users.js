@@ -105,6 +105,16 @@ router.get('/:address', async (req, res, next) => {
         //NFT 가 판매 중이라면 판매 정보 업데이트
         let NFT = myNFTs[i].dataValues;
 
+        //NFT의 collection 데이터
+        const nftCollection = await Collections.findOne({
+          where: {
+            contractAddress: NFT.contractAddress
+          }
+        });
+        if(nftCollection) {
+          NFT.collection = nftCollection.dataValues;
+        }
+
         NFT.isSelling = false;
         NFT.price = null;
         NFT.trade_ca = null;
