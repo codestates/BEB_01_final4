@@ -1,12 +1,12 @@
 import Web3 from "web3";
-import abi from "./abi.js";
-import byteCode from "./bytecode.js";
+//import abi from "./abi.js";
+//import byteCode from "./bytecode.js";
 const contractAddr = "";//ropsten
 const account = "";
 //const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
 const ropsten = ``;
 const web3 = new Web3(ropsten);
-const privateKey = "";
+
 
 const contract = new web3.eth.Contract(abi, contractAddr, { from: account });
 
@@ -40,13 +40,14 @@ const account2Pk = "";
  */
 const mint = async () => {
     try {
-        const mintMethod = await contract.methods.mintNFT("test nft uri");
+        const mintMethod = await contract.methods.trading(2);
         const encodedAbi = mintMethod.encodeABI();
         const tx = {
             from: account,
             to: contractAddr,
             gas: 200000,
-            data: encodedAbi
+            data: encodedAbi,
+            value: web3.utils.toWei("1", "ether")
         };
         const signed = await web3.eth.accounts.signTransaction(tx, privateKey);
         const tran = web3.eth.sendSignedTransaction(signed.rawTransaction);
