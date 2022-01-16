@@ -73,7 +73,7 @@ const Asset = () => {
         } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`, {
           withCredentials: true,
         });
-        console.log(collectionData);
+        // console.log(collectionData);
       }
     } catch (e) {
       console.dir(e);
@@ -89,7 +89,7 @@ const Asset = () => {
         } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/assets/${symbol}/${tokenId}`, {
           withCredentials: true,
         });
-        console.log(nftData);
+        // console.log(nftData);
 
         setNft(nftData);
 
@@ -119,7 +119,7 @@ const Asset = () => {
           setTradeCA(await collectionContract.methods.getApproved(tokenId).call());
         }
         const owner = await collectionContract.methods.ownerOf(tokenId).call();
-        console.log(owner);
+        // console.log(owner);
         setNftOwner(owner);
       }
     } catch (e) {
@@ -300,17 +300,22 @@ const Asset = () => {
 
           {isSelling && tradeCA && (
             <TradeBox>
-              {/* <div>
+              <div>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <MdOutlineWatchLater style={{ color: "rgb(112, 122, 131)" }} />
-
                   <Text style={{ color: "rgb(112, 122, 131)", marginLeft: "10px" }}>
-                    Sale starts {new Date(nft?.updatedAt).toDateString()}{" "}
-                    {new Date(nft?.updatedAt).toLocaleTimeString()}
+                    {nft?.trade_selling === null ? (
+                      <>판매 정보 업데이트 중입니다.</>
+                    ) : (
+                      <>
+                        Sale starts {new Date(nft?.trade_selling?.createdAt).toDateString()}{" "}
+                        {new Date(nft?.trade_selling?.createdAt).toLocaleTimeString()}
+                      </>
+                    )}
                   </Text>
                 </div>
               </div>
-              <Divider style={{ margin: "15px 0" }} /> */}
+              <Divider style={{ margin: "15px 0" }} />
               <div>
                 <Text>Current price</Text>
                 <div style={{ display: "flex", margin: "12px 0" }}>

@@ -68,13 +68,17 @@ const NFTCard = ({ collectionSymbol, nft, idx }) => {
         >
           <div style={{ width: "70%" }}>{nft?.name}</div>
 
-          <div style={{ display: "flex", width: "30%", flexDirection: "column", alignItems: "flex-end" }}>
-            <span>Price</span>
-            <div style={{ display: "flex", alignItems: "center", marginTop: "3px" }}>
-              <Image width={14} height={14} src="/images/eth.svg" alt="" />
-              <span style={{ marginLeft: "3px", fontWeight: "bold", fontSize: "14px" }}>22</span>
+          {nft?.isSelling && (
+            <div style={{ display: "flex", width: "30%", flexDirection: "column", alignItems: "flex-end" }}>
+              <span>Price</span>
+              <div style={{ display: "flex", alignItems: "center", marginTop: "3px" }}>
+                <Image width={14} height={14} src="/images/eth.svg" alt="" />
+                <span style={{ marginLeft: "3px", fontWeight: "bold", fontSize: "14px" }}>
+                  {nft?.trade_selling?.price}
+                </span>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* <div style={{ height: "30px" }}>2</div> */}
         </div>

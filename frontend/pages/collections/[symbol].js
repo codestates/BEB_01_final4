@@ -146,6 +146,7 @@ const NFTS = () => {
         ]}
       >
         {collection?.assets.map((nft, i) => {
+          console.log(nft);
           return nft.imageURI === null ? null : (
             <NFTCard key={i} collectionSymbol={collection?.symbol} nft={nft} idx={i} />
           );
