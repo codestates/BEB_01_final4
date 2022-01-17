@@ -17,7 +17,7 @@ const abi = [
 				"type": "string"
 			}
 		],
-		"stateMutability": "nonpayable",
+		"stateMutability": "payable",
 		"type": "constructor"
 	},
 	{
@@ -125,19 +125,13 @@ const abi = [
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "contractAddr",
-				"type": "address"
-			},
-			{
 				"indexed": false,
 				"internalType": "address",
 				"name": "collection",
 				"type": "address"
 			},
 			{
-				"indexed": false,
+				"indexed": true,
 				"internalType": "uint256",
 				"name": "tokenId",
 				"type": "uint256"
@@ -150,11 +144,30 @@ const abi = [
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": true,
+				"indexed": false,
 				"internalType": "address",
-				"name": "contractAddr",
+				"name": "collection",
 				"type": "address"
 			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			}
+		],
+		"name": "_rental",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
 			{
 				"indexed": false,
 				"internalType": "address",
@@ -162,7 +175,51 @@ const abi = [
 				"type": "address"
 			},
 			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
 				"indexed": false,
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			}
+		],
+		"name": "_rented",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "collection",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "_return",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "collection",
+				"type": "address"
+			},
+			{
+				"indexed": true,
 				"internalType": "uint256",
 				"name": "tokenId",
 				"type": "uint256"
@@ -175,6 +232,31 @@ const abi = [
 			}
 		],
 		"name": "_sell",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "collection",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			}
+		],
+		"name": "_trade",
 		"type": "event"
 	},
 	{
@@ -259,11 +341,6 @@ const abi = [
 				"internalType": "uint256",
 				"name": "tokenId",
 				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "contractAddr",
-				"type": "address"
 			}
 		],
 		"name": "cancel",
@@ -330,6 +407,44 @@ const abi = [
 				"internalType": "bool",
 				"name": "",
 				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "getPrice",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "getRental",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
 			}
 		],
 		"stateMutability": "view",
@@ -445,6 +560,55 @@ const abi = [
 	{
 		"inputs": [
 			{
+				"internalType": "uint256",
+				"name": "option",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "payment",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			}
+		],
+		"name": "rent",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "returnNFT",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "address",
 				"name": "from",
 				"type": "address"
@@ -502,7 +666,7 @@ const abi = [
 			},
 			{
 				"internalType": "uint256",
-				"name": "price",
+				"name": "_price",
 				"type": "uint256"
 			}
 		],
@@ -526,6 +690,44 @@ const abi = [
 		],
 		"name": "setApprovalForAll",
 		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newCompany",
+				"type": "address"
+			}
+		],
+		"name": "setCompany",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "newFees",
+				"type": "uint256"
+			}
+		],
+		"name": "setTradeFees",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -615,6 +817,10 @@ const abi = [
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"stateMutability": "payable",
+		"type": "receive"
 	}
 ];
 
