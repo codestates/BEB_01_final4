@@ -326,8 +326,8 @@ const Asset = () => {
               >
                 {nft?.trade_history.length > 0 ? (
                   <PriceHistory
-                    labels={nft?.trade_history.map((asset) => new Date(asset.updatedAt).toLocaleDateString())}
-                    priceArr={nft?.trade_history.map((asset) => asset.price)}
+                    labels={nft?.trade_history.map((asset) => new Date(asset.updatedAt).toLocaleDateString()).reverse()}
+                    priceArr={nft?.trade_history.map((asset) => asset.price).reverse()}
                   />
                 ) : (
                   <>
