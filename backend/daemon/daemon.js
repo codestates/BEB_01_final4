@@ -136,13 +136,6 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
       //const getApproved = await contractObj.methods.getApproved(tx.input_tokenId).call();
       const getIsSelling = await contractObj.methods.getIsSelling(tx.input_tokenId).call();
       
-      let status = '';
-      if(getIsSelling == true) {
-        status = 'selling';
-      } else {
-        //throw new Error('[sell 등록 중] 판매 중이 아님');
-      }
-
       //wei -> ether
       tx.input_price = await web3.utils.fromWei(tx.input_price, "ether");
       
@@ -150,22 +143,31 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
       const inputData = {
         token_ids: tx.input_tokenId,
         collectionAddress: MyCA,
-        status: status,
+        status: 'selling',
         //trade_ca: getApproved,
         price: tx.input_price,
         seller: tx.from,
-        buyer: null
+        buyer: null,
+        sellHash: tx.hash
       };
 
       let result = await Trades.findOrCreate({
         where:{
           collectionAddress: MyCA,
           token_ids: tx.input_tokenId,
-          status: 'selling',
+          //status: 'selling',
           sellHash: tx.hash
         },
         defaults:inputData
       });
+
+      // let status = '';
+      // if(getIsSelling == true) {
+      //   status = 'selling';
+      // } else {
+      //   //throw new Error('[sell 등록 중] 판매 중이 아님');
+      // }
+
       if(result[1] === true) {
         console.log(`========== New trade has been enrolled=======`);
         console.log(result[0].dataValues);
@@ -176,7 +178,7 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
     else if(tx.input_name === 'payment' && Number(decodedData.params[0].value) == 1) {
       tx.input_tokenId = Number(decodedData.params[1].value);
       tx.input_price = Number(tx.value);
-      console.log(`${tx.to}   ${tx.input_tokenId}`);
+      //console.log(`${tx.to}   ${tx.input_tokenId}`);
 
       //trade contractAddress 조회
       const contractObj = new web3.eth.Contract(
@@ -193,22 +195,22 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
         }
       );
 
-      await Trades.update(
+      const result = await Trades.update(
         {
           status: 'completed',
-          buyer: tx.from
+          buyer: tx.from,
+          buyHash: tx.hash
         },
         {
           where: {
             status: 'selling',
             collectionAddress: tx.to,
             token_ids: tx.input_tokenId,
-            buyHash: tx.hash
           },
         }
       );
 
-      // 판매 로직
+      // 판매 검증 로직
       // const getIsSelling = await contractObj.methods.getIsSelling(tx.input_tokenId).call();
       // const ownerOf = await contractObj.methods.ownerOf(tx.input_tokenId).call();
       
@@ -222,11 +224,13 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
       //   throw new Error('[payment option 1 트랜잭션 검증 중] getIsSelling 이 여전히 true');
       // }
 
-
-      console.log(`========== Trade has been dealed =======`);
-      console.log(tx);
-      COUNT.buy++;
-
+      if(result > 0) {
+        console.log(`========== Trade has been dealed =======`);
+        console.log(tx);
+        COUNT.buy++;
+      } else {
+        //console.log('buy 업데이트 안됨');
+      }
     }
   }
   catch(err) {
