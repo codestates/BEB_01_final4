@@ -123,10 +123,11 @@ const Asset = () => {
 
   const checkNftPriceFromContract = async () => {
     console.log("checkNftPriceFromContract");
-    if (isSelling) {
-      console.log(nft);
+    if (isSelling && collectionContract) {
+      console.log(collectionContract);
+      console.log(parseInt(tokenId), typeof parseInt(tokenId));
 
-      const nftPrice = await collectionContract.methods.getPrice(tokenId).call();
+      const nftPrice = await collectionContract.methods.getPrice(parseInt(tokenId)).call();
 
       console.log(nftPrice);
 

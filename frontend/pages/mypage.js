@@ -182,8 +182,9 @@ const MyPage = () => {
               ]}
             >
               {myData?.assets.map((nft, i) => {
-                // console.log(nft);
-                return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={""} nft={nft} idx={i} />;
+                return nft.imageURI === null ? null : (
+                  <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />
+                );
               })}
             </SimpleGrid>
           </CTabs.Tab>
@@ -199,7 +200,9 @@ const MyPage = () => {
             >
               {createdAssets.map((nft, i) => {
                 console.log(nft);
-                return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={""} nft={nft} idx={i} />;
+                return nft.imageURI === null ? null : (
+                  <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />
+                );
               })}
             </SimpleGrid>
           </CTabs.Tab>
