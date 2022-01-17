@@ -86,7 +86,9 @@ const CreateCollection = () => {
           })
           .send({ from: account });
 
-        if (contract) {
+        console.log(contract._address);
+
+        if (contract._address) {
           await axios.post(
             `${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`,
             { contractAddress: contract._address },
