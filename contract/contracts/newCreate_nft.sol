@@ -104,11 +104,16 @@ contract GGanbuCollection is ERC721URIStorage, Ownable {
         emit _sell(address(this),tokenId,_price);
     }  
 
+//수정하기
     function cancel(uint256 tokenId) public {
         require(msg.sender == ownerOf(tokenId),"Collection: This address is not owner");
-        require(!isRental[tokenId],"Collection: This nft is rented");
-        require(auction[tokenId],"Collection: This nft is not on sale");
-        auction[tokenId] = false;
+        require(isRental[tokenId] || isRental[tokenId],"Collection: This nft not has a event");
+        if(isRental[tokenId]){
+            auction[tokenId] = false;
+        }else if(isRental[tokenId]){
+            isRental[tokenId] = false;
+        }
+                
         price[tokenId] = 0;
         emit _cancel(address(this),tokenId);
     }  
