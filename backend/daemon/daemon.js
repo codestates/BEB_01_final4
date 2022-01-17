@@ -185,13 +185,15 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
         MyAbi, MyCA,
       );
 
+      console.log(`tx.to (받는사람) : ${tx.to}`);
+      console.log(`MyCA           : ${MyCA}`);
       //DB업데이트
       await NFTs.update(
         {
           ownerAddress: tx.from
         },
         {
-          where: {contractAddress: MyCA}
+          where: {contractAddress: tx.to}
         }
       );
 
