@@ -9,7 +9,7 @@ const Listings = ({ elements }) => {
         {element.price}
       </td>
       <td>{element.seller}</td>
-      <td>{element.updatedAt}</td>
+      <td>{new Date(element.updatedAt).toLocaleDateString()}</td>
     </tr>
   ));
 
