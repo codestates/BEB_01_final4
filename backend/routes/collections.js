@@ -276,6 +276,9 @@ router.get('/:collection_symbol', async (req, res, next) => {
         //트레이드 정보 추가
         let qTrades = await Trades.findAll({
           where: whereOption,
+          order: [
+            ['createdAt', 'DESC']
+          ],
         });
 
         //만약 Trade 내역이 존재한다면
