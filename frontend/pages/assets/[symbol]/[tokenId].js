@@ -62,24 +62,7 @@ const Asset = () => {
   const [isSelling, setIsSelling] = useState(false);
   const [nftOwner, setNftOwner] = useState("");
   const [collectionContract, setCollectionContract] = useState(null);
-  // const [tradeContract, setTradeContract] = useState(null);
   const [price, setPrice] = useState(null);
-  // const [tradeCA, setTradeCA] = useState(null);
-
-  // const getCollection = async () => {
-  //   try {
-  //     if (symbol) {
-  //       const {
-  //         data: { data: collectionData },
-  //       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`, {
-  //         withCredentials: true,
-  //       });
-  //       // console.log(collectionData);
-  //     }
-  //   } catch (e) {
-  //     console.dir(e);
-  //   }
-  // };
 
   const getNft = async () => {
     try {
@@ -117,9 +100,6 @@ const Asset = () => {
         const isSelling = await collectionContract.methods.getIsSelling(tokenId).call();
         setIsSelling(isSelling);
 
-        // if (isSelling) {
-        //   setTradeCA(await collectionContract.methods.getApproved(tokenId).call());
-        // }
         const owner = await collectionContract.methods.ownerOf(tokenId).call();
         // console.log(owner);
         setNftOwner(owner);
@@ -145,9 +125,6 @@ const Asset = () => {
     console.log("checkNftPriceFromContract");
     if (isSelling) {
       console.log(nft);
-      // const tradeContract = await new web3.eth.Contract(Trade.abi, tradeCA, { from: account });
-
-      // setTradeContract(tradeContract);
 
       const nftPrice = await collectionContract.methods.getPrice(tokenId).call();
 
@@ -174,12 +151,6 @@ const Asset = () => {
 
     try {
       if (price) {
-        // const txResult = await web3.eth.sendTransaction({
-        //   from: account,
-        //   to: tradeCA,
-        //   value: web3.utils.toWei(price, "ether"),
-        // });
-
         const txResult = await collectionContract.methods
           .payment(1, tokenId)
           .send({ value: web3.utils.toWei(price, "ether") });
