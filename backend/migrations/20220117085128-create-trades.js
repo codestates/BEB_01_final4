@@ -29,6 +29,12 @@ module.exports = {
       buyer: {
         type: Sequelize.STRING
       },
+      sellHash: {
+        type: Sequelize.STRING
+      },
+      buyHash: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

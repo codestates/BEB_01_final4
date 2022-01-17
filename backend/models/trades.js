@@ -20,7 +20,9 @@ module.exports = (sequelize, DataTypes) => {
     trade_ca: DataTypes.STRING,
     price: DataTypes.FLOAT,
     seller: DataTypes.STRING,
-    buyer: DataTypes.STRING
+    buyer: DataTypes.STRING,
+    sellHash: DataTypes.STRING,
+    buyHash: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Trades',
