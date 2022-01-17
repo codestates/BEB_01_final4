@@ -32,7 +32,10 @@ router.get('/', async (req, res, next) => {
                 where: {
                     token_ids : NFT.token_ids,
                     collectionAddress : NFT.contractAddress
-                }
+                },
+                order: [
+                    ['createdAt', 'DESC']
+                ],
             });
 
             //만약 Trade 내역이 존재한다면
@@ -114,7 +117,10 @@ router.get('/:symbol/:token_ids', async (req, res, next) => {
         where: {
             token_ids : NFT.token_ids,
             collectionAddress : NFT.contractAddress
-        }
+        },
+        order: [
+            ['createdAt', 'DESC']
+        ],
     });
     
     //만약 Trade 내역이 존재한다면
