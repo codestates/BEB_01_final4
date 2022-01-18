@@ -9,6 +9,7 @@ const assetsRouter = require('./routes/assets');
 const usersRouter = require('./routes/users');
 const metadataRouter = require('./routes/metadata');
 const tradesRouter = require('./routes/trades');
+const mainRouter = require('./routes/main');
 
 const app = express();
 
@@ -22,8 +23,8 @@ sequelize.sync({ force: false })
 
 app.use(morgan('dev'));
 app.use(cors({
-    origin : "http://localhost:3000", // the origin of the requests - frontend address
-    credentials : true  
+    origin: "http://localhost:3000", // the origin of the requests - frontend address
+    credentials: true
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -36,6 +37,7 @@ app.use('/assets', assetsRouter);
 app.use('/users', usersRouter);
 app.use('/metadata', metadataRouter);
 app.use('/trades', tradesRouter);
+app.use('/main', mainRouter);
 
 
 app.get('/', (req, res) => {
