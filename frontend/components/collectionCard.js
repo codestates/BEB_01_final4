@@ -91,6 +91,7 @@ const CollectionCard = ({ collection }) => {
               height: "30%",
               overflow: "hidden",
               fontWeight: "bold",
+              fontSize: "20px",
             }}
           >
             {collection.name}
@@ -106,6 +107,7 @@ const CollectionCard = ({ collection }) => {
                 textAlign: "center",
                 textOverflow: "ellipsis",
                 whiteSpace: "initial",
+                fontSize: "18px",
               }}
             >
               {collection.description}

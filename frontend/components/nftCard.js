@@ -23,8 +23,12 @@ const BadgeWrapper = styled.div`
   display: flex;
   justify-content: right;
 
-  & > * {
+  && > * {
     margin: 0 3px;
+  }
+
+  && * {
+    font-size: 17px;
   }
 `;
 
@@ -69,7 +73,7 @@ const NFTCard = ({ collectionSymbol, nft, idx }) => {
         <BadgeWrapper>
           {nft?.isSelling && (
             <Badge size="lg" color="pink" radius={4} variant="outline">
-              판매 중
+              For Sale
             </Badge>
           )}
         </BadgeWrapper>
@@ -80,7 +84,7 @@ const NFTCard = ({ collectionSymbol, nft, idx }) => {
             height: "60px",
             overflow: "hidden",
             padding: "5px 10px",
-            fontSize: "13px",
+            fontSize: "18px",
           }}
         >
           <div style={{ width: "70%" }}>{nft?.name}</div>
@@ -89,7 +93,7 @@ const NFTCard = ({ collectionSymbol, nft, idx }) => {
               <span>Price</span>
               <div style={{ display: "flex", alignItems: "center", marginTop: "3px" }}>
                 <Image width={14} height={14} src="/images/eth.svg" alt="" />
-                <span style={{ marginLeft: "3px", fontWeight: "bold", fontSize: "14px" }}>
+                <span style={{ marginLeft: "3px", fontWeight: "bold", fontSize: "17px" }}>
                   {nft?.trade_selling?.price}
                 </span>
               </div>
