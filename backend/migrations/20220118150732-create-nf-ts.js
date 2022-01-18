@@ -38,6 +38,9 @@ module.exports = {
       imageURI: {
         type: Sequelize.STRING
       },
+      renterAddress: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
