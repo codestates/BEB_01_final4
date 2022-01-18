@@ -184,8 +184,14 @@ contract GGanbuCollection is ERC721URIStorage, Ownable {
         return price[tokenId];
     }
 
-    function getRental(uint256 tokenId) public view returns(address){
+//대여한 지갑 주소  return
+    function getRentalAddress(uint256 tokenId) public view returns(address){
         return rental[tokenId];
+    }
+
+//대여 등록된 상태인지 아닌지 확인
+    function getIsRental(uint256 tokenId) public view returns(uint256){
+        return isRental[tokenId];
     }
         
 }
