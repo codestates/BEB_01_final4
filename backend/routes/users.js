@@ -97,29 +97,16 @@ router.get('/:address', async (req, res, next) => {
       ],
     });
 
-    //유저가 등록한 lend NFTs
-    const myLends = await Rents.findAll({ 
-      where: {status:'lend',owner:address},
-      order: [
-        ['createdAt', 'DESC']
-      ],
-    });
-
     //컬랙션 수, 자산 수 추가
     result.num_of_collections = myCollections.length;
     result.num_of_assets = myNFTs.length;
     result.num_of_rents = myRents.length;
-    
+
     //컬랙션 리스트 추가
     result.collections = [];
     for(let i=0;i<myCollections.length;i++) {
       result.collections.push(myCollections[i].dataValues);
     }
-
-    // result.lends = [];
-    // for(let i=0;i<myLends.length;i++) {
-    //   result.lends.push(myLends[i].dataValues);
-    // }
 
     // case 보유 NFT: /users/<id>, /users/<id>?tab=mint, /users/<id>?tab=selling
     if(!req.query.tab || req.query.tab == 'mint' || req.query.tab == 'selling'
@@ -148,6 +135,8 @@ router.get('/:address', async (req, res, next) => {
         NFT.trade_selling = null;
         NFT.isLending = null;
         NFT.lending = null;
+        NFT.isRenting = null;
+        NFT.renting = null;
         
         //trade sort 옵션
         let whereOption = {
@@ -196,14 +185,22 @@ router.get('/:address', async (req, res, next) => {
           where: {
             token_ids: NFT.token_ids,
             collectionAddress: NFT.contractAddress,
-            status: 'lend'  
+            [Op.or]: [{ status: 'lend' }, { status: 'rent' }],
           },
         });
         if(qRent) {
-          NFT.isLending = true;
-          NFT.price = qRent.price;
-          NFT.seller = qRent.owner;
-          NFT.lending = qRent.dataValues;
+          if(qRent.status == 'lend') {
+            NFT.isLending = true;
+            NFT.price = qRent.price;
+            NFT.seller = qRent.owner;
+            NFT.lending = qRent.dataValues;
+          } 
+          else if(qRent.status == 'rent') {
+            NFT.isRenting = true;
+            NFT.price = qRent.price;
+            NFT.seller = qRent.owner;
+            NFT.renting = qRent.dataValues;
+          }
         }
 
         //제공할 NFT 선택
@@ -256,6 +253,93 @@ router.get('/:address', async (req, res, next) => {
           //트레이드 데이터
           result.trades.push(trade);
         }
+      }
+    } else if(req.query.tab == 'rent' || req.query.tab == 'cancelled') {
+      //NFT리스트 취합
+      let rentNFTs = [];
+      for(let i=0;i<myRents.length;i++) {
+        const targetNFT = await NFTs.findOne({ 
+          where: {
+            contractAddress: myRents[i].contractAddress,
+            token_ids: myRents[i].token_ids
+          }
+        });
+        rentNFTs.push(targetNFT.dataValues);
+      }
+
+
+
+      result.assets = [];
+      
+      for(let i=0;i<rentNFTs.length;i++) {
+        //NFT 가 판매 중이라면 판매 정보 업데이트
+        let NFT = rentNFTs[i].dataValues;
+
+        //각 NFT의 collection 데이터
+        const nftCollection = await Collections.findOne({
+          where: {
+            contractAddress: NFT.contractAddress
+          }
+        });
+        if(nftCollection) {
+          NFT.collection = nftCollection.dataValues;
+        }
+
+        NFT.isSelling = false;
+        NFT.price = null;
+        NFT.trade_ca = null;
+        NFT.seller = null;
+        NFT.trade_selling = null;
+        NFT.isLending = null;
+        NFT.lending = null;
+        NFT.isRenting = null;
+        NFT.renting = null;
+        
+        //trade sort 옵션
+        let whereOption = {
+            token_ids : NFT.token_ids,
+            collectionAddress : NFT.contractAddress,
+            status : 'selling'
+        };
+
+        //트레이드 정보 추가
+        let qTrades = await Trades.findOne({
+            where: whereOption,
+        });
+        
+        //만약 Trade 내역이 존재한다면 NFT 에 그 내역들을 추가
+        if(qTrades) {
+          NFT.isSelling = true;
+          NFT.price = qTrades.price;
+          NFT.trade_ca = qTrades.trade_ca;
+          NFT.seller = qTrades.seller;
+          NFT.trade_selling = qTrades.dataValues; 
+        }
+
+        //대여 정보 추가
+        let qRent = await Rents.findOne({
+          where: {
+            token_ids: NFT.token_ids,
+            collectionAddress: NFT.contractAddress,
+            status: 'rent',
+          },
+        });
+        if(qRent) {
+          NFT.isRenting = true;
+          NFT.price = qRent.price;
+          NFT.seller = qRent.owner;
+          NFT.Renting = qRent.dataValues;
+        }
+
+        result.assets.push(NFT);
+      }
+      //sort
+      result.assets = result.assets.sort((a, b) => a.isSelling > b.isSelling ? -1 : 1);
+
+      if(req.query.sort == 'price-high') {
+        result.assets = result.assets.sort(function(a, b)  {
+          return b.price - a.price;
+        });
       }
     }
 
