@@ -23,7 +23,8 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     description: DataTypes.TEXT,
     traits: DataTypes.TEXT,
-    imageURI: DataTypes.STRING
+    imageURI: DataTypes.STRING,
+    renterAddress: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'NFTs',

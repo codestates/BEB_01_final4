@@ -194,7 +194,10 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
           ownerAddress: tx.from
         },
         {
-          where: {contractAddress: tx.to}
+          where: {
+            contractAddress: tx.to,
+            token_ids: tx.input_tokenId
+          }
         }
       );
 
@@ -273,6 +276,69 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
         console.log(`========== New lend has been enrolled=======`);
         console.log(result[0].dataValues);
         COUNT.lend++;
+      }
+    }
+    // 만약 payment(2), 즉 rent 트랜잭션이라면
+    else if(tx.input_name === 'payment' && Number(decodedData.params[0].value) == 2) {
+      tx.input_tokenId = Number(decodedData.params[1].value);
+      tx.input_price = Number(tx.value);
+      
+      const contractObj = new web3.eth.Contract(
+        MyAbi, MyCA,
+      );
+
+      //현재는 payment 가 늘 성공했다고 가정하고 있다.
+      //블록의 현재 상태와 과아아아거 트랜의 비교가 불가능하다면 최소한 price는 검증할 필요가 있다
+
+      //DB업데이트
+      await NFTs.update(
+        {
+          //ownerAddress: tx.from
+          renterAddress: tx.from
+        },
+        {
+          where: {
+            contractAddress: tx.to,
+            token_ids: tx.input_tokenId
+          }
+        }
+      );
+
+      const result = await Rents.update(
+        {
+          status: 'rent',
+          renter: tx.from,
+          rentHash: tx.hash
+        },
+        {
+          where: {
+            status: 'lend',
+            collectionAddress: tx.to,
+            token_ids: tx.input_tokenId,
+          },
+        }
+      );
+
+      //검증 작업: 해당 func은 블록의 현재 상태를 보여줄 뿐이다. 따라서 블록을 0부터 조회하면 과거 트랜정보 검증은 불가능함
+      // const getIsSelling = await contractObj.methods.getIsSelling(tx.input_tokenId).call();
+      // const ownerOf = await contractObj.methods.ownerOf(tx.input_tokenId).call();
+      
+      // //현재 owner 가 buy 요청한 사람과 동일한지 확인
+      // if(ownerOf != tx.from) {
+      //   throw new Error('[payment option 1 트랜잭션 검증 중] NFT 소유자 불일치');
+      // }
+
+      // //판매가 완료된 건인지 블록 검증
+      // if(getIsSelling == true) {
+      //   throw new Error('[payment option 1 트랜잭션 검증 중] getIsSelling 이 여전히 true');
+      // }
+
+      if(result > 0) {
+        console.log(`========== Rent has been dealed =======`);
+        console.log(tx);
+        COUNT.rent++;
+      } else {
+        //console.log('buy 업데이트 안됨');
       }
     }
   }
@@ -416,6 +482,7 @@ const main = async (MyAbi, START_BLOCK) => {
     console.log(`# of traded          : ${COUNT.buy}`);
     console.log(`# of sell cancelled  : ${COUNT.cancel}`);
     console.log(`# of lend enrollment : ${COUNT.lend}`);
+    console.log(`# of rent            : ${COUNT.rent}`);
     sequelize.close();
   }
   catch(e) {
