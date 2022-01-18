@@ -1,4 +1,4 @@
-import { Grid } from "@mantine/core";
+import { Badge, Grid } from "@mantine/core";
 import Image from "next/image";
 import styled from "styled-components";
 import { useRouter } from "next/router";
@@ -15,6 +15,17 @@ const NftWrapper = styled.div`
 const CImage = styled(Image)`
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+`;
+
+const BadgeWrapper = styled.div`
+  padding: 5px;
+  height: 37px;
+  display: flex;
+  justify-content: right;
+
+  & > * {
+    margin: 0 3px;
+  }
 `;
 
 const NFTCard = ({ collectionSymbol, nft, idx }) => {
@@ -55,7 +66,13 @@ const NFTCard = ({ collectionSymbol, nft, idx }) => {
             />
           )}
         </div>
-
+        <BadgeWrapper>
+          {nft?.isSelling && (
+            <Badge size="lg" color="pink" radius={4} variant="outline">
+              판매 중
+            </Badge>
+          )}
+        </BadgeWrapper>
         <div
           style={{
             display: "flex",
@@ -67,7 +84,6 @@ const NFTCard = ({ collectionSymbol, nft, idx }) => {
           }}
         >
           <div style={{ width: "70%" }}>{nft?.name}</div>
-
           {nft?.isSelling && (
             <div style={{ display: "flex", width: "30%", flexDirection: "column", alignItems: "flex-end" }}>
               <span>Price</span>
