@@ -50,6 +50,14 @@ const TradeBox = styled.div`
   border: 1px solid rgb(229, 232, 235);
   border-radius: 10px;
   margin: 5px 0;
+
+  & > button {
+    margin: 0 3px;
+  }
+
+  & > div > button {
+    margin: 0 3px;
+  }
 `;
 
 const Asset = () => {
@@ -273,6 +281,18 @@ const Asset = () => {
                   Sell
                 </Button>
               )}
+              {account && account === nftOwner && !isSelling && (
+                <Button
+                  style={{ marginTop: "15px" }}
+                  onClick={() => {
+                    router.push(`${router.asPath}/lend`);
+                  }}
+                  color="teal"
+                  size="lg"
+                >
+                  Lend
+                </Button>
+              )}
             </TradeBox>
           )}
 
@@ -303,6 +323,9 @@ const Asset = () => {
 
                 <Button onClick={handleClickBuy} color="teal" size="lg">
                   Buy now
+                </Button>
+                <Button style={{ marginTop: "15px" }} color="teal" size="lg">
+                  Buy with GGanbu
                 </Button>
               </div>
             </TradeBox>
