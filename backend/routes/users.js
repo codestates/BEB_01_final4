@@ -166,9 +166,9 @@ router.get('/:address', async (req, res, next) => {
         NFT.trade_ca = null;
         NFT.seller = null;
         NFT.trade_selling = null;
-        NFT.isLending = null;
+        NFT.isLending = false;
         NFT.lending = null;
-        NFT.isRenting = null;
+        NFT.isRenting = false;
         NFT.renting = null;
         
         //trade sort 옵션
@@ -323,9 +323,9 @@ router.get('/:address', async (req, res, next) => {
         NFT.trade_ca = null;
         NFT.seller = null;
         NFT.trade_selling = null;
-        NFT.isLending = null;
+        NFT.isLending = false;
         NFT.lending = null;
-        NFT.isRenting = null;
+        NFT.isRenting = false;
         NFT.renting = null;
         
         //trade sort 옵션
