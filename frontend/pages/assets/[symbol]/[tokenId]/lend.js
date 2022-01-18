@@ -52,13 +52,13 @@ const CInput = styled(Input)`
 
 const Lend = () => {
   const [web3, account] = useStore((state) => [state.web3, state.account]);
-  const [sellPrice, setSellPrice] = useInputState("");
+  const [lendPrice, setLendPrice] = useInputState("");
   // const [nft, setNft] = useState(null);
-  const [contract, setContract] = useState(null);
+  const [collectionContract, setCollectionContract] = useState(null);
   const router = useRouter();
   const { symbol, tokenId } = router.query;
 
-  const checkCanSell = async () => {
+  const checkIsMyNft = async () => {
     if (symbol && tokenId && account) {
       console.log(symbol, tokenId);
       const {
@@ -68,11 +68,11 @@ const Lend = () => {
       });
 
       if (web3) {
-        const contract = await new web3.eth.Contract(GGanbuCollection.abi, nftData?.contractAddress, {
+        const collectionContract = await new web3.eth.Contract(GGanbuCollection.abi, nftData?.contractAddress, {
           from: account,
         });
-        setContract(contract);
-        const nftOwner = await contract.methods.ownerOf(tokenId).call();
+        setCollectionContract(collectionContract);
+        const nftOwner = await collectionContract.methods.ownerOf(tokenId).call();
         if (nftOwner === account) {
           return;
         }
@@ -88,15 +88,24 @@ const Lend = () => {
   };
 
   useEffect(() => {
-    checkCanSell();
+    checkIsMyNft();
   }, [account]);
 
   const handleClickSell = async () => {
     try {
-      console.log(contract.methods);
-      const unitPrice = web3.utils.toWei(sellPrice, "ether");
-      const txResult = await contract.methods.sell(tokenId, unitPrice).send();
+      console.log(collectionContract.methods);
+      const unitPrice = web3.utils.toWei(lendPrice, "ether");
+      const txResult = await collectionContract.methods.rent(tokenId, unitPrice).send();
       console.log(txResult);
+
+      let event = await collectionContract.getPastEvents("_rental", {
+        fromBlock: txResult.blockNumber,
+        toBlock: txResult.blockNumber,
+      });
+
+      let log = event.find((log) => log.transactionHash == txResult.transactionHash);
+      console.log(log.returnValues);
+
       router.push(`/assets/${symbol}/${tokenId}`);
     } catch (e) {
       console.dir(e);
@@ -147,7 +156,7 @@ const Lend = () => {
               <IoIosArrowDown />
             </div>
             <div style={{ flex: "60%" }}>
-              <CInput value={sellPrice} onChange={setSellPrice} variant="default" placeholder="Amount" />
+              <CInput value={lendPrice} onChange={setLendPrice} variant="default" placeholder="Amount" />
             </div>
           </PriceWrapper>
           <div>
