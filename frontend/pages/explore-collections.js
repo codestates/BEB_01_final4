@@ -30,7 +30,7 @@ const Collections = () => {
 
   return (
     <div>
-      <Text style={{ fontSize: "32px", margin: "40px 0", fontWeight: "bold" }} align="center">
+      <Text style={{ fontSize: "38px", margin: "40px 0", fontWeight: "bold" }} align="center">
         Explore Collections
       </Text>
       <SimpleGrid

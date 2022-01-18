@@ -14,6 +14,9 @@ const Container = styled.div`
     max-width: 600px;
     margin: 30px auto;
   }
+  && .mantine-Text-root {
+    font-size: 24px !important;
+  }
 `;
 
 const TitleInput = styled.div`
@@ -116,16 +119,16 @@ const CreateCollection = () => {
           Create Collection
         </Text>
         <TitleInput style={{ width: "200px" }}>
-          <Text>로고 이미지</Text>
+          <Text>Logo Image</Text>
           <UploadLogo logoUrl={logoUrl} setLogoUrl={setLogoUrl} />
         </TitleInput>
         <TitleInput>
-          <Text>배너 이미지</Text>
+          <Text>Banner Image</Text>
           <UploadBanner bannerUrl={bannerUrl} setBannerUrl={setBannerUrl} />
         </TitleInput>
         <TitleInput>
-          <Text style={{ marginBottom: "0px" }}>이름</Text>
-          <Text style={{ color: "rgb(112, 122, 131)", fontSize: "13px" }}>
+          <Text style={{ marginBottom: "0px" }}>Name</Text>
+          <Text style={{ color: "rgb(112, 122, 131)", fontSize: "13px !important" }}>
             영문, 숫자, - 기호, 띄어쓰기만 가능합니다.
           </Text>
           <Input
@@ -138,12 +141,12 @@ const CreateCollection = () => {
             }}
             onInput={toInputAlphabetDecimal}
             variant="default"
-            placeholder="이름"
+            placeholder="Name"
           />
         </TitleInput>
         <TitleInput>
-          <Text style={{ marginBottom: "0px" }}>심볼</Text>
-          <Text style={{ color: "rgb(112, 122, 131)", fontSize: "13px" }}>
+          <Text style={{ marginBottom: "0px" }}>Symbol</Text>
+          <Text style={{ color: "rgb(112, 122, 131)", fontSize: "13px !important" }}>
             영문 소문자, 숫자, - 기호만 입력 가능합니다.
           </Text>
           <Input
@@ -156,12 +159,12 @@ const CreateCollection = () => {
             }}
             onInput={toInputLowerCaseDecimal}
             variant="default"
-            placeholder="심볼"
+            placeholder="Symbol"
           />
         </TitleInput>
         <TitleInput>
-          <Text>설명</Text>
-          <Input value={description} onChange={setDescription} variant="default" placeholder="설명" />
+          <Text>Description</Text>
+          <Input value={description} onChange={setDescription} variant="default" placeholder="Description" />
         </TitleInput>
 
         <div style={{ width: "180px", margin: "0 auto" }}>

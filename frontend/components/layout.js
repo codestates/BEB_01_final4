@@ -22,6 +22,12 @@ const CButton = styled(Button)`
   margin-bottom: 10px;
 `;
 
+const CHeader = styled.div`
+  && * {
+    font-size: 22px;
+  }
+`;
+
 export const connectWallet = async ({ setAccount, setUser }) => {
   let accounts = await window.ethereum.request({
     method: "eth_requestAccounts",
@@ -115,7 +121,7 @@ const Layout = ({ children }) => {
                     <Text
                       style={{
                         fontWeight: "bold",
-                        fontSize: "25px",
+                        fontSize: "28px",
                         marginLeft: "10px",
                         alignSelf: "center",
                       }}
@@ -141,19 +147,19 @@ const Layout = ({ children }) => {
                 placeholder="Search"
               />
               <MediaQuery smallerThan="sm" styles={{ display: "none !important" }}>
-                <div style={{ display: "flex" }}>
+                <CHeader style={{ display: "flex" }}>
                   <Link href="/explore-collections" passHref>
                     <CText>Explore</CText>
                   </Link>
                   <Link href="/create" passHref>
                     <CText>Create</CText>
                   </Link>
-                </div>
+                </CHeader>
               </MediaQuery>
             </div>
 
             <div style={{ display: "flex", alignItems: "center" }}>
-              {account && <Badge>{account.slice(0, 4) + "..." + account.slice(-4)}</Badge>}
+              {account && <Badge style={{ fontSize: "17px" }}>{account.slice(0, 4) + "..." + account.slice(-4)}</Badge>}
               {account && <Profile />}
 
               {!account && (
@@ -164,7 +170,7 @@ const Layout = ({ children }) => {
                   color="orange"
                 >
                   <Image width={28} height={28} src="https://docs.metamask.io/metamask-fox.svg" alt="" />
-                  <span style={{ marginLeft: "10px" }}>지갑 연결</span>
+                  <span style={{ marginLeft: "10px", fontSize: "20px" }}>Connect</span>
                 </Button>
               )}
             </div>

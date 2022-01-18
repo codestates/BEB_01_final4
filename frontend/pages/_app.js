@@ -35,6 +35,7 @@ export default function App(props) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
       </Head>
 
       <MantineProvider
@@ -43,7 +44,7 @@ export default function App(props) {
         theme={{
           /** Put your mantine theme override here */
           colorScheme: "light",
-          fontFamily: "Noto Sans KR, sans-serif",
+          fontFamily: "VT323, Noto Sans KR, sans-serif",
         }}
       >
         <Layout>

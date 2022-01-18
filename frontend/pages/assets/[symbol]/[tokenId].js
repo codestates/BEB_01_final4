@@ -60,6 +60,12 @@ const TradeBox = styled.div`
   }
 `;
 
+const CAccordion = styled(Accordion)`
+  && .mantine-Accordion-label .mantine-Text-root {
+    font-size: 20px !important;
+  }
+`;
+
 const Asset = () => {
   const router = useRouter();
   const { symbol, tokenId } = router.query;
@@ -213,8 +219,8 @@ const Asset = () => {
               `}</style>
             </div>
           </ImageWrapper>
-          <Accordion iconPosition="right" iconSize={30}>
-            <Accordion.Item
+          <CAccordion iconPosition="right" iconSize={30}>
+            <CAccordion.Item
               label={
                 <div
                   style={{
@@ -228,39 +234,39 @@ const Asset = () => {
               }
             >
               {nft?.description}
-            </Accordion.Item>
+            </CAccordion.Item>
 
-            <Accordion.Item
+            <CAccordion.Item
               label={
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <MdLabel />
                   <Text style={{ marginLeft: "10px" }}>Properties</Text>
                 </div>
               }
-            ></Accordion.Item>
+            ></CAccordion.Item>
 
-            <Accordion.Item
+            <CAccordion.Item
               label={
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <MdChromeReaderMode />
                   <Text style={{ marginLeft: "10px" }}>About</Text>
                 </div>
               }
-            ></Accordion.Item>
-            <Accordion.Item
+            ></CAccordion.Item>
+            <CAccordion.Item
               label={
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <MdVerticalSplit />
                   <Text style={{ marginLeft: "10px" }}>Details</Text>
                 </div>
               }
-            ></Accordion.Item>
-          </Accordion>
+            ></CAccordion.Item>
+          </CAccordion>
         </Grid.Col>
 
         <Grid.Col span={7}>
           <Link href={`/collections/${symbol}`} passHref>
-            <span style={{ color: "rgb(32, 129, 226)", fontSize: "16px", fontWeight: "bold", cursor: "pointer" }}>
+            <span style={{ color: "rgb(32, 129, 226)", fontSize: "22px", fontWeight: "bold", cursor: "pointer" }}>
               {symbol}
             </span>
           </Link>
@@ -268,7 +274,7 @@ const Asset = () => {
 
           {!isSelling && (
             <TradeBox>
-              <Text>판매 중인 NFT가 아닙니다.</Text>
+              <Text style={{ fontSize: "20px" }}>This is not a NFT for sale.</Text>
               {account && account === nftOwner && !isSelling && (
                 <Button
                   style={{ marginTop: "15px" }}
@@ -330,8 +336,8 @@ const Asset = () => {
               </div>
             </TradeBox>
           )}
-          <Accordion style={{ margin: "20px 0" }} iconPosition="right">
-            <Accordion.Item
+          <CAccordion style={{ fontSize: "20px", margin: "20px 0" }} iconPosition="right">
+            <CAccordion.Item
               label={
                 <div style={{ display: "flex", alignItems: "center", padding: "8px" }}>
                   <MdAutoGraph />
@@ -359,10 +365,10 @@ const Asset = () => {
                   </>
                 )}
               </div>
-            </Accordion.Item>
-          </Accordion>
-          <Accordion style={{ margin: "20px 0" }} iconPosition="right">
-            <Accordion.Item
+            </CAccordion.Item>
+          </CAccordion>
+          <CAccordion style={{ margin: "20px 0" }} iconPosition="right">
+            <CAccordion.Item
               label={
                 <div style={{ display: "flex", alignItems: "center", padding: "8px" }}>
                   <MdFormatListBulleted />
@@ -387,10 +393,10 @@ const Asset = () => {
                   </>
                 )}
               </div>
-            </Accordion.Item>
-          </Accordion>
-          <Accordion style={{ margin: "20px 0" }} iconPosition="right">
-            <Accordion.Item
+            </CAccordion.Item>
+          </CAccordion>
+          <CAccordion style={{ margin: "20px 0" }} iconPosition="right">
+            <CAccordion.Item
               label={
                 <div style={{ display: "flex", alignItems: "center", padding: "8px" }}>
                   <MdLocalOffer />
@@ -409,13 +415,13 @@ const Asset = () => {
                 <Image src="/images/no-offer.svg" width={668} height={100} alt="" />
                 <Text style={{ marginTop: "15px" }}>No offers yet</Text>
               </div>
-            </Accordion.Item>
-          </Accordion>
+            </CAccordion.Item>
+          </CAccordion>
         </Grid.Col>
       </Grid>
 
-      <Accordion style={{ margin: "20px 0" }} iconPosition="right">
-        <Accordion.Item
+      <CAccordion style={{ margin: "20px 0" }} iconPosition="right">
+        <CAccordion.Item
           label={
             <div style={{ display: "flex", alignItems: "center", padding: "8px" }}>
               <BsFillGrid3X3GapFill />
@@ -445,8 +451,8 @@ const Asset = () => {
               })}
             </SimpleGrid>
           </div>
-        </Accordion.Item>
-      </Accordion>
+        </CAccordion.Item>
+      </CAccordion>
     </div>
   );
 };

@@ -28,7 +28,7 @@ const StatCount = styled.div`
 `;
 
 const StatTitle = styled.div`
-  font-size: 14px;
+  font-size: 19px;
   color: grey;
 `;
 
@@ -151,7 +151,7 @@ const NFTS = () => {
           </div>
         </div>
 
-        <div style={{ textAlign: "center", margin: "20px 0" }}>{collection?.description}</div>
+        <div style={{ textAlign: "center", margin: "20px 0", fontSize: "22px" }}>{collection?.description}</div>
       </Description>
 
       <Divider style={{ margin: "60px 0 40px 0" }} />
