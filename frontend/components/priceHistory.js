@@ -23,6 +23,14 @@ const PriceHistory = ({ labels, priceArr }) => {
         display: true,
         text: "Price History",
       },
+      legend: {
+        labels: {
+          // This more specific font property overrides the global property
+          font: {
+            family: "Noto Sans KR, sans-serif",
+          },
+        },
+      },
     },
     scales: {
       y: {
