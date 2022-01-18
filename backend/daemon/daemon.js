@@ -1,6 +1,6 @@
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
-const { Transactions, Collections, NFTs, Trades, sequelize } = require(".././models");
+const { Transactions, Collections, NFTs, Trades, Rents, sequelize } = require(".././models");
 const { Op, ConnectionTimedOutError } = require("sequelize");
 const fs = require('fs');
 const path = require("path");
@@ -32,11 +32,11 @@ const basePath = __dirname;
     fs.readFileSync(path.join(basePath, '/blockNumber'), {
       encoding: 'utf-8',
     }),) + 1;
- /*=======================================================*/
+/*=======================================================*/
 
 const abiDecoder = require('abi-decoder'); // NodeJS
-const { mainModule } = require('process');
-const { default: cluster } = require('cluster');
+//const { mainModule } = require('process');
+//const { default: cluster } = require('cluster');
 abiDecoder.addABI(abi);
 let curBlkNum = 0;
 
@@ -44,7 +44,9 @@ let COUNT = {
   "minted" : 0,
   "sell" : 0,
   "buy" : 0,
-  "cancel" : 0
+  "cancel" : 0,
+  "lend" : 0,
+  "rent" : 0  
 };
 
 //트랜잭션 가져오기
@@ -64,24 +66,25 @@ const fetchTranIDs = async (startBlkNum, curBlkNum) => {
 
     return arrTranIDs
   }
-  catch(err) {
+  catch(e) {
+    console.log(e.message);
   }
 }
 
 const getTokenID = async(MyAbi, MyCA, targetTokenURI) => {
-  const tokenContract = await new web3.eth.Contract(
-    MyAbi,
-    MyCA,
-    //{from:pubAddr}
-  );
-  
-  const totalSupply = await tokenContract.methods.totalSupply().call();
-  for(let i=1;i<=Number(totalSupply);i++) {
-    let tokenURI = await tokenContract.methods.tokenURI(i).call();
-    if(tokenURI === targetTokenURI) {
-      //console.log(`[getTokenID] 찾았다 요놈 ${tokenURI}`);
-      return i;
+  try {
+    const tokenContract = await new web3.eth.Contract(MyAbi, MyCA);
+    
+    const totalSupply = await tokenContract.methods.totalSupply().call();
+    for(let i=1;i<=Number(totalSupply);i++) {
+      let tokenURI = await tokenContract.methods.tokenURI(i).call();
+      if(tokenURI === targetTokenURI) {
+        return i;
+      }
     }
+  }
+  catch(e) {
+    console.log(e.message);
   }
 }
 
@@ -90,7 +93,7 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
   try {
     const decodedData = abiDecoder.decodeMethod(tx.input);
     tx.input_name = decodedData.name;
-
+    
     // 만약 mintNFT 트랜잭션이라면
     if(tx.input_name === 'mintNFT') {
       tx.input_params_name = decodedData.params[0].name;
@@ -125,7 +128,6 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
     }
     // 만약 sell 트랜잭션이라면
     else if(tx.input_name === 'sell') {
-      //tx[decodedData.params[0].id] = decodedData.params[0].value;
       tx.input_tokenId = decodedData.params[0].value;
       tx.input_price = decodedData.params[1].value;
 
@@ -133,8 +135,6 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
       const contractObj = new web3.eth.Contract(
         MyAbi, MyCA,
       );
-      //const getApproved = await contractObj.methods.getApproved(tx.input_tokenId).call();
-      const getIsSelling = await contractObj.methods.getIsSelling(tx.input_tokenId).call();
       
       //wei -> ether
       tx.input_price = await web3.utils.fromWei(tx.input_price, "ether");
@@ -161,9 +161,11 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
         defaults:inputData
       });
 
-      // let status = '';
+      //검증 작업: 해당 func은 블록의 현재 상태를 보여줄 뿐이다. 따라서 블록을 0부터 조회하면 과거 트랜정보 검증은 불가능함
+      //const getApproved = await contractObj.methods.getApproved(tx.input_tokenId).call();
+      //const getIsSelling = await contractObj.methods.getIsSelling(tx.input_tokenId).call();
       // if(getIsSelling == true) {
-      //   status = 'selling';
+      //   //판매 중
       // } else {
       //   //throw new Error('[sell 등록 중] 판매 중이 아님');
       // }
@@ -178,15 +180,14 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
     else if(tx.input_name === 'payment' && Number(decodedData.params[0].value) == 1) {
       tx.input_tokenId = Number(decodedData.params[1].value);
       tx.input_price = Number(tx.value);
-      //console.log(`${tx.to}   ${tx.input_tokenId}`);
-
-      //trade contractAddress 조회
+      
       const contractObj = new web3.eth.Contract(
         MyAbi, MyCA,
       );
 
-      console.log(`tx.to (받는사람) : ${tx.to}`);
-      console.log(`MyCA           : ${MyCA}`);
+      //현재는 payment 가 늘 성공했다고 가정하고 있다.
+      //블록의 현재 상태와 과아아아거 트랜의 비교가 불가능하다면 최소한 price는 검증할 필요가 있다
+
       //DB업데이트
       await NFTs.update(
         {
@@ -212,7 +213,7 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
         }
       );
 
-      // 판매 검증 로직
+      //검증 작업: 해당 func은 블록의 현재 상태를 보여줄 뿐이다. 따라서 블록을 0부터 조회하면 과거 트랜정보 검증은 불가능함
       // const getIsSelling = await contractObj.methods.getIsSelling(tx.input_tokenId).call();
       // const ownerOf = await contractObj.methods.ownerOf(tx.input_tokenId).call();
       
@@ -234,6 +235,46 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
         //console.log('buy 업데이트 안됨');
       }
     }
+    // 만약 rent, 즉 대여 등록(isLend) 트랜잭션이라면
+    else if(tx.input_name === 'rent') {
+      tx.input_tokenId = decodedData.params[0].value;
+      tx.input_price = decodedData.params[1].value;
+
+      //trade contractAddress 조회
+      const contractObj = new web3.eth.Contract(
+        MyAbi, MyCA,
+      );
+      
+      //wei -> ether
+      tx.input_price = await web3.utils.fromWei(tx.input_price, "ether");
+      
+      //insert data
+      const inputData = {
+        token_ids: tx.input_tokenId,
+        collectionAddress: tx.to,
+        status: 'lend',
+        price: tx.input_price,
+        owner: tx.from,
+        renter: null,
+        rent_period: null,
+        lendHash: tx.hash
+      };
+
+      let result = await Rents.findOrCreate({
+        where:{
+          collectionAddress: tx.to,
+          token_ids: tx.input_tokenId,
+          lendHash: tx.hash
+        },
+        defaults:inputData
+      });
+
+      if(result[1] === true) {
+        console.log(`========== New lend has been enrolled=======`);
+        console.log(result[0].dataValues);
+        COUNT.lend++;
+      }
+    }
   }
   catch(err) {
     console.log(err);
@@ -242,12 +283,7 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
 
 //selling 중인 Trades CA 를 모니터링
 /*
-* 가격이 같고, 해당 트레이트ca에 가격이 보내졌다면 buy 가 요청된 것이다
-* 검증: token 거래 상태 확인(false인지), 해당 token owner 가 tx.from 으로 변경됐는지 확인
-* 검증 결과가 pass 되면
-* NFTs(ownerAddress 를 tx.from 으로 업데이트),
-* Trades(status 를 'completed' 로 업데이트)
-* Trades(buyer 를 tx.from 으로 업데이트) 
+* 해당 트레이드 ca에 동일 가격이 보내졌다면 buy 가 요청된 것이다
 */
 const updateTrade = async (tx, MyCA, MyAbi, tradeCA, trade) => {
   try {
@@ -309,7 +345,7 @@ const updateTrade = async (tx, MyCA, MyAbi, tradeCA, trade) => {
   }  
 }
 
-
+//각 블록의 각 트랜을 순차적으로 조회하여 플랫폼과 관련있는 트랜 정보를 업데이트한다
 const main = async (MyAbi, START_BLOCK) => {
   try {
     //블록체인 상의 마지막 블록 번호 조회
@@ -359,10 +395,10 @@ const main = async (MyAbi, START_BLOCK) => {
 
       //     await updateTrade(
       //       tx,
-      //       trades[j].collectionAddress,      //컬랙션 CA 
+      //       trades[j].collectionAddress,
       //       MyAbi, 
-      //       tradeCA,                             //NFT 거래 CA
-      //       trades[j]);             //NFT 토큰ID 
+      //       tradeCA,
+      //       trades[j]);
       //   }
       // }
     }    
@@ -379,10 +415,7 @@ const main = async (MyAbi, START_BLOCK) => {
     console.log(`# of sell enrollment : ${COUNT.sell}`);
     console.log(`# of traded          : ${COUNT.buy}`);
     console.log(`# of sell cancelled  : ${COUNT.cancel}`);
-    
-      
-
-    
+    console.log(`# of lend enrollment : ${COUNT.lend}`);
     sequelize.close();
   }
   catch(e) {
