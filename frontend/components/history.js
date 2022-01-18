@@ -8,6 +8,11 @@ const CTr = styled.tr`
   &:hover {
     background-color: #f1f1f1;
   }
+
+  && th,
+  && td {
+    font-size: 18px;
+  }
 `;
 
 const History = ({ elements }) => {
@@ -35,7 +40,7 @@ const History = ({ elements }) => {
       </td>
       <td>{element.seller}</td>
       <td>{element.buyer}</td>
-      <td>{element.updatedAt}</td>
+      <td>{`${new Date(element.updatedAt).toLocaleString("en-GB")}`}</td>
     </CTr>
   ));
 
@@ -43,11 +48,11 @@ const History = ({ elements }) => {
     <Table style={{ marginTop: "15px" }}>
       <thead>
         <tr>
-          <th>Item</th>
-          <th>Price</th>
-          <th>From</th>
-          <th>To</th>
-          <th>Time</th>
+          <th style={{ fontSize: "18px" }}>Item</th>
+          <th style={{ fontSize: "18px" }}>Price</th>
+          <th style={{ fontSize: "18px" }}>From</th>
+          <th style={{ fontSize: "18px" }}>To</th>
+          <th style={{ fontSize: "18px" }}>Time</th>
         </tr>
       </thead>
       <tbody>{rows}</tbody>

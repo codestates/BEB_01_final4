@@ -118,8 +118,12 @@ contract coffer is Ownable {
         suggestions[suggestionIdx.current()] = _newSuggestion("","JOIN",msg.sender);
         emit _suggest("","JOIN",suggestionIdx.current());
     }
+
 /*JOIN 시작*/
 //가입 승인
+
+//가입할때 가격 만족하면 바로 구매, 구매하려는 nft는 한번에 하나만 설정하기
+
     function _acceptJoin(address target) internal onlyOwner{
         //실제로 통과했는지 검사
         totalStake += tempStake[target];
@@ -129,7 +133,7 @@ contract coffer is Ownable {
     }
 
 //가입 반대
-    function _rejectJoin(address target) public payable onlyOwner{
+    function _rejectJoin(address target) internal  onlyOwner{
         //실제로 반대했는지 검사
         (bool check,) = payable(target).call{value:tempStake[target]}("");
         require(check,"Coffer: Return staking ether fail");
@@ -142,7 +146,7 @@ contract coffer is Ownable {
 /*JOIN 끝*/
 
 //vote router
-function vote(uint256 _suggestionIdx,bool _vote) public onlyOwner {
+function vote(uint256 _suggestionIdx,bool _vote) public onlyOwner payable {
     
     require(_suggestionIdx >0,"Coffer: Invalid suggestion index");    
     uint256 totalOwner = getTotal();
@@ -162,7 +166,7 @@ function vote(uint256 _suggestionIdx,bool _vote) public onlyOwner {
         emit endSuggest(_suggestionIdx,"Time out");
     }
     else{
-        if(keccak256(abi.encodePacked(suggestions[_suggestionIdx]._types)) == keccak256(abi.encodePacked(bytes("JOIN")))){
+        if(keccak256(abi.encodePacked(suggestions[_suggestionIdx]._types)) == keccak256(abi.encodePacked(bytes16("JOIN")))){
             //join vote
             if(_vote){
                 suggestions[_suggestionIdx]._totalAccept +=1;

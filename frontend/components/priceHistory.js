@@ -27,7 +27,7 @@ const PriceHistory = ({ labels, priceArr }) => {
         labels: {
           // This more specific font property overrides the global property
           font: {
-            family: "Noto Sans KR, sans-serif",
+            family: "VT323, Noto Sans KR, sans-serif",
           },
         },
       },

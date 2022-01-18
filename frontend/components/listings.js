@@ -1,5 +1,16 @@
 import { Table } from "@mantine/core";
 import Image from "next/image";
+import styled from "styled-components";
+
+const CTable = styled(Table)`
+  && tr th {
+    font-size: 18px !important;
+  }
+
+  && tr td {
+    font-size: 16px;
+  }
+`;
 
 const Listings = ({ elements }) => {
   const rows = elements.map((element, idx) => (
@@ -14,7 +25,7 @@ const Listings = ({ elements }) => {
   ));
 
   return (
-    <Table style={{ marginTop: "15px" }}>
+    <CTable style={{ marginTop: "15px" }}>
       <thead>
         <tr>
           <th>Price</th>
@@ -23,7 +34,7 @@ const Listings = ({ elements }) => {
         </tr>
       </thead>
       <tbody>{rows}</tbody>
-    </Table>
+    </CTable>
   );
 };
 

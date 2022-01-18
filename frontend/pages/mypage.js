@@ -36,6 +36,10 @@ const CTabs = styled(Tabs)`
   && button {
     margin: 0 20px;
   }
+
+  && .mantine-Tabs-tabLabel {
+    font-size: 20px;
+  }
 `;
 
 const MyPage = () => {
@@ -131,24 +135,31 @@ const MyPage = () => {
         }}
       ></div>
       <Description>
-        <Text style={{ textAlign: "center", fontSize: "30px", fontWeight: "bold" }}>Unamed</Text>
+        <Text style={{ textAlign: "center", fontSize: "38px", fontWeight: "bold" }}>Unnamed</Text>
         {account && (
-          <Text style={{ textAlign: "center", fontSize: "18px", margin: "5px 0" }}>{`${account.slice(
+          <Text style={{ textAlign: "center", fontSize: "20px", margin: "5px 0" }}>{`${account.slice(
             0,
             4,
           )}...${account.slice(-4)}`}</Text>
         )}
       </Description>
       <Container>
-        <CTabs active={activeTab} onTabChange={setActiveTab} color="teal" tabPadding="md" position="center">
+        <CTabs
+          style={{ fontSize: "20px" }}
+          active={activeTab}
+          onTabChange={setActiveTab}
+          color="teal"
+          tabPadding="md"
+          position="center"
+        >
           <CTabs.Tab icon={<MdOutlineCollectionsBookmark style={{ width: 18, height: 18 }} />} label="My Collections">
             <div style={{ padding: "0 40px" }}>
               <Text style={{ fontSize: "48px", fontWeight: "bold" }}>My Collections</Text>
-              <Text style={{ margin: "20px 0" }}>
+              <Text style={{ fontSize: "20px", margin: "20px 0" }}>
                 Create, curate, and manage collections of unique NFTs to share and sell.
               </Text>
               <Button
-                style={{ marginBottom: "20px" }}
+                style={{ fontSize: "26px", marginBottom: "20px" }}
                 color="teal"
                 size="xl"
                 onClick={() => router.push("/create-collection")}

@@ -14,6 +14,13 @@ const Container = styled.div`
     max-width: 600px;
     margin: 30px auto;
   }
+  && .mantine-Text-root {
+    font-size: 24px !important;
+  }
+
+  && .title {
+    font-size: 35px !important;
+  }
 `;
 
 const TitleInput = styled.div`
@@ -125,12 +132,16 @@ const MintNFT = () => {
 
   return (
     <Container>
-      <Text style={{ fontSize: "35px", fontWeight: "bold", marginBottom: "30px" }} align="center">
+      <Text
+        claaName="title"
+        style={{ fontSize: "35px !important", fontWeight: "bold", marginBottom: "30px" }}
+        align="center"
+      >
         Create New Item
       </Text>
       <UploadFile imageURI={imageURI} setImageURI={setImageURI} />
       <TitleInput>
-        <Text>이름</Text>
+        <Text>Name</Text>
         <Input
           value={name}
           onChange={(e) => {
@@ -141,11 +152,11 @@ const MintNFT = () => {
           }}
           onInput={hangulToAlphabet}
           variant="default"
-          placeholder="이름"
+          placeholder="Name"
         />
       </TitleInput>
       <TitleInput>
-        <Text>설명</Text>
+        <Text>Description</Text>
         <Input
           value={description}
           onChange={(e) => {
@@ -156,7 +167,7 @@ const MintNFT = () => {
           }}
           onInput={hangulToAlphabet}
           variant="default"
-          placeholder="설명"
+          placeholder="Description"
         />
       </TitleInput>
       <TitleInput>
