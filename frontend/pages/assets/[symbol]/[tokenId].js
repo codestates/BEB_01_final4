@@ -74,9 +74,11 @@ const Asset = () => {
   const [nfts, setNfts] = useState(null);
   const [web3, account] = useStore((state) => [state.web3, state.account]);
   const [isSelling, setIsSelling] = useState(false);
+  const [isLending, setIsLending] = useState(false);
   const [nftOwner, setNftOwner] = useState("");
   const [collectionContract, setCollectionContract] = useState(null);
-  const [price, setPrice] = useState(null);
+  const [sellPrice, setSellPrice] = useState(null);
+  const [lendPrice, setLendPrice] = useState(null);
 
   const getNft = async () => {
     try {
@@ -114,6 +116,9 @@ const Asset = () => {
         const isSelling = await collectionContract.methods.getIsSelling(tokenId).call();
         setIsSelling(isSelling);
 
+        const isLending = await collectionContract.methods.getIsRental(tokenId).call();
+        setIsLending(isLending);
+
         const owner = await collectionContract.methods.ownerOf(tokenId).call();
         // console.log(owner);
         setNftOwner(owner);
@@ -138,20 +143,25 @@ const Asset = () => {
   const checkNftPriceFromContract = async () => {
     console.log("checkNftPriceFromContract");
     if (isSelling && collectionContract) {
-      console.log(collectionContract);
-      console.log(parseInt(tokenId), typeof parseInt(tokenId));
+      const sellPrice = await collectionContract.methods.getPrice(tokenId).call();
 
-      const nftPrice = await collectionContract.methods.getPrice(parseInt(tokenId)).call();
+      console.log(sellPrice);
 
-      console.log(nftPrice);
+      setSellPrice(web3.utils.fromWei(sellPrice, "ether"));
+    }
 
-      setPrice(web3.utils.fromWei(nftPrice, "ether"));
+    if (isLending && collectionContract) {
+      const lendPrice = await collectionContract.methods.getPrice(tokenId).call();
+
+      console.log(lendPrice);
+
+      setLendPrice(web3.utils.fromWei(lendPrice, "ether"));
     }
   };
 
   useEffect(() => {
     checkNftPriceFromContract();
-  }, [isSelling]);
+  }, [isSelling, isLending]);
 
   const handleClickBuy = async () => {
     if (!account) {
@@ -165,10 +175,10 @@ const Asset = () => {
     }
 
     try {
-      if (price) {
+      if (sellPrice) {
         const txResult = await collectionContract.methods
           .payment(1, tokenId)
-          .send({ value: web3.utils.toWei(price, "ether") });
+          .send({ value: web3.utils.toWei(sellPrice, "ether") });
 
         let event = await collectionContract.getPastEvents("_trade", {
           fromBlock: txResult.blockNumber,
@@ -177,6 +187,8 @@ const Asset = () => {
 
         let log = event.find((log) => log.transactionHash == txResult.transactionHash);
         console.log(log.returnValues);
+
+        setSellPrice(null);
 
         getNftFromContract();
       } else {
@@ -272,7 +284,7 @@ const Asset = () => {
           </Link>
           <Text style={{ fontSize: "32px", fontWeight: "bold", margin: "20px 0" }}>{nft?.name}</Text>
 
-          {!isSelling && (
+          {!isSelling && !isLending && (
             <TradeBox>
               <Text style={{ fontSize: "20px" }}>This is not a NFT for sale.</Text>
               {account && account === nftOwner && !isSelling && (
@@ -302,40 +314,57 @@ const Asset = () => {
             </TradeBox>
           )}
 
-          {isSelling && (
+          {(isSelling || isLending) && (
             <TradeBox>
               <div>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <MdOutlineWatchLater style={{ color: "rgb(112, 122, 131)" }} />
-                  <Text style={{ color: "rgb(112, 122, 131)", marginLeft: "10px" }}>
+                  <Text style={{ fontSize: "18px", color: "rgb(112, 122, 131)", marginLeft: "10px" }}>
                     {nft?.trade_selling === null ? (
-                      <>판매 정보 업데이트 중입니다.</>
+                      <>Upadting...</>
                     ) : (
-                      <>
-                        Sale starts {new Date(nft?.trade_selling?.createdAt).toDateString()}{" "}
-                        {new Date(nft?.trade_selling?.createdAt).toLocaleTimeString()}
-                      </>
+                      <>{`Sale starts ${new Date(nft?.trade_selling?.createdAt).toLocaleString("en-GB")}`}</>
                     )}
                   </Text>
                 </div>
               </div>
               <Divider style={{ margin: "15px 0" }} />
               <div>
-                <Text>Current price</Text>
+                <Text style={{ fontSize: "18px" }}>Current price</Text>
                 <div style={{ display: "flex", margin: "12px 0" }}>
                   <Image src="/images/eth.svg" width={16} height={16} alt="" />
-                  {price && <Text style={{ fontSize: "28px", fontWeight: "bold", marginLeft: "10px" }}>{price}</Text>}
+                  {(sellPrice || lendPrice) && (
+                    <Text style={{ fontSize: "28px", fontWeight: "bold", marginLeft: "10px" }}>
+                      {sellPrice === null ? lendPrice : sellPrice}
+                    </Text>
+                  )}
                 </div>
 
-                <Button onClick={handleClickBuy} color="teal" size="lg">
-                  Buy now
-                </Button>
-                <Button style={{ marginTop: "15px" }} color="teal" size="lg">
-                  Buy with GGanbu
-                </Button>
+                {isSelling && (
+                  <>
+                    <Button onClick={handleClickBuy} color="teal" size="lg">
+                      Buy now
+                    </Button>
+                    <Button style={{ marginTop: "15px" }} color="teal" size="lg">
+                      Buy with GGanbu
+                    </Button>
+                  </>
+                )}
+
+                {isLending && (
+                  <>
+                    <Button onClick={handleClickBuy} color="teal" size="lg">
+                      Borrow now
+                    </Button>
+                    <Button style={{ marginTop: "15px" }} color="teal" size="lg">
+                      Borrow with GGanbu
+                    </Button>
+                  </>
+                )}
               </div>
             </TradeBox>
           )}
+
           <CAccordion style={{ fontSize: "20px", margin: "20px 0" }} iconPosition="right">
             <CAccordion.Item
               label={

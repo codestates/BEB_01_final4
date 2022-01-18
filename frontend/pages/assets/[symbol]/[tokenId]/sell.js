@@ -20,6 +20,10 @@ const TitleText = styled(Text)`
 const Container = styled.div`
   margin: 30px auto;
   max-width: 1080px;
+
+  && .mantine-Text-root {
+    font-size: 22px;
+  }
 `;
 
 const TypeWrapper = styled.div`
@@ -46,6 +50,7 @@ const PriceWrapper = styled.div`
 const CInput = styled(Input)`
   && input {
     height: 52.8px;
+    font-size: 20px;
   }
   margin-left: 25px;
 `;
@@ -107,7 +112,7 @@ const Sell = () => {
     <Container>
       <SimpleGrid cols={2} style={{ gap: "200px" }}>
         <div>
-          <TitleText>List item for sale</TitleText>
+          <TitleText style={{ fontSize: "28px" }}>List item for sale</TitleText>
           <div style={{ display: "flex", justifyContent: "space-between", margin: "30px 0 10px 0" }}>
             <Text style={{ fontWeight: "bold" }}>Type</Text>
             <MdOutlineInfo style={{ fontSize: "26px" }} />
@@ -143,7 +148,7 @@ const Sell = () => {
               }}
             >
               <Image src="/images/eth.svg" width={24} height={24} alt="" />
-              <div style={{ margin: "0 25px" }}>ETH</div>
+              <div style={{ margin: "0 25px", fontSize: "20px" }}>ETH</div>
               <IoIosArrowDown />
             </div>
             <div style={{ flex: "60%" }}>
