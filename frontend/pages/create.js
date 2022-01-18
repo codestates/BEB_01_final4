@@ -21,6 +21,10 @@ const Container = styled.div`
   && .title {
     font-size: 35px !important;
   }
+
+  && input {
+    font-size: 18px;
+  }
 `;
 
 const TitleInput = styled.div`

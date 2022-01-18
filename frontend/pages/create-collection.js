@@ -17,6 +17,18 @@ const Container = styled.div`
   && .mantine-Text-root {
     font-size: 24px !important;
   }
+
+  && .small-description {
+    font-size: 13px !important;
+  }
+
+  && .title {
+    font-size: 35px !important;
+  }
+
+  && input {
+    font-size: 18px;
+  }
 `;
 
 const TitleInput = styled.div`
@@ -115,7 +127,7 @@ const CreateCollection = () => {
   return (
     <>
       <Container>
-        <Text style={{ fontSize: "35px", fontWeight: "bold", marginBottom: "30px" }} align="center">
+        <Text className="title" style={{ fontWeight: "bold", marginBottom: "30px" }} align="center">
           Create Collection
         </Text>
         <TitleInput style={{ width: "200px" }}>
@@ -128,7 +140,7 @@ const CreateCollection = () => {
         </TitleInput>
         <TitleInput>
           <Text style={{ marginBottom: "0px" }}>Name</Text>
-          <Text style={{ color: "rgb(112, 122, 131)", fontSize: "13px !important" }}>
+          <Text className="small-description" style={{ color: "rgb(112, 122, 131)" }}>
             영문, 숫자, - 기호, 띄어쓰기만 가능합니다.
           </Text>
           <Input
@@ -146,7 +158,7 @@ const CreateCollection = () => {
         </TitleInput>
         <TitleInput>
           <Text style={{ marginBottom: "0px" }}>Symbol</Text>
-          <Text style={{ color: "rgb(112, 122, 131)", fontSize: "13px !important" }}>
+          <Text className="small-description" style={{ color: "rgb(112, 122, 131)" }}>
             영문 소문자, 숫자, - 기호만 입력 가능합니다.
           </Text>
           <Input

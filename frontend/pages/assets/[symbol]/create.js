@@ -16,11 +16,19 @@ const Container = styled.div`
     margin: 30px auto;
   }
   && .mantine-Text-root {
-    font-size: 24px !important;
+    font-size: 24px;
+  }
+
+  && .selected-collection.mantine-Text-root {
+    font-size: 18px !important;
   }
 
   && .title {
     font-size: 35px !important;
+  }
+
+  && input {
+    font-size: 18px;
   }
 `;
 
@@ -166,7 +174,7 @@ const MintNFT = () => {
       </TitleInput>
       <TitleInput>
         <Text>Collection</Text>
-        <CText>{collection?.name}</CText>
+        <CText className="selected-collection">{collection?.name}</CText>
         {/* <Input disabled variant="default" placeholder="Collection" value={collection?.name} /> */}
       </TitleInput>
 
