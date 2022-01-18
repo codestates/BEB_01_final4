@@ -39,6 +39,39 @@ const addTradeInfo = async (trade) => {
   }
 }
 
+//rent instance 넣으면 colection / asset 정보 추가해 줌
+const addRentInfo = async (rent) => {
+  try {
+    const qNFT = await NFTs.findOne({
+      where: {
+        contractAddress: rent.collectionAddress,
+        token_ids: rent.token_ids
+      }
+    });
+    rent.asset = {};
+    if(qNFT) {
+      rent.asset.name = qNFT.dataValues.name;
+      rent.asset.imageURI = qNFT.dataValues.imageURI;
+    }
+
+    //collection 데이터 (name, symbol)
+    const qCollection = await Collections.findOne({
+      where: {
+        contractAddress: rent.collectionAddress
+      }
+    });
+    rent.collection = {};
+    if(qCollection) {
+      rent.collection.name = qCollection.dataValues.name;
+      rent.collection.symbol = qCollection.dataValues.symbol;
+    }
+
+    return rent;
+  } 
+  catch (err) {
+    return err;
+  }
+}
 /*
  *  /users/<address>
  *  마이 페이지 (유저정보 + 보유 collections + 보유 assets)
@@ -340,6 +373,33 @@ router.get('/:address', async (req, res, next) => {
         result.assets = result.assets.sort(function(a, b)  {
           return b.price - a.price;
         });
+      }
+    } else if(req.query.tab == 'rent-history') {
+      result.rents = [];
+
+      //sort 옵션
+      let orderOption = [['id', 'DESC']];
+      if(req.query.sort) {
+        orderOption = [['price', 'DESC']];
+      }
+
+      const qRents = await Rents.findAll({
+        where: {
+          status: 'completed',
+          [Op.or]: [{ owner: address }, { renter: address }],
+        },
+        order: orderOption
+      });
+  
+      //존재한다면
+      if (qRents.length > 0) {
+        for(let i=0;i<qRents.length;i++) {
+          let rent = qRents[i].dataValues;
+          rent = await addRentInfo(rent);
+  
+          //트레이드 데이터
+          result.rents.push(rent);
+        }
       }
     }
 
