@@ -146,37 +146,64 @@ router.get('/:address', async (req, res, next) => {
         NFT.trade_ca = null;
         NFT.seller = null;
         NFT.trade_selling = null;
-        //NFT.trade_history = null;
-        //NFT.trade_cancelled = null;
-    
+        NFT.isLending = null;
+        NFT.lending = null;
+        
         //trade sort 옵션
         let whereOption = {
             token_ids : NFT.token_ids,
-            collectionAddress : NFT.contractAddress
+            collectionAddress : NFT.contractAddress,
+            status : 'selling'
         };
-        if(req.query.tab == 'selling') {
-            whereOption.status = 'selling';
-        }
 
         //트레이드 정보 추가
-        let qTrades = await Trades.findAll({
+        // let qTrades = await Trades.findAll({
+        //     where: whereOption,
+        //     //order: orderOption
+        // });
+        
+        //만약 Trade 내역이 존재한다면 NFT 에 그 내역들을 추가
+        // if(qTrades.length > 0) {
+        //     for (let j = 0; j < qTrades.length; j++) {
+        //         //selling 중인 trade 가 있다면
+        //         if(qTrades[j].status == 'selling') {
+        //             NFT.isSelling = true;
+        //             NFT.price = qTrades[j].price;
+        //             NFT.trade_ca = qTrades[j].trade_ca;
+        //             NFT.seller = qTrades[j].seller;
+        //             NFT.trade_selling = qTrades[j].dataValues;
+        //             //NFT.trade_history.push(qTrades[j].dataValues);
+        //         }
+        //     }
+        // }
+
+        //트레이드 정보 추가
+        let qTrades = await Trades.findOne({
             where: whereOption,
-            //order: orderOption
         });
         
         //만약 Trade 내역이 존재한다면 NFT 에 그 내역들을 추가
-        if(qTrades.length > 0) {
-            for (let j = 0; j < qTrades.length; j++) {
-                //selling 중인 trade 가 있다면
-                if(qTrades[j].status == 'selling') {
-                    NFT.isSelling = true;
-                    NFT.price = qTrades[j].price;
-                    NFT.trade_ca = qTrades[j].trade_ca;
-                    NFT.seller = qTrades[j].seller;
-                    NFT.trade_selling = qTrades[j].dataValues;
-                    //NFT.trade_history.push(qTrades[j].dataValues);
-                }
-            }
+        if(qTrades) {
+          NFT.isSelling = true;
+          NFT.price = qTrades.price;
+          NFT.trade_ca = qTrades.trade_ca;
+          NFT.seller = qTrades.seller;
+          NFT.trade_selling = qTrades.dataValues; 
+        }
+
+        //대여 정보 추가
+        let qRent = await Rents.findOne({
+          where: {
+            token_ids: NFT.token_ids,
+            collectionAddress: NFT.contractAddress,
+            status: 'lend'  
+          },
+        });
+        if(qRent) {
+          NFT.isLending = true;
+          NFT.price = qRent.price;
+          NFT.seller = qRent.owner;
+          NFT.lending = qRent.dataValues;
         }
 
         //제공할 NFT 선택
@@ -185,6 +212,8 @@ router.get('/:address', async (req, res, next) => {
             result.assets.push(NFT);
         } else if(!req.query.tab || req.query.tab == 'mint') {
             result.assets.push(NFT);
+        } else if(req.query.tab == 'lend' && NFT.isLending == true) {
+          result.assets.push(NFT);
         }
       }
       //sort
