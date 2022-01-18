@@ -1,5 +1,5 @@
 const express = require('express');
-const { Users, Collections, NFTs, Trades } = require('../models');
+const { Users, Collections, NFTs, Trades, Rents } = require('../models');
 const { Op } = require("sequelize");
 const collections = require('../models/collections');
 const router = express.Router();
@@ -72,12 +72,6 @@ router.get('/:address', async (req, res, next) => {
 
     let result = user.dataValues;
     
-    result.num_of_collections = myCollections.length;
-    result.collections = [];
-    for(let i=0;i<myCollections.length;i++) {
-      result.collections.push(myCollections[i].dataValues);
-    }
-
     //NFT 검색 옵션
     let whereOption_NFT = {
       ownerAddress: address,
@@ -93,19 +87,51 @@ router.get('/:address', async (req, res, next) => {
       order: [
         ['createdAt', 'DESC']
       ],
-    })
+    });
 
+    //유저가 보유한 rent NFTs
+    const myRents = await Rents.findAll({ 
+      where: {status:'rent',renter:address},
+      order: [
+        ['createdAt', 'DESC']
+      ],
+    });
+
+    //유저가 등록한 lend NFTs
+    const myLends = await Rents.findAll({ 
+      where: {status:'lend',owner:address},
+      order: [
+        ['createdAt', 'DESC']
+      ],
+    });
+
+    //컬랙션 수, 자산 수 추가
+    result.num_of_collections = myCollections.length;
     result.num_of_assets = myNFTs.length;
+    result.num_of_rents = myRents.length;
+    
+    //컬랙션 리스트 추가
+    result.collections = [];
+    for(let i=0;i<myCollections.length;i++) {
+      result.collections.push(myCollections[i].dataValues);
+    }
+
+    // result.lends = [];
+    // for(let i=0;i<myLends.length;i++) {
+    //   result.lends.push(myLends[i].dataValues);
+    // }
 
     // case 보유 NFT: /users/<id>, /users/<id>?tab=mint, /users/<id>?tab=selling
-    if(!req.query.tab || req.query.tab == 'mint' || req.query.tab == 'selling') {
+    if(!req.query.tab || req.query.tab == 'mint' || req.query.tab == 'selling'
+        || req.query.tab == 'lend') 
+    {
       result.assets = [];
       
       for(let i=0;i<myNFTs.length;i++) {
         //NFT 가 판매 중이라면 판매 정보 업데이트
         let NFT = myNFTs[i].dataValues;
 
-        //NFT의 collection 데이터
+        //각 NFT의 collection 데이터
         const nftCollection = await Collections.findOne({
           where: {
             contractAddress: NFT.contractAddress
