@@ -4,6 +4,7 @@ import { MantineProvider } from "@mantine/core";
 import Layout, { connectWallet } from "../components/layout";
 import Web3 from "web3";
 import { useStore } from "../utils/store";
+import styles from "../styles/global.css";
 
 export default function App(props) {
   const { Component, pageProps } = props;
@@ -44,7 +45,7 @@ export default function App(props) {
         theme={{
           /** Put your mantine theme override here */
           colorScheme: "light",
-          fontFamily: "VT323, Noto Sans KR, sans-serif",
+          fontFamily: "DungGeunMo, VT323, Noto Sans KR, sans-serif",
         }}
       >
         <Layout>

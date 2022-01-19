@@ -32,7 +32,7 @@ const BadgeWrapper = styled.div`
   }
 `;
 
-const NFTCard = ({ collectionSymbol, nft, idx }) => {
+const NFTCard = ({ collectionSymbol, nft }) => {
   const router = useRouter();
   return (
     <Grid.Col
@@ -73,7 +73,12 @@ const NFTCard = ({ collectionSymbol, nft, idx }) => {
         <BadgeWrapper>
           {nft?.isSelling && (
             <Badge size="lg" color="pink" radius={4} variant="outline">
-              For Sale
+              판매 중
+            </Badge>
+          )}
+          {nft?.isLending && (
+            <Badge size="lg" color="indigo" radius={4} variant="outline">
+              대여 가능
             </Badge>
           )}
         </BadgeWrapper>

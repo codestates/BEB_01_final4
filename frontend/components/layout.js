@@ -10,6 +10,7 @@ import axios from "axios";
 import Web3 from "web3";
 import { useInputState } from "@mantine/hooks";
 import { useRouter } from "next/router";
+import { compressAddress } from "../utils";
 
 const CText = styled(Text)`
   && {
@@ -159,7 +160,7 @@ const Layout = ({ children }) => {
             </div>
 
             <div style={{ display: "flex", alignItems: "center" }}>
-              {account && <Badge style={{ fontSize: "17px" }}>{account.slice(0, 4) + "..." + account.slice(-4)}</Badge>}
+              {account && <Badge style={{ fontSize: "17px" }}>{`${compressAddress(account)}`}</Badge>}
               {account && <Profile />}
 
               {!account && (

@@ -8,7 +8,6 @@ import {
   MdOutlineFormatPaint,
   MdOutlineSell,
   MdOutlineHistory,
-  MdOutlineCancelPresentation,
 } from "react-icons/md";
 import CollectionCard from "../components/collectionCard";
 import axios from "axios";
@@ -16,6 +15,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import NFTCard from "../components/nftCard";
 import History from "../components/history";
+import { compressAddress } from "../utils";
 
 const Description = styled.div`
   max-width: 720px;
@@ -137,10 +137,9 @@ const MyPage = () => {
       <Description>
         <Text style={{ textAlign: "center", fontSize: "38px", fontWeight: "bold" }}>Unnamed</Text>
         {account && (
-          <Text style={{ textAlign: "center", fontSize: "20px", margin: "5px 0" }}>{`${account.slice(
-            0,
-            4,
-          )}...${account.slice(-4)}`}</Text>
+          <Text style={{ textAlign: "center", fontSize: "20px", margin: "5px 0" }}>{`${compressAddress(
+            account,
+          )}`}</Text>
         )}
       </Description>
       <Container>

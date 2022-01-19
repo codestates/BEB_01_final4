@@ -23,6 +23,7 @@ import { GGanbuCollection } from "../../../public/compiledContracts/GGanbuCollec
 import Listings from "../../../components/listings";
 import PriceHistory from "../../../components/priceHistory";
 import Web3 from "web3";
+import { compressAddress } from "../../../utils";
 
 const EmptyHeartIcon = styled(AiOutlineHeart)`
   &&:hover {
@@ -83,6 +84,7 @@ const Asset = () => {
   const [sellPrice, setSellPrice] = useState(null);
   const [lendPrice, setLendPrice] = useState(null);
 
+  // db에서 nft 정보 조회: 해당 nft의 컬렉션 정보를 얻기 위해서
   const getNft = async () => {
     try {
       if (symbol && tokenId) {
@@ -108,6 +110,7 @@ const Asset = () => {
     }
   };
 
+  // 컨트랙트에서 nft 정보 조회: 소유자, 빌린사람, 판매, 대여 상태 등을 온체인에서 확인
   const getNftFromContract = async () => {
     try {
       if (web3 && nft?.contractAddress) {
@@ -151,6 +154,7 @@ const Asset = () => {
     getNftFromContract();
   }, [nft, account]);
 
+  // 판매 / 대여 등록 상태인 nft의 가격 정보 조회
   const checkNftPriceFromContract = async () => {
     console.log("checkNftPriceFromContract");
     if (isSelling && collectionContract) {
@@ -217,7 +221,7 @@ const Asset = () => {
     }
 
     if (account === nftOwner) {
-      alert("판매자는 대여할 수 없습니다.");
+      alert("소유자는 대여할 수 없습니다.");
       return;
     }
 
@@ -253,7 +257,7 @@ const Asset = () => {
     }
 
     if (account === nftOwner) {
-      alert("판매자는 대여할 수 없습니다.");
+      alert("대여자는 반납할 수 없습니다.");
       return;
     }
 
@@ -363,9 +367,10 @@ const Asset = () => {
           </Link>
           <Text style={{ fontSize: "32px", fontWeight: "bold", margin: "20px 0" }}>{nft?.name}</Text>
 
+          {/* 판매 X, 대여 등록 X 상태 */}
           {!isSelling && !isLending && (
             <TradeBox>
-              <Text style={{ fontSize: "20px" }}>This is not a NFT for sale.</Text>
+              <Text style={{ fontSize: "20px" }}>판매 중이거나 대여 등록된 NFT가 아닙니다.</Text>
               {account && account === nftOwner && !isSelling && (
                 <Button
                   style={{ marginTop: "15px" }}
@@ -393,22 +398,36 @@ const Asset = () => {
             </TradeBox>
           )}
 
+          {/* 판매 or 대여 등록 or 대여 중인 상태 */}
           {(isSelling || isLending || isRenting) && (
             <TradeBox>
               <div>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <MdOutlineWatchLater style={{ color: "rgb(112, 122, 131)" }} />
+
+                  {/* TODO: 판매 / 대여 중인 상태에 따라 변경 필요 */}
+                  {console.log(nft?.trande_selling)}
                   <Text style={{ fontSize: "18px", color: "rgb(112, 122, 131)", marginLeft: "10px" }}>
-                    {nft?.trade_selling === null ? (
-                      <>Upadting...</>
+                    {nft?.trade_selling || nft?.lending ? (
+                      <>
+                        {nft?.trande_selling
+                          ? `판매 등록: ${new Date(nft?.trade_selling?.createdAt).toLocaleString("en-GB")}`
+                          : null}
+                        {nft?.lending !== null
+                          ? `대여 등록: ${new Date(nft?.lending?.updatedAt).toLocaleString("en-GB")}`
+                          : null}
+                      </>
                     ) : (
-                      <>{`Sale starts ${new Date(nft?.trade_selling?.createdAt).toLocaleString("en-GB")}`}</>
+                      <>Upadting...</>
                     )}
                   </Text>
                 </div>
               </div>
+
               <Divider style={{ margin: "15px 0" }} />
+
               <div>
+                {/* 판매 or 대여 등록 중인 상태이면 가격을 보여준다. */}
                 {(sellPrice || lendPrice) && !isRenting && (
                   <>
                     <Text style={{ fontSize: "18px" }}>Current price</Text>
@@ -421,6 +440,7 @@ const Asset = () => {
                   </>
                 )}
 
+                {/* 판매 중인 상태 */}
                 {isSelling && (
                   <>
                     <Button onClick={handleClickBuy} color="teal" size="lg">
@@ -432,6 +452,7 @@ const Asset = () => {
                   </>
                 )}
 
+                {/* 대여 등록 중인 상태 */}
                 {isLending && !isRenting && (
                   <>
                     <Button onClick={handleClickRent} color="teal" size="lg">
@@ -442,9 +463,13 @@ const Asset = () => {
                     </Button>
                   </>
                 )}
-                {console.log(nftRenter)}
-                {console.log(account)}
-                {isLending && nftRenter === account && (
+
+                {/* 대여 중인 상태 */}
+                {isLending && isRenting && nftRenter !== account && (
+                  <Text style={{ fontSize: "20px" }}>{`${compressAddress(nftRenter)}가 대여 중인 NFT입니다.`}</Text>
+                )}
+
+                {isLending && isRenting && nftRenter === account && (
                   <>
                     <Button onClick={handleClickReturn} color="teal" size="lg">
                       반납
