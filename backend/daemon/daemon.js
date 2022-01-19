@@ -46,7 +46,8 @@ let COUNT = {
   "buy" : 0,
   "cancel" : 0,
   "lend" : 0,
-  "rent" : 0  
+  "rent" : 0,
+  "returnNFT" : 0,  
 };
 
 //트랜잭션 가져오기
@@ -341,6 +342,54 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
         //console.log('buy 업데이트 안됨');
       }
     }
+    // 만약 returnNFT, 즉 대여 반납 트랜잭션이라면
+    else if(tx.input_name === 'returnNFT') {
+      tx.input_tokenId = Number(decodedData.params[0].value);
+      
+      const contractObj = new web3.eth.Contract(
+        MyAbi, MyCA,
+      );
+
+      //현재는 payment 가 늘 성공했다고 가정하고 있다.
+      //블록의 현재 상태와 과아아아거 트랜의 비교가 불가능하다면 최소한 price는 검증할 필요가 있다
+
+      //DB업데이트
+      await NFTs.update(
+        {
+          //ownerAddress: tx.from
+          renterAddress: null
+        },
+        {
+          where: {
+            contractAddress: tx.to,
+            token_ids: tx.input_tokenId
+          }
+        }
+      );
+
+      const result = await Rents.update(
+        {
+          status: 'completed',
+          //renter: tx.from,
+          //rentHash: tx.hash
+        },
+        {
+          where: {
+            status: 'rent',
+            collectionAddress: tx.to,
+            token_ids: tx.input_tokenId,
+          },
+        }
+      );
+
+      if(result > 0) {
+        console.log(`========== Rent NFT has been returned =======`);
+        console.log(tx);
+        COUNT.returnNFT++;
+      } else {
+        //console.log('buy 업데이트 안됨');
+      }
+    }
   }
   catch(err) {
     console.log(err);
@@ -483,6 +532,8 @@ const main = async (MyAbi, START_BLOCK) => {
     console.log(`# of sell cancelled  : ${COUNT.cancel}`);
     console.log(`# of lend enrollment : ${COUNT.lend}`);
     console.log(`# of rent            : ${COUNT.rent}`);
+    console.log(`# of returnNFT       : ${COUNT.returnNFT}`);
+
     sequelize.close();
   }
   catch(e) {

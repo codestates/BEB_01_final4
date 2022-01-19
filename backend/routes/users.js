@@ -129,7 +129,7 @@ router.get('/:address', async (req, res, next) => {
         ['createdAt', 'DESC']
       ],
     });
-
+    
     //컬랙션 수, 자산 수 추가
     result.num_of_collections = myCollections.length;
     result.num_of_assets = myNFTs.length;
@@ -221,13 +221,15 @@ router.get('/:address', async (req, res, next) => {
             [Op.or]: [{ status: 'lend' }, { status: 'rent' }],
           },
         });
+        
         if(qRent) {
           if(qRent.status == 'lend') {
             NFT.isLending = true;
             NFT.price = qRent.price;
             NFT.seller = qRent.owner;
             NFT.lending = qRent.dataValues;
-          } 
+          }
+          //본인이 보유하고 있는 NFT 중 본인이 rent 하고 있는 건 존재하지 않는다
           else if(qRent.status == 'rent') {
             NFT.isRenting = true;
             NFT.price = qRent.price;
@@ -256,7 +258,7 @@ router.get('/:address', async (req, res, next) => {
       }
     } else if(req.query.tab == 'history' || req.query.tab == 'cancelled') {
       result.trades = [];
-
+      
       //sort 옵션
       let orderOption = [['id', 'DESC']];
       if(req.query.sort) {
@@ -287,27 +289,25 @@ router.get('/:address', async (req, res, next) => {
           result.trades.push(trade);
         }
       }
-    } else if(req.query.tab == 'rent' || req.query.tab == 'cancelled') {
+    } else if(req.query.tab == 'rent') {
       //NFT리스트 취합
       let rentNFTs = [];
       for(let i=0;i<myRents.length;i++) {
         const targetNFT = await NFTs.findOne({ 
           where: {
-            contractAddress: myRents[i].contractAddress,
+            contractAddress: myRents[i].collectionAddress,
             token_ids: myRents[i].token_ids
           }
         });
         rentNFTs.push(targetNFT.dataValues);
       }
-
-
-
+      
       result.assets = [];
       
       for(let i=0;i<rentNFTs.length;i++) {
         //NFT 가 판매 중이라면 판매 정보 업데이트
-        let NFT = rentNFTs[i].dataValues;
-
+        let NFT = rentNFTs[i];
+        
         //각 NFT의 collection 데이터
         const nftCollection = await Collections.findOne({
           where: {
@@ -317,7 +317,7 @@ router.get('/:address', async (req, res, next) => {
         if(nftCollection) {
           NFT.collection = nftCollection.dataValues;
         }
-
+        console.log('여기?22222');
         NFT.isSelling = false;
         NFT.price = null;
         NFT.trade_ca = null;
@@ -361,7 +361,7 @@ router.get('/:address', async (req, res, next) => {
           NFT.isRenting = true;
           NFT.price = qRent.price;
           NFT.seller = qRent.owner;
-          NFT.Renting = qRent.dataValues;
+          NFT.renting = qRent.dataValues;
         }
 
         result.assets.push(NFT);
@@ -405,7 +405,7 @@ router.get('/:address', async (req, res, next) => {
 
     res.status(200).json({ message: "ok", data: result });
   } catch (err) {
-    console.error(`에러 ${err}`);
+    console.log(`에러 ${err}`);
     res.status(400).json({
         message: err.message,
         data: null
