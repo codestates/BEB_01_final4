@@ -22,6 +22,7 @@ import { useStore } from "../../../utils/store";
 import { GGanbuCollection } from "../../../public/compiledContracts/GGanbuCollection";
 import Listings from "../../../components/listings";
 import PriceHistory from "../../../components/priceHistory";
+import Web3 from "web3";
 
 const EmptyHeartIcon = styled(AiOutlineHeart)`
   &&:hover {
@@ -75,7 +76,9 @@ const Asset = () => {
   const [web3, account] = useStore((state) => [state.web3, state.account]);
   const [isSelling, setIsSelling] = useState(false);
   const [isLending, setIsLending] = useState(false);
+  const [isRenting, setIsRenting] = useState(false);
   const [nftOwner, setNftOwner] = useState("");
+  const [nftRenter, setNftRenter] = useState("");
   const [collectionContract, setCollectionContract] = useState(null);
   const [sellPrice, setSellPrice] = useState(null);
   const [lendPrice, setLendPrice] = useState(null);
@@ -118,6 +121,14 @@ const Asset = () => {
 
         const isLending = await collectionContract.methods.getIsRental(tokenId).call();
         setIsLending(isLending);
+
+        // 대여자 주소
+        const rentAddress = await collectionContract.methods.getRentalAddress(tokenId).call();
+        console.log(rentAddress);
+        setNftRenter(Web3.utils.toChecksumAddress(rentAddress));
+        const emptyAddress = "0x0000000000000000000000000000000000000000";
+        console.log(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
+        setIsRenting(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
 
         const owner = await collectionContract.methods.ownerOf(tokenId).call();
         // console.log(owner);
@@ -189,6 +200,74 @@ const Asset = () => {
         console.log(log.returnValues);
 
         setSellPrice(null);
+
+        getNftFromContract();
+      } else {
+        alert("가격 정보를 가져오고 있습니다. 잠시만 기다려 주세요.");
+      }
+    } catch (e) {
+      console.dir(e);
+    }
+  };
+
+  const handleClickRent = async () => {
+    if (!account) {
+      alert("지갑을 먼저 연결해주세요.");
+      return;
+    }
+
+    if (account === nftOwner) {
+      alert("판매자는 대여할 수 없습니다.");
+      return;
+    }
+
+    try {
+      if (lendPrice) {
+        const txResult = await collectionContract.methods
+          .payment(2, tokenId)
+          .send({ value: web3.utils.toWei(lendPrice, "ether") });
+
+        let event = await collectionContract.getPastEvents("_rented", {
+          fromBlock: txResult.blockNumber,
+          toBlock: txResult.blockNumber,
+        });
+
+        let log = event.find((log) => log.transactionHash == txResult.transactionHash);
+        console.log(log.returnValues);
+
+        setLendPrice(null);
+
+        getNftFromContract();
+      } else {
+        alert("가격 정보를 가져오고 있습니다. 잠시만 기다려 주세요.");
+      }
+    } catch (e) {
+      console.dir(e);
+    }
+  };
+
+  const handleClickReturn = async () => {
+    if (!account) {
+      alert("지갑을 먼저 연결해주세요.");
+      return;
+    }
+
+    if (account === nftOwner) {
+      alert("판매자는 대여할 수 없습니다.");
+      return;
+    }
+
+    try {
+      if (isRenting && nftRenter === account) {
+        const txResult = await collectionContract.methods.returnNFT(tokenId).send();
+
+        let event = await collectionContract.getPastEvents("_return", {
+          fromBlock: txResult.blockNumber,
+          toBlock: txResult.blockNumber,
+        });
+
+        let log = event.find((log) => log.transactionHash == txResult.transactionHash);
+        console.log(log.returnValues);
 
         getNftFromContract();
       } else {
@@ -314,7 +393,7 @@ const Asset = () => {
             </TradeBox>
           )}
 
-          {(isSelling || isLending) && (
+          {(isSelling || isLending || isRenting) && (
             <TradeBox>
               <div>
                 <div style={{ display: "flex", alignItems: "center" }}>
@@ -330,15 +409,17 @@ const Asset = () => {
               </div>
               <Divider style={{ margin: "15px 0" }} />
               <div>
-                <Text style={{ fontSize: "18px" }}>Current price</Text>
-                <div style={{ display: "flex", margin: "12px 0" }}>
-                  <Image src="/images/eth.svg" width={16} height={16} alt="" />
-                  {(sellPrice || lendPrice) && (
-                    <Text style={{ fontSize: "28px", fontWeight: "bold", marginLeft: "10px" }}>
-                      {sellPrice === null ? lendPrice : sellPrice}
-                    </Text>
-                  )}
-                </div>
+                {(sellPrice || lendPrice) && !isRenting && (
+                  <>
+                    <Text style={{ fontSize: "18px" }}>Current price</Text>
+                    <div style={{ display: "flex", margin: "12px 0" }}>
+                      <Image src="/images/eth.svg" width={16} height={16} alt="" />
+                      <Text style={{ fontSize: "28px", fontWeight: "bold", marginLeft: "10px" }}>
+                        {sellPrice === null ? lendPrice : sellPrice}
+                      </Text>
+                    </div>
+                  </>
+                )}
 
                 {isSelling && (
                   <>
@@ -351,13 +432,25 @@ const Asset = () => {
                   </>
                 )}
 
-                {isLending && (
+                {isLending && !isRenting && (
                   <>
-                    <Button onClick={handleClickBuy} color="teal" size="lg">
-                      Borrow now
+                    <Button onClick={handleClickRent} color="teal" size="lg">
+                      Rent now
                     </Button>
                     <Button style={{ marginTop: "15px" }} color="teal" size="lg">
-                      Borrow with GGanbu
+                      Rent with GGanbu
+                    </Button>
+                  </>
+                )}
+                {console.log(nftRenter)}
+                {console.log(account)}
+                {isLending && nftRenter === account && (
+                  <>
+                    <Button onClick={handleClickReturn} color="teal" size="lg">
+                      반납
+                    </Button>
+                    <Button style={{ marginTop: "15px" }} color="teal" size="lg">
+                      반납 with GGanbu
                     </Button>
                   </>
                 )}
