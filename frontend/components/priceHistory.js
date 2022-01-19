@@ -13,8 +13,8 @@ import { Line } from "react-chartjs-2";
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const PriceHistory = ({ labels, priceArr }) => {
-  console.log(priceArr);
-  console.log(priceArr.length);
+  // console.log(priceArr);
+  // console.log(priceArr.length);
 
   const options = {
     responsive: true,
