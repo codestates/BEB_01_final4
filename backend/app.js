@@ -9,6 +9,7 @@ const assetsRouter = require('./routes/assets');
 const usersRouter = require('./routes/users');
 const metadataRouter = require('./routes/metadata');
 const tradesRouter = require('./routes/trades');
+const rentsRouter = require('./routes/rents');
 const mainRouter = require('./routes/main');
 
 const app = express();
@@ -37,6 +38,7 @@ app.use('/assets', assetsRouter);
 app.use('/users', usersRouter);
 app.use('/metadata', metadataRouter);
 app.use('/trades', tradesRouter);
+app.use('/rents', rentsRouter);
 app.use('/main', mainRouter);
 
 

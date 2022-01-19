@@ -1,5 +1,6 @@
 const express = require('express');
-const { NFTs, Collections, Trades, Users } = require('../models');
+const { NFTs, Collections, Trades, Rents, Users } = require('../models');
+const { Op } = require("sequelize");
 const router = express.Router();
 const config = require('../config/config');
 const hostURI = config.development.host_metadata;
@@ -27,15 +28,27 @@ router.get('/', async (req, res, next) => {
         for (let i = 0; i < qNFTs.length; i++) {
             let NFT = qNFTs[i].dataValues;
 
-            //해당 NFT 의 trade 정보
-            let qTrades = await Trades.findAll({
+            //각 NFT의 collection 데이터
+            const nftCollection = await Collections.findOne({
                 where: {
-                    token_ids : NFT.token_ids,
-                    collectionAddress : NFT.contractAddress
-                },
-                order: [
-                    ['createdAt', 'DESC']
-                ],
+                contractAddress: NFT.contractAddress
+                }
+            });
+            if(nftCollection) {
+                NFT.collection = nftCollection.dataValues;
+            }
+
+
+            //trade sort 옵션
+            let whereOption = {
+                token_ids : NFT.token_ids,
+                collectionAddress : NFT.contractAddress,
+                status : 'selling'
+            };
+
+            //트레이드 정보 추가
+            let qTrades = await Trades.findOne({
+                where: whereOption,
             });
 
             //만약 Trade 내역이 존재한다면
@@ -43,18 +56,40 @@ router.get('/', async (req, res, next) => {
             NFT.price = null;
             NFT.trade_ca = null;
             NFT.seller = null;
+            NFT.isLending = false;
+            NFT.isRenting = false;
+            
+            //만약 Trade 내역이 존재한다면 NFT 에 그 내역들을 추가
+            if(qTrades) {
+                NFT.isSelling = true;
+                NFT.price = qTrades.price;
+                NFT.trade_ca = qTrades.trade_ca;
+                NFT.seller = qTrades.seller;
+            }
 
-            if(qTrades.length > 0) {
-                for (let j = 0; j < qTrades.length; j++) {
-                    //selling 중인 trade 가 있다면
-                    if(qTrades[j].status === 'selling') {
-                        NFT.isSelling = true;
-                        NFT.price = qTrades[j].price;
-                        NFT.trade_ca = qTrades[j].trade_ca;
-                        NFT.seller = qTrades[j].seller;
-                    }
+                    //대여 정보 추가
+            let qRent = await Rents.findOne({
+                where: {
+                token_ids: NFT.token_ids,
+                collectionAddress: NFT.contractAddress,
+                [Op.or]: [{ status: 'lend' }, { status: 'rent' }],
+                },
+            });
+            if(qRent) {
+                if(qRent.status == 'lend') {
+                    NFT.isLending = true;
+                    NFT.price = qRent.price;
+                    NFT.seller = qRent.owner;
+                    //NFT.lending = qRent.dataValues;
+                } 
+                else if(qRent.status == 'rent') {
+                    NFT.isRenting = true;
+                    NFT.price = qRent.price;
+                    NFT.seller = qRent.owner;
+                    //NFT.renting = qRent.dataValues;
                 }
             }
+
             result.push(NFT);
         }
 
@@ -111,6 +146,11 @@ router.get('/:symbol/:token_ids', async (req, res, next) => {
     NFT.seller = null;
     NFT.trade_selling = null;
     NFT.trade_history = [];
+    NFT.isLending = false;
+    NFT.lending = null;
+    NFT.isRenting = false;
+    NFT.renting = null;
+    NFT.rent_history = [];
 
     //트레이드 정보 추가
     let qTrades = await Trades.findAll({
@@ -136,6 +176,40 @@ router.get('/:symbol/:token_ids', async (req, res, next) => {
                 //NFT.trade_history.push(qTrades[j].dataValues);
             } else if(qTrades[j].dataValues.status == 'completed') {
                 NFT.trade_history.push(qTrades[j].dataValues);
+            }
+        }
+    }
+
+    //Rent 내역 추가
+    let qRents = await Rents.findAll({
+        where: {
+            token_ids : NFT.token_ids,
+            collectionAddress : NFT.contractAddress
+        },
+        order: [
+            ['createdAt', 'DESC']
+        ],
+    });
+
+    //만약 Rent 내역이 존재한다면
+    if(qRents.length > 0) {
+        for (let j = 0; j < qRents.length; j++) {
+            //lend 중인 건이 있다면
+            if(qRents[j].status == 'lend') {
+                NFT.isLending = true;
+                NFT.price = qRents[j].price;
+                NFT.seller = qRents[j].owner;
+                NFT.lending = qRents[j].dataValues;
+            }
+            //rent 중인 건이 있다면 
+            else if(qRents[j].status == 'selling') {
+                NFT.isRenting = true;
+                NFT.price = qRents[j].price;
+                NFT.seller = qRents[j].owner;
+                NFT.renting = qRents[j].dataValues;
+            } 
+            else if(qRents[j].status == 'completed') {
+                NFT.rent_history.push(qRents[j].dataValues);
             }
         }
     }
