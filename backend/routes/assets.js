@@ -202,7 +202,7 @@ router.get('/:symbol/:token_ids', async (req, res, next) => {
                 NFT.lending = qRents[j].dataValues;
             }
             //rent 중인 건이 있다면 
-            else if(qRents[j].status == 'selling') {
+            else if(qRents[j].status == 'rent') {
                 NFT.isRenting = true;
                 NFT.price = qRents[j].price;
                 NFT.seller = qRents[j].owner;
