@@ -286,7 +286,7 @@ router.get('/:address', async (req, res, next) => {
           trade = await addTradeInfo(trade);
   
           //트레이드 데이터
-          result.trade.push(trade);
+          result.trades.push(trade);
         }
       }
     } else if(req.query.tab == 'rent') {
