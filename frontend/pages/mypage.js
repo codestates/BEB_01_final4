@@ -8,7 +8,6 @@ import {
   MdOutlineFormatPaint,
   MdOutlineSell,
   MdOutlineHistory,
-  MdOutlineCancelPresentation,
 } from "react-icons/md";
 import CollectionCard from "../components/collectionCard";
 import axios from "axios";

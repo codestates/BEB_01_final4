@@ -221,7 +221,7 @@ const Asset = () => {
     }
 
     if (account === nftOwner) {
-      alert("판매자는 대여할 수 없습니다.");
+      alert("소유자는 대여할 수 없습니다.");
       return;
     }
 
@@ -406,11 +406,19 @@ const Asset = () => {
                   <MdOutlineWatchLater style={{ color: "rgb(112, 122, 131)" }} />
 
                   {/* TODO: 판매 / 대여 중인 상태에 따라 변경 필요 */}
+                  {console.log(nft?.trande_selling)}
                   <Text style={{ fontSize: "18px", color: "rgb(112, 122, 131)", marginLeft: "10px" }}>
-                    {nft?.trade_selling === null ? (
-                      <>Upadting...</>
+                    {nft?.trade_selling || nft?.lending ? (
+                      <>
+                        {nft?.trande_selling
+                          ? `판매 등록: ${new Date(nft?.trade_selling?.createdAt).toLocaleString("en-GB")}`
+                          : null}
+                        {nft?.lending !== null
+                          ? `대여 등록: ${new Date(nft?.lending?.updatedAt).toLocaleString("en-GB")}`
+                          : null}
+                      </>
                     ) : (
-                      <>{`Sale starts ${new Date(nft?.trade_selling?.createdAt).toLocaleString("en-GB")}`}</>
+                      <>Upadting...</>
                     )}
                   </Text>
                 </div>
