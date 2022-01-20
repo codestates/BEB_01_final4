@@ -1,6 +1,6 @@
 const express = require('express');
-const { NFTs, Collections, Trades, Rents, Users } = require('../models');
-const { Op } = require("sequelize");
+const { sequelize, NFTs, Collections, Trades, Rents, Users } = require('../models');
+const { Op, QueryTypes } = require("sequelize");
 const router = express.Router();
 const config = require('../config/config');
 const hostURI = config.development.host_metadata;
@@ -237,13 +237,24 @@ router.get('/:collection_symbol', async (req, res, next) => {
     let result = qCollection.dataValues;
 
     //volume_traded
-    let qSumOfTraded = await Trades.findAll({
-      where: {
-        collectionAddress: qCollection.contractAddress,
-        status: 'completed'
-      },
-    });
-    console.log(qSumOfTraded);
+    // let qSumOfTraded = await Trades.findAll({
+    //   where: {
+    //     collectionAddress: qCollection.contractAddress,
+    //     status: 'completed'
+    //   },
+    // });
+    let qSumOfTraded = await sequelize.query(
+      `SELECT ROUND(SUM(price),2) AS volume_traded FROM Trades WHERE collectionAddress = :cd AND status = "completed"`,
+      {
+        replacements: { cd: qCollection.contractAddress },
+        type: QueryTypes.SELECT
+      }
+    );
+    if(qSumOfTraded.length > 0) {
+      result.volume_traded = qSumOfTraded[0].volume_traded;
+    } else {
+      result.volume_traded = 0;
+    }
     
 
     //컬랙션에 소속된 NFTs
