@@ -167,7 +167,7 @@ const MintNFT = () => {
             }
             setDescription(e.currentTarget.value);
           }}
-          onInput={hangulToAlphabet}
+          // onInput={hangulToAlphabet}
           variant="default"
           placeholder="Description"
         />
