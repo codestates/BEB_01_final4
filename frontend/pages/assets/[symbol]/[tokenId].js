@@ -408,13 +408,16 @@ const Asset = () => {
                   {/* TODO: 판매 / 대여 중인 상태에 따라 변경 필요 */}
                   {console.log(nft?.trande_selling)}
                   <Text style={{ fontSize: "18px", color: "rgb(112, 122, 131)", marginLeft: "10px" }}>
-                    {nft?.trade_selling || nft?.lending ? (
+                    {nft?.trade_selling || nft?.lending || nft?.renting ? (
                       <>
                         {nft?.trande_selling
                           ? `판매 등록: ${new Date(nft?.trade_selling?.createdAt).toLocaleString("en-GB")}`
                           : null}
                         {nft?.lending !== null
                           ? `대여 등록: ${new Date(nft?.lending?.updatedAt).toLocaleString("en-GB")}`
+                          : null}
+                        {nft?.renting !== null
+                          ? `대여 중: ${new Date(nft?.renting?.updatedAt).toLocaleString("en-GB")}`
                           : null}
                       </>
                     ) : (
@@ -465,7 +468,7 @@ const Asset = () => {
                 )}
 
                 {/* 대여 중인 상태 */}
-                {isLending && isRenting && nftRenter !== account && (
+                {isLending && isRenting && (
                   <Text style={{ fontSize: "20px" }}>{`${compressAddress(nftRenter)}가 대여 중인 NFT입니다.`}</Text>
                 )}
 
