@@ -235,12 +235,22 @@ router.get('/:collection_symbol', async (req, res, next) => {
         }
     });
     let result = qCollection.dataValues;
+
+    //volume_traded
+    let qSumOfTraded = await Trades.findAll({
+      where: {
+        collectionAddress: qCollection.contractAddress,
+        status: 'completed'
+      },
+    });
+    console.log(qSumOfTraded);
     
+
     //컬랙션에 소속된 NFTs
     let qNFTs = await NFTs.findAll({
         where: {
           contractAddress: qCollection.contractAddress,
-          is_minted: true
+          //is_minted: true
         },
         order: [
           ['createdAt', 'DESC']
