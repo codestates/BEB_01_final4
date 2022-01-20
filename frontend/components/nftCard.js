@@ -86,6 +86,11 @@ const NFTCard = ({ collectionSymbol, nft }) => {
               민팅 중
             </Badge>
           )}
+          {nft?.isRenting && (
+            <Badge size="lg" color="orange" radius={4} variant="outline">
+              대여 중
+            </Badge>
+          )}
         </BadgeWrapper>
         <div
           style={{
