@@ -127,10 +127,10 @@ const Asset = () => {
 
         // 대여자 주소
         const rentAddress = await collectionContract.methods.getRentalAddress(tokenId).call();
-        console.log(rentAddress);
+        // console.log(rentAddress);
         setNftRenter(Web3.utils.toChecksumAddress(rentAddress));
         const emptyAddress = "0x0000000000000000000000000000000000000000";
-        console.log(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
+        // console.log(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
         setIsRenting(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
 
         const owner = await collectionContract.methods.ownerOf(tokenId).call();

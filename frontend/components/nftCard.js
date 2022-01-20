@@ -81,6 +81,11 @@ const NFTCard = ({ collectionSymbol, nft }) => {
               대여 가능
             </Badge>
           )}
+          {!nft?.is_minted && (
+            <Badge size="lg" color="blue" radius={4} variant="outline">
+              민팅 중
+            </Badge>
+          )}
         </BadgeWrapper>
         <div
           style={{
