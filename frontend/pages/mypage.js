@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import NFTCard from "../components/nftCard";
 import History from "../components/history";
+import RentHistory from "../components/rent_history";
 import { compressAddress } from "../utils";
 
 const Description = styled.div`
@@ -50,6 +51,9 @@ const MyPage = () => {
   const [createdAssets, setCreatedAssets] = useState([]);
   const [sellingAssets, setSellingAssets] = useState([]);
   const [activityAssets, setActivityAssets] = useState([]);
+  const [lendAssets, setLendAssets] = useState([]);
+  const [rentAssets, setRentAssets] = useState([]);
+  const [rentHistoryAssets, setRentHistoryAssets] = useState([]);
 
   const getDataOnTabChange = async () => {
     if (activeTab === 0) {
@@ -77,12 +81,32 @@ const MyPage = () => {
       console.log(myData);
       setActivityAssets(myData.trades);
     } else if (activeTab === 5) {
-      // Canceled
+      // For Rent
       const {
         data: { data: myData },
-      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}?tab=canceled`);
-      console.log(myData);
+      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}?tab=lend`);
+      setLendAssets(myData.assets);
+    } else if (activeTab === 6) {
+      // 대여 중인
+      const {
+        data: { data: myData },
+      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}?tab=rent`);
+      setRentAssets(myData.assets);
+    } else if (activeTab === 7) {
+      // 대여 내역
+      const {
+        data: { data: myData },
+      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}?tab=rent-history`);
+      setRentHistoryAssets(myData.rents);
     }
+
+    // else if (activeTab === 5) {
+    //   // Canceled
+    //   const {
+    //     data: { data: myData },
+    //   } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}?tab=canceled`);
+    //   console.log(myData);
+    // }
   };
 
   useEffect(() => {
@@ -228,13 +252,70 @@ const MyPage = () => {
             >
               {sellingAssets.map((nft, i) => {
                 // console.log(nft);
-                return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={""} nft={nft} idx={i} />;
+                return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
               })}
             </SimpleGrid>
           </CTabs.Tab>
           <CTabs.Tab icon={<MdOutlineHistory style={{ width: 18, height: 18 }} />} label="Activity">
             <History elements={activityAssets} />
           </CTabs.Tab>
+          <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="For Rent">
+            <div style={{ padding: "0 40px" }}>
+              <Text style={{ fontSize: "36px", fontWeight: "bold" }}>대여 등록한 내 NFT</Text>
+              <Text style={{ fontSize: "20px", margin: "20px 0" }}>
+                다른 사람이 대여하여 사용할 수 있도록 마켓 플레이스에 등록한 내 NFT 리스트입니다.
+              </Text>
+            </div>
+
+            <SimpleGrid
+              style={{ padding: "0 80px" }}
+              cols={3}
+              spacing="lg"
+              breakpoints={[
+                { maxWidth: 1160, cols: 2, spacing: "md" },
+                { maxWidth: 840, cols: 1, spacing: "sm" },
+              ]}
+            >
+              {lendAssets.map((nft, i) => {
+                // console.log(nft);
+                return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
+              })}
+            </SimpleGrid>
+          </CTabs.Tab>
+          <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="Rental">
+            <div style={{ padding: "0 40px" }}>
+              <Text style={{ fontSize: "36px", fontWeight: "bold" }}>대여 중인 NFT</Text>
+              <Text style={{ fontSize: "20px", margin: "20px 0" }}>
+                다른 사람 소유의 NFT 를 fee 를 지불하여 대여 사용 중인 NFT 리스트입니다.
+              </Text>
+            </div>
+
+            <SimpleGrid
+              style={{ padding: "0 80px" }}
+              cols={3}
+              spacing="lg"
+              breakpoints={[
+                { maxWidth: 1160, cols: 2, spacing: "md" },
+                { maxWidth: 840, cols: 1, spacing: "sm" },
+              ]}
+            >
+              {rentAssets.map((nft, i) => {
+                // console.log(nft);
+                return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
+              })}
+            </SimpleGrid>
+          </CTabs.Tab>
+          <CTabs.Tab icon={<MdOutlineHistory style={{ width: 18, height: 18 }} />} label="Rental-History">
+            <div style={{ padding: "0 40px" }}>
+              <Text style={{ fontSize: "36px", fontWeight: "bold" }}>대여 내역</Text>
+              <Text style={{ fontSize: "20px", margin: "20px 0" }}>
+                대여하여 사용했거나, 내 NFT 를 대여해 준 내역입니다.
+              </Text>
+            </div>
+
+            <RentHistory elements={rentHistoryAssets} />
+          </CTabs.Tab>
+
           {/* <CTabs.Tab icon={<MdOutlineCancelPresentation style={{ width: 18, height: 18 }} />} label="Canceled">
             Third tab content
           </CTabs.Tab> */}
