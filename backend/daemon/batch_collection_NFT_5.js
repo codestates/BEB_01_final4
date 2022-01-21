@@ -6,12 +6,14 @@ const path = require("path");
 const basePath = __dirname;
 
 /*============ Collection owner 지갑 주소 필요 =================*/
-const ownerAddress = '0x5c20CC9d4c08d76c61Fbb43eA78CB2C4323CC5cE';
-const privateKey = '2ac04f0ba843abba2d9027a7007c5dbadf972d431059dcff31eff576c2b2a2af';
+const ownerAddress = '0xF042b493273dE38123Cb288730Db92304bB6541d';
+const privateKey = '4475b37738aaff7f44e541a577cf878a947a647378a9004e84dc0103abaab1d7';
 
 const abi = require("./MyERC721_ABI");
 const bytecode = require("./MyERC721_Bytecode");
 const serverPath = 'http://localhost:4000';
+
+const num_of_mint = 10;
 /*==========================================================*/
 
 
@@ -35,60 +37,70 @@ const main = async () => {
 
   //2. [프론트] 블록에 collection 생성 및 CA 회신
   //required: abi, bytecode, address, privKey, name, symbol, collectionURI
-  for(let i=0;i<collections.length;i++) {
-    let arguments = [collections[i].name, collections[i].symbol, collections[i].collectionURI];
-    collections[i].contractAddress = await deployContract(abi, bytecode, ownerAddress, privateKey, arguments);
+  const mintCollectionSlowly = async (delayTime) => {
+    for(let i=0;i<collections.length;i++) {
+      let arguments = [collections[i].name, collections[i].symbol, collections[i].collectionURI];
+      collections[i].contractAddress = await deployContract(abi, bytecode, ownerAddress, privateKey, arguments);
+      console.log(`컬랙션 address : ${collections[i].contractAddress}`);
+      let inputData = {
+        contractAddress: collections[i].contractAddress,
+        is_created: true, 
+      }
+      await updateCollection(inputData, collections[i].collectionURI);
+      await new Promise(res => setTimeout(res,delayTime));
+    }
   }
+  mintCollectionSlowly(3000);
+
 
   //3. [백앤드] CA 업데이트
   //required: ca, collectionURI
-  for(let i=0;i<collections.length;i++) {
-    let inputData = {
-      contractAddress: collections[i].contractAddress,
-      is_created: true, 
-    }
-    await updateCollection(inputData, collections[i].collectionURI);
-  }
+  // for(let i=0;i<collections.length;i++) {
+  //   console.log(`컬랙션 address : ${collections[i].contractAddress}`);
+  //   let inputData = {
+  //     contractAddress: collections[i].contractAddress,
+  //     is_created: true, 
+  //   }
+  //   await updateCollection(inputData, collections[i].collectionURI);
+  // }
 
   //4. [백앤드] NFT metadata insert 및 tokenURI 회신
   //required: ca, name, description, traits, imageURI
-  for(let i=0;i<dummy_data.length;i++) {
-    //각 collection 에 속한 NFT
-    let nfts = dummy_data[i].assets;
-    //for(let j=0;j<nfts.length;j++) {
-    for(let j=0;j<5;j++) {
-        let inputData = {
-        contractAddress: collections[i].contractAddress,
-        metadata: {
-          name: nfts[j].name,
-          description: nfts[j].description,
-          traits: JSON.stringify(nfts[j].traits),
-          imageURI: nfts[j].tokenURI,
-          ownerAddress: ownerAddress,
-          creatorAddress: ownerAddress
-        }
-      };
+  // for(let i=0;i<dummy_data.length;i++) {
+  //   //각 collection 에 속한 NFT
+  //   let nfts = dummy_data[i].assets;
+  //   //for(let j=0;j<nfts.length;j++) {
+  //   for(let j=0;j<num_of_mint;j++) {
+  //       let inputData = {
+  //       contractAddress: collections[i].contractAddress,
+  //       metadata: {
+  //         name: nfts[j].name,
+  //         description: nfts[j].description,
+  //         traits: JSON.stringify(nfts[j].traits),
+  //         imageURI: nfts[j].tokenURI
+  //       }
+  //     };
 
-      nfts[j].token_URI = await insertNftMeta(inputData);
-    }
-  }
+  //     nfts[j].token_URI = await insertNftMeta(inputData);
+  //   }
+  // }
 
   //5. [프론트] mintNFT
   //required:
-  const mintNftSlowly = async (delayTime) => {
-    for(let i=0;i<dummy_data.length;i++) {
-      //for(let j=0;j<dummy_data[i].assets.length;j++) {
-      for(let j=0;j<5;j++) {
-          //console.log(dummy_data[i].assets[j].token_URI);
-        console.log(`NFT생성 중 ${dummy_data[i].assets[j].token_URI}`);
-        mintNFT(abi, collections[i].contractAddress, ownerAddress, privateKey, dummy_data[i].assets[j].token_URI);
-        await new Promise(res => setTimeout(res,delayTime));
-      }
-    }
-  }
-  mintNftSlowly(3000);
+  // const mintNftSlowly = async (delayTime) => {
+  //   for(let i=0;i<dummy_data.length;i++) {
+  //     //for(let j=0;j<dummy_data[i].assets.length;j++) {
+  //     for(let j=0;j<num_of_mint;j++) {
+  //         //console.log(dummy_data[i].assets[j].token_URI);
+  //       console.log(`NFT생성 중 ${dummy_data[i].assets[j].token_URI}`);
+  //       mintNFT(abi, collections[i].contractAddress, ownerAddress, privateKey, dummy_data[i].assets[j].token_URI);
+  //       await new Promise(res => setTimeout(res,delayTime));
+  //     }
+  //   }
+  // }
+  // mintNftSlowly(3000);
   
-  sequelize.close();
+  //sequelize.close();
 }
 
 const getCollections = (data) => {
@@ -189,6 +201,8 @@ const insertNftMeta = async (data) => {
       name: data.metadata.name,
       description: data.metadata.description,
       traits: data.metadata.traits,
+      ownerAddress: ownerAddress,
+      creatorAddress: ownerAddress,
       imageURI: data.metadata.imageURI
     });
     //console.log(result);
