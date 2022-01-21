@@ -40,10 +40,10 @@ const History = ({ elements }) => {
         <Image src="/images/eth.svg" width={16} height={16} alt="" />
         {element.price}
       </td>
-      <td>{(account == element.owner) ? '나' : element.owner}</td>
-      <td>{(account == element.renter) ? '나' : element.renter}</td>
-      <td>{`${new Date(element.createdAt).toLocaleString("en-GB")}`}</td>
-      <td>{`${new Date(element.updatedAt).toLocaleString("en-GB")}`}</td>
+      <td>{account == element.owner ? "나" : element.owner}</td>
+      <td>{account == element.renter ? "나" : element.renter}</td>
+      <td>{`${new Date(element.createdAt).toLocaleString("en-US")}`}</td>
+      <td>{`${new Date(element.updatedAt).toLocaleString("en-US")}`}</td>
     </CTr>
   ));
 

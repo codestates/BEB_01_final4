@@ -414,13 +414,13 @@ const Asset = () => {
                     {nft?.trade_selling || nft?.lending || nft?.renting ? (
                       <>
                         {nft?.trande_selling
-                          ? `판매 등록: ${new Date(nft?.trade_selling?.createdAt).toLocaleString("en-GB")}`
+                          ? `판매 등록: ${new Date(nft?.trade_selling?.createdAt).toLocaleString("en-US")}`
                           : null}
                         {nft?.lending !== null
-                          ? `대여 등록: ${new Date(nft?.lending?.updatedAt).toLocaleString("en-GB")}`
+                          ? `대여 등록: ${new Date(nft?.lending?.updatedAt).toLocaleString("en-US")}`
                           : null}
                         {nft?.renting !== null
-                          ? `대여 중: ${new Date(nft?.renting?.updatedAt).toLocaleString("en-GB")}`
+                          ? `대여 중: ${new Date(nft?.renting?.updatedAt).toLocaleString("en-US")}`
                           : null}
                       </>
                     ) : (

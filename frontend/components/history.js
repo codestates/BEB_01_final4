@@ -40,7 +40,7 @@ const History = ({ elements }) => {
       </td>
       <td>{element.seller}</td>
       <td>{element.buyer}</td>
-      <td>{`${new Date(element.updatedAt).toLocaleString("en-GB")}`}</td>
+      <td>{`${new Date(element.updatedAt).toLocaleString("en-US")}`}</td>
     </CTr>
   ));
 
