@@ -13,10 +13,12 @@ export default function App(props) {
 
   useEffect(() => {
     if (typeof window.ethereum !== "undefined") {
+      console.log(typeof window.ethereum);
       // window.ethereum이 있다면
       try {
         const web = new Web3(window.ethereum); // 새로운 web3 객체를 만든다
         setWeb3(web);
+        connectWallet({ setAccount, setUser });
 
         window.ethereum.on("accountsChanged", () => {
           connectWallet({ setAccount, setUser });

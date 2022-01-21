@@ -9,7 +9,7 @@ import {
   MdOutlineSell,
   MdOutlineHistory,
 } from "react-icons/md";
-import CollectionCard from "../components/collectionCard";
+import CollectionCard from "../components/CollectionCard";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";

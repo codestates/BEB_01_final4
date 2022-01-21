@@ -1,26 +1,7 @@
 import { Grid } from "@mantine/core";
 import Image from "next/image";
-import styled from "styled-components";
 import { useRouter } from "next/router";
-
-const CollectionWrapper = styled.div`
-  &:hover {
-    box-shadow: rgb(4 17 29 / 25%) 0px 0px 8px 0px;
-    transition: all 0.1s ease 0s;
-  }
-  cursor: pointer;
-`;
-
-const CImage = styled(Image)`
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-`;
-
-const EllipsisDiv = styled.div`
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-`;
+import { CImage, CollectionWrapper, EllipsisDiv } from "./styles";
 
 const CollectionCard = ({ collection }) => {
   const router = useRouter();
@@ -99,7 +80,7 @@ const CollectionCard = ({ collection }) => {
               <Image src="/images/verified.png" width="36px" height="36px" alt="" />
             </div>
           </div>
-          <EllipsisDiv style={{ height: "50%", overflow: "hidden" }}>
+          <EllipsisDiv>
             <p
               style={{
                 wordWrap: "break-word",
