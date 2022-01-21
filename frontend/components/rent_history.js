@@ -16,7 +16,7 @@ const CTr = styled.tr`
   }
 `;
 
-const History = ({ elements }) => {
+const RentHistory = ({ elements }) => {
   const router = useRouter();
   const account = useStore((state) => state.account);
 
@@ -27,7 +27,8 @@ const History = ({ elements }) => {
   const rows = elements.map((element, idx) => (
     <CTr style={{ cursor: "pointer" }} onClick={() => handleClick(element)} key={idx}>
       <td>{element.asset.name}</td>
-      <td style={{ display: "flex", alignItems: "center" }}>
+      <td><Image src={element.asset.imageURI} width={128} height={128} alt="" /></td>
+      <td>
         {/* <div
           style={{
             width: "16px",
@@ -37,11 +38,11 @@ const History = ({ elements }) => {
             backgroundRepeat: "no-repeat",
           }}
         /> */}
-        <Image src="/images/eth.svg" width={16} height={16} alt="" />
+        <Image src="/images/eth.svg" width={16} height={16} alt="" />&nbsp;
         {element.price}
       </td>
-      <td>{(account == element.owner) ? '나' : element.owner}</td>
-      <td>{(account == element.renter) ? '나' : element.renter}</td>
+      <td>{(account == element.owner) ? '나' : element.owner.substring(2,8)}</td>
+      <td>{(account == element.renter) ? '나' : element.renter.substring(2,8)}</td>
       <td>{`${new Date(element.createdAt).toLocaleString("en-GB")}`}</td>
       <td>{`${new Date(element.updatedAt).toLocaleString("en-GB")}`}</td>
     </CTr>
@@ -51,6 +52,7 @@ const History = ({ elements }) => {
     <Table style={{ marginTop: "15px" }}>
       <thead>
         <tr>
+          <th style={{ fontSize: "18px" }}>Name</th>
           <th style={{ fontSize: "18px" }}>Item</th>
           <th style={{ fontSize: "18px" }}>요금</th>
           <th style={{ fontSize: "18px" }}>Owner</th>
@@ -64,4 +66,4 @@ const History = ({ elements }) => {
   );
 };
 
-export default History;
+export default RentHistory;
