@@ -6,6 +6,25 @@ const config = require('../config/config');
 const hostURI = config.development.host_metadata;
 
 //trade instance 넣으면 colection / asset 정보 추가해 줌
+const getUserImage = async (user) => {
+  try {
+    //NFT 데이터 (name, imageURI)
+    const qUser = await Users.findOne({
+      where: {
+        address: user.ownerAddress,
+      }
+    });
+    if (qUser) {
+      user.imageURL = qUser.dataValues.imageURL;
+    }
+    return user;
+  }
+  catch (err) {
+    return err;
+  }
+}
+
+//trade instance 넣으면 colection / asset 정보 추가해 줌
 const addTradeInfo = async (trade) => {
   try {
     //NFT 데이터 (name, imageURI)
@@ -116,6 +135,8 @@ router.get('/trades', async (req, res, next) => {
 // 가장 많은 NFT 보유 회원 Top3
 router.get('/topUser', async (req, res, next) => {
   try {
+
+    let result = [];
     const topUser = await NFTs.findAll({
       group: 'ownerAddress',
       attributes: ['ownerAddress', [sequelize.fn('COUNT', 'ownerAddress'), 'count']],
@@ -124,11 +145,18 @@ router.get('/topUser', async (req, res, next) => {
       ],
       limit: 3,
     })
-    if (topUser) {
+    if (topUser.length > 0) {
+      for (let i = 0; i < topUser.length; i++) {
+        let user = topUser[i].dataValues;
+        console.log(user);
+        user = await getUserImage(user);
+        result.push(user);
+      }
+
       res.status(200).json({
         message: 'ok',
-        data: topUser
-      })
+        data: result
+      });
     }
   } catch (err) {
     res.status(400).json({
