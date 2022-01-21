@@ -6,7 +6,7 @@ const config = require('../config/config');
 const hostURI = config.development.host_metadata;
 
 //trade instance 넣으면 colection / asset 정보 추가해 줌
-const getUserImage = async (user) => {
+const getUserInfo = async (user) => {
   try {
     //NFT 데이터 (name, imageURI)
     const qUser = await Users.findOne({
@@ -15,8 +15,11 @@ const getUserImage = async (user) => {
       }
     });
     if (qUser) {
-      user.imageURL = qUser.dataValues.imageURL;
+      user.imageURI = qUser.dataValues.imageURL;
+      user.name = qUser.dataValues.name;
+      user.id = qUser.dataValues.id;
     }
+    console.log(user);
     return user;
   }
   catch (err) {
@@ -149,7 +152,7 @@ router.get('/topUser', async (req, res, next) => {
       for (let i = 0; i < topUser.length; i++) {
         let user = topUser[i].dataValues;
         console.log(user);
-        user = await getUserImage(user);
+        user = await getUserInfo(user);
         result.push(user);
       }
 
