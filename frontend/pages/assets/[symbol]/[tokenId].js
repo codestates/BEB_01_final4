@@ -340,7 +340,7 @@ const Asset = () => {
                 </div>
               }
             >
-              {nft?.traits && <Traits elements={nft?.traits ? JSON.parse(nft?.traits) : []} />}
+              {nft?.traits?.length > 0 && <Traits elements={nft?.traits ? JSON.parse(nft?.traits) : []} />}
             </CAccordion.Item>
 
             <CAccordion.Item
