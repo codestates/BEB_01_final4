@@ -144,7 +144,9 @@ const NFTS = () => {
             <StatBox style={{ borderTopRightRadius: "8px", borderBottomRightRadius: "8px" }}>
               <StatCount>
                 <Image width={23} height={23} src="/images/eth.svg" alt="" />
-                <span style={{ marginLeft: "3px" }}>13</span>
+                <span style={{ marginLeft: "3px" }}>
+                  {collection?.volume_traded === null ? "-" : collection?.volume_traded}
+                </span>
               </StatCount>
               <StatTitle>volume traded</StatTitle>
             </StatBox>

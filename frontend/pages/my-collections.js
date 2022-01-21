@@ -2,7 +2,7 @@ import { Button, SimpleGrid, Text } from "@mantine/core";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import CollectionCard from "../components/collectionCard";
+import CollectionCard from "../components/CollectionCard";
 import { useStore } from "../utils/store";
 
 const Collections = () => {

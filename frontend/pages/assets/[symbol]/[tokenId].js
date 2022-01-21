@@ -24,6 +24,7 @@ import Listings from "../../../components/listings";
 import PriceHistory from "../../../components/priceHistory";
 import Web3 from "web3";
 import { compressAddress } from "../../../utils";
+import Traits from "../../../components/traits";
 
 const EmptyHeartIcon = styled(AiOutlineHeart)`
   &&:hover {
@@ -113,7 +114,7 @@ const Asset = () => {
   // 컨트랙트에서 nft 정보 조회: 소유자, 빌린사람, 판매, 대여 상태 등을 온체인에서 확인
   const getNftFromContract = async () => {
     try {
-      if (web3 && nft?.contractAddress) {
+      if (web3 && nft?.contractAddress && nft?.ownerAddress) {
         const collectionContract = await new web3.eth.Contract(GGanbuCollection.abi, nft?.contractAddress, {
           from: account,
         });
@@ -338,7 +339,9 @@ const Asset = () => {
                   <Text style={{ marginLeft: "10px" }}>Properties</Text>
                 </div>
               }
-            ></CAccordion.Item>
+            >
+              {nft?.traits?.length > 0 && <Traits elements={nft?.traits ? JSON.parse(nft?.traits) : []} />}
+            </CAccordion.Item>
 
             <CAccordion.Item
               label={

@@ -1,5 +1,5 @@
 import { SimpleGrid, Text } from "@mantine/core";
-import CollectionCard from "../components/collectionCard";
+import CollectionCard from "../components/CollectionCard";
 import { useEffect } from "react";
 import axios from "axios";
 import { useStore } from "../utils/store";

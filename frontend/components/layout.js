@@ -96,6 +96,11 @@ const Layout = ({ children }) => {
                 <CText>Create</CText>
               </Link>
             </CButton>
+            <CButton variant="white" onClick={() => setOpened(!opened)}>
+              <Link href="/gganbu" passHref>
+                <CText>GGanbu</CText>
+              </Link>
+            </CButton>
           </Navbar>
         </MediaQuery>
       }
@@ -154,6 +159,9 @@ const Layout = ({ children }) => {
                   </Link>
                   <Link href="/create" passHref>
                     <CText>Create</CText>
+                  </Link>
+                  <Link href="/gganbu" passHref>
+                    <CText>GGanbu</CText>
                   </Link>
                 </CHeader>
               </MediaQuery>
