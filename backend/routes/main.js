@@ -6,6 +6,25 @@ const config = require('../config/config');
 const hostURI = config.development.host_metadata;
 
 //trade instance 넣으면 colection / asset 정보 추가해 줌
+const getUserImage = async (user) => {
+  try {
+    //NFT 데이터 (name, imageURI)
+    const qUser = await Users.findOne({
+      where: {
+        address: user.ownerAddress,
+      }
+    });
+    if (qUser) {
+      user.imageURL = qUser.dataValues.imageURL;
+    }
+    return user;
+  }
+  catch (err) {
+    return err;
+  }
+}
+
+//trade instance 넣으면 colection / asset 정보 추가해 줌
 const addTradeInfo = async (trade) => {
   try {
     //NFT 데이터 (name, imageURI)
@@ -40,7 +59,7 @@ const addTradeInfo = async (trade) => {
   }
 }
 
-// 최근 생성된 NFT 최대 5개
+// 최근 생성된 NFT 최대 3개
 router.get('/recentNFTs', async (req, res, next) => {
   try {
     const recentNFT = await NFTs.findAll({
@@ -50,7 +69,7 @@ router.get('/recentNFTs', async (req, res, next) => {
       order: [
         ['id', 'DESC'],
       ],
-      limit: 5,
+      limit: 3,
     });
     if (recentNFT) {
       res.status(200).json({ message: "ok", data: recentNFT })
@@ -64,15 +83,16 @@ router.get('/recentNFTs', async (req, res, next) => {
   }
 });
 
-// 최근 Selling Trades 5개 
+// 최근 Selling Trades 3개 
 // ?sort=price-high: 높은 가격 순
-// ?status=complete: 완료된 거래만 조회 
+// ?status=completed: 완료된 거래만 조회 
 router.get('/trades', async (req, res, next) => {
   //sort 옵션
   let orderOption = [['id', 'DESC']];
   let statusOption = 'selling'
+
   if (req.query.sort) {
-    orderOption = [['price', 'DE회C']];
+    orderOption = [['price', 'DESC']];
   }
   if (req.query.status) {
     statusOption = "completed"
@@ -84,7 +104,7 @@ router.get('/trades', async (req, res, next) => {
     const qTrades = await Trades.findAll({
       where: { status: statusOption },
       order: orderOption,
-      limit: 5,
+      limit: 3,
     });
 
     //존재한다면
@@ -112,22 +132,31 @@ router.get('/trades', async (req, res, next) => {
 });
 
 
-// 가장 많은 NFT 보유 회원 Top5
+// 가장 많은 NFT 보유 회원 Top3
 router.get('/topUser', async (req, res, next) => {
   try {
+
+    let result = [];
     const topUser = await NFTs.findAll({
       group: 'ownerAddress',
       attributes: ['ownerAddress', [sequelize.fn('COUNT', 'ownerAddress'), 'count']],
       order: [
         [sequelize.literal('COUNT(ownerAddress)'), 'DESC'],
       ],
-      limit: 5,
+      limit: 3,
     })
-    if (topUser) {
+    if (topUser.length > 0) {
+      for (let i = 0; i < topUser.length; i++) {
+        let user = topUser[i].dataValues;
+        console.log(user);
+        user = await getUserImage(user);
+        result.push(user);
+      }
+
       res.status(200).json({
         message: 'ok',
-        data: topUser
-      })
+        data: result
+      });
     }
   } catch (err) {
     res.status(400).json({
@@ -139,7 +168,7 @@ router.get('/topUser', async (req, res, next) => {
 
 
 
-// 판매 중인 가장 비싼 NFT 5개
+// 판매 중인 가장 비싼 NFT 3개
 // router.get('/sellingTopNFTs', async (req, res, next) => {
 //   try {
 //     const sellingTopNFTs = await Trades.findAll({
@@ -149,7 +178,7 @@ router.get('/topUser', async (req, res, next) => {
 //       order: [
 //         ['price', 'DESC'],
 //       ],
-//       limit: 5,
+//       limit: 3,
 //     })
 //     if (sellingTopNFTs) {
 //       res.status(200).json({
