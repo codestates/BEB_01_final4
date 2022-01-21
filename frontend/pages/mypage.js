@@ -48,6 +48,7 @@ const MyPage = () => {
   const [myData, setMyData] = useState(null);
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
+  const [activeSubTab, setActiveSubTab] = useState(0);
   const [createdAssets, setCreatedAssets] = useState([]);
   const [sellingAssets, setSellingAssets] = useState([]);
   const [activityAssets, setActivityAssets] = useState([]);
@@ -58,41 +59,41 @@ const MyPage = () => {
   const getDataOnTabChange = async () => {
     if (activeTab === 0) {
       // My Collections
-    } else if (activeTab === 1) {
+    } else if (activeTab === 1 && activeSubTab === 0) {
       // Collected
-    } else if (activeTab === 2) {
-      // Created
+    } else if (activeTab === 1 && activeSubTab === 1) {
+      // Collected -> Created
       const {
         data: { data: myData },
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}?tab=mint`);
       console.log(myData);
       setCreatedAssets(myData.assets);
-    } else if (activeTab === 3) {
-      // For Sale
+    } else if (activeTab === 1 && activeSubTab === 2) {
+      // Collected -> For Sale
       const {
         data: { data: myData },
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}?tab=selling`);
       setSellingAssets(myData.assets);
-    } else if (activeTab === 4) {
-      // Trade History
+    } else if (activeTab === 1 && activeSubTab === 3) {
+      // Collected -> Trade History
       const {
         data: { data: myData },
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}?tab=history`);
       console.log(myData);
       setActivityAssets(myData.trades);
-    } else if (activeTab === 5) {
+    } else if (activeTab === 2 && activeSubTab === 0) {
       // For Rent
       const {
         data: { data: myData },
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}?tab=lend`);
       setLendAssets(myData.assets);
-    } else if (activeTab === 6) {
-      // 대여 중인
+    } else if (activeTab === 2 && activeSubTab === 1) {
+      // For Rent -> Rental
       const {
         data: { data: myData },
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}?tab=rent`);
       setRentAssets(myData.assets);
-    } else if (activeTab === 7) {
+    } else if (activeTab === 2 && activeSubTab === 2) {
       // 대여 내역
       const {
         data: { data: myData },
@@ -111,7 +112,12 @@ const MyPage = () => {
 
   useEffect(() => {
     getDataOnTabChange();
+  }, [activeTab, activeSubTab]);
+
+  useEffect(() => {
+    setActiveSubTab(0);
   }, [activeTab]);
+
 
   const getMyData = async () => {
     try {
@@ -206,116 +212,307 @@ const MyPage = () => {
             </SimpleGrid>
           </CTabs.Tab>
           <CTabs.Tab icon={<MdOutlineCollections style={{ width: 18, height: 18 }} />} label="Collected">
-            <SimpleGrid
-              style={{ padding: "0 80px" }}
-              cols={3}
-              spacing="lg"
-              breakpoints={[
-                { maxWidth: 1160, cols: 2, spacing: "md" },
-                { maxWidth: 840, cols: 1, spacing: "sm" },
-              ]}
+            <CTabs
+            style={{ fontSize: "20px" }}
+            active={activeSubTab}
+            onTabChange={setActiveSubTab}
+            color="yellow"
+            tabPadding="md"
+            position="center"
             >
-              {myData?.assets.map((nft, i) => {
-                return nft.imageURI === null ? null : (
-                  <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />
-                );
-              })}
-            </SimpleGrid>
-          </CTabs.Tab>
-          <CTabs.Tab icon={<MdOutlineFormatPaint style={{ width: 18, height: 18 }} />} label="Created">
-            <SimpleGrid
-              style={{ padding: "0 80px" }}
-              cols={3}
-              spacing="lg"
-              breakpoints={[
-                { maxWidth: 1160, cols: 2, spacing: "md" },
-                { maxWidth: 840, cols: 1, spacing: "sm" },
-              ]}
-            >
-              {createdAssets.map((nft, i) => {
-                console.log(nft);
-                return nft.imageURI === null ? null : (
-                  <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />
-                );
-              })}
-            </SimpleGrid>
-          </CTabs.Tab>
-          <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="For Sale">
-            <SimpleGrid
-              style={{ padding: "0 80px" }}
-              cols={3}
-              spacing="lg"
-              breakpoints={[
-                { maxWidth: 1160, cols: 2, spacing: "md" },
-                { maxWidth: 840, cols: 1, spacing: "sm" },
-              ]}
-            >
-              {sellingAssets.map((nft, i) => {
-                // console.log(nft);
-                return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
-              })}
-            </SimpleGrid>
-          </CTabs.Tab>
-          <CTabs.Tab icon={<MdOutlineHistory style={{ width: 18, height: 18 }} />} label="Activity">
-            <History elements={activityAssets} />
-          </CTabs.Tab>
-          <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="For Rent">
-            <div style={{ padding: "0 40px" }}>
-              <Text style={{ fontSize: "36px", fontWeight: "bold" }}>대여 등록한 내 NFT</Text>
-              <Text style={{ fontSize: "20px", margin: "20px 0" }}>
-                다른 사람이 대여하여 사용할 수 있도록 마켓 플레이스에 등록한 내 NFT 리스트입니다.
-              </Text>
-            </div>
+              <CTabs.Tab icon={<MdOutlineCollections style={{ width: 18, height: 18 }} />} label="보유 중">
+                <SimpleGrid
+                  style={{ padding: "0 80px" }}
+                  cols={3}
+                  spacing="lg"
+                  breakpoints={[
+                    { maxWidth: 1160, cols: 2, spacing: "md" },
+                    { maxWidth: 840, cols: 1, spacing: "sm" },
+                  ]}
+                >
+                  {myData?.assets.map((nft, i) => {
+                    return nft.imageURI === null ? null : (
+                      <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />
+                    );
+                  })}
+                </SimpleGrid>
+              </CTabs.Tab>
+              <CTabs.Tab icon={<MdOutlineFormatPaint style={{ width: 18, height: 18 }} />} label="직접 생성한">
+                <SimpleGrid
+                  style={{ padding: "0 80px" }}
+                  cols={3}
+                  spacing="lg"
+                  breakpoints={[
+                    { maxWidth: 1160, cols: 2, spacing: "md" },
+                    { maxWidth: 840, cols: 1, spacing: "sm" },
+                  ]}
+                >
+                  {createdAssets.map((nft, i) => {
+                    console.log(nft);
+                    return nft.imageURI === null ? null : (
+                      <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />
+                    );
+                  })}
+                </SimpleGrid>
+              </CTabs.Tab>
+              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="판매 중">
+                <SimpleGrid
+                  style={{ padding: "0 80px" }}
+                  cols={3}
+                  spacing="lg"
+                  breakpoints={[
+                    { maxWidth: 1160, cols: 2, spacing: "md" },
+                    { maxWidth: 840, cols: 1, spacing: "sm" },
+                  ]}
+                >
+                  {sellingAssets.map((nft, i) => {
+                    // console.log(nft);
+                    return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
+                  })}
+                </SimpleGrid>
+              </CTabs.Tab>
+              <CTabs.Tab icon={<MdOutlineHistory style={{ width: 18, height: 18 }} />} label="거래 내역">
+                <History elements={activityAssets} />
+              </CTabs.Tab>
+            </CTabs>
 
-            <SimpleGrid
-              style={{ padding: "0 80px" }}
-              cols={3}
-              spacing="lg"
-              breakpoints={[
-                { maxWidth: 1160, cols: 2, spacing: "md" },
-                { maxWidth: 840, cols: 1, spacing: "sm" },
-              ]}
+          </CTabs.Tab>
+          <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="Rent">
+            <CTabs
+              style={{ fontSize: "20px" }}
+              active={activeSubTab}
+              onTabChange={setActiveSubTab}
+              color="yellow"
+              tabPadding="md"
+              position="center"
             >
-              {lendAssets.map((nft, i) => {
-                // console.log(nft);
-                return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
-              })}
-            </SimpleGrid>
-          </CTabs.Tab>
-          <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="Rental">
-            <div style={{ padding: "0 40px" }}>
-              <Text style={{ fontSize: "36px", fontWeight: "bold" }}>대여 중인 NFT</Text>
-              <Text style={{ fontSize: "20px", margin: "20px 0" }}>
-                다른 사람 소유의 NFT 를 fee 를 지불하여 대여 사용 중인 NFT 리스트입니다.
-              </Text>
-            </div>
+              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="대여 등록한 내 NFT">
+                <div style={{ padding: "0 40px" }}>
+                  <Text style={{ fontSize: "36px", fontWeight: "bold" }}>대여 등록한 내 NFT</Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
+                    다른 사람이 대여하여 사용할 수 있도록 마켓 플레이스에 등록한 내 NFT 리스트입니다.
+                  </Text>
+                </div>
 
-            <SimpleGrid
-              style={{ padding: "0 80px" }}
-              cols={3}
-              spacing="lg"
-              breakpoints={[
-                { maxWidth: 1160, cols: 2, spacing: "md" },
-                { maxWidth: 840, cols: 1, spacing: "sm" },
-              ]}
+                <SimpleGrid
+                  style={{ padding: "0 80px" }}
+                  cols={3}
+                  spacing="lg"
+                  breakpoints={[
+                    { maxWidth: 1160, cols: 2, spacing: "md" },
+                    { maxWidth: 840, cols: 1, spacing: "sm" },
+                  ]}
+                >
+                  {lendAssets.map((nft, i) => {
+                    // console.log(nft);
+                    return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
+                  })}
+                </SimpleGrid>
+              </CTabs.Tab>
+              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="대여 중인">
+                <div style={{ padding: "0 40px" }}>
+                  <Text style={{ fontSize: "36px", fontWeight: "bold" }}>대여 중인 NFT</Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
+                    다른 사람 소유의 NFT 를 fee 를 지불하여 대여 사용 중인 NFT 리스트입니다.
+                  </Text>
+                </div>
+
+                <SimpleGrid
+                  style={{ padding: "0 80px" }}
+                  cols={3}
+                  spacing="lg"
+                  breakpoints={[
+                    { maxWidth: 1160, cols: 2, spacing: "md" },
+                    { maxWidth: 840, cols: 1, spacing: "sm" },
+                  ]}
+                >
+                  {rentAssets.map((nft, i) => {
+                    // console.log(nft);
+                    return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
+                  })}
+                </SimpleGrid>
+              </CTabs.Tab>
+              <CTabs.Tab icon={<MdOutlineHistory style={{ width: 18, height: 18 }} />} label="대여 내역">
+                <div style={{ padding: "0 40px" }}>
+                  <Text style={{ fontSize: "36px", fontWeight: "bold" }}>대여 내역</Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
+                    대여하여 사용했거나, 내 NFT 를 대여해 준 내역입니다.
+                  </Text>
+                </div>
+
+                <RentHistory elements={rentHistoryAssets} />
+              </CTabs.Tab>
+
+              {/* <CTabs.Tab icon={<MdOutlineCancelPresentation style={{ width: 18, height: 18 }} />} label="Canceled">
+                Third tab content
+              </CTabs.Tab> */}
+            </CTabs>
+          </CTabs.Tab>
+          <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="GGanbu">
+            <CTabs
+              style={{ fontSize: "20px" }}
+              active={activeSubTab}
+              onTabChange={setActiveSubTab}
+              color="yellow"
+              tabPadding="md"
+              position="center"
             >
-              {rentAssets.map((nft, i) => {
-                // console.log(nft);
-                return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
-              })}
-            </SimpleGrid>
-          </CTabs.Tab>
-          <CTabs.Tab icon={<MdOutlineHistory style={{ width: 18, height: 18 }} />} label="Rental-History">
-            <div style={{ padding: "0 40px" }}>
-              <Text style={{ fontSize: "36px", fontWeight: "bold" }}>대여 내역</Text>
-              <Text style={{ fontSize: "20px", margin: "20px 0" }}>
-                대여하여 사용했거나, 내 NFT 를 대여해 준 내역입니다.
-              </Text>
-            </div>
+              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="모집 중인 깐부">
+                <div style={{ padding: "0 40px" }}>
+                  <Text style={{ fontSize: "36px", fontWeight: "bold" }}>참여 중인 깐부</Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
+                    TBD
+                  </Text>
+                </div>
 
-            <RentHistory elements={rentHistoryAssets} />
-          </CTabs.Tab>
+                {/* <SimpleGrid
+                  style={{ padding: "0 80px" }}
+                  cols={3}
+                  spacing="lg"
+                  breakpoints={[
+                    { maxWidth: 1160, cols: 2, spacing: "md" },
+                    { maxWidth: 840, cols: 1, spacing: "sm" },
+                  ]}
+                >
+                  {lendAssets.map((nft, i) => {
+                    // console.log(nft);
+                    return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
+                  })}
+                </SimpleGrid> */}
+              </CTabs.Tab>
+              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="깐부 보유 NFT">
+                <div style={{ padding: "0 40px" }}>
+                  <Text style={{ fontSize: "36px", fontWeight: "bold" }}>깐부 보유 NFT</Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
+                    TBD
+                  </Text>
+                </div>
 
+                {/* <SimpleGrid
+                  style={{ padding: "0 80px" }}
+                  cols={3}
+                  spacing="lg"
+                  breakpoints={[
+                    { maxWidth: 1160, cols: 2, spacing: "md" },
+                    { maxWidth: 840, cols: 1, spacing: "sm" },
+                  ]}
+                >
+                  {lendAssets.map((nft, i) => {
+                    // console.log(nft);
+                    return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
+                  })}
+                </SimpleGrid> */}
+              </CTabs.Tab>
+              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="투표 중인 깐부">
+                <div style={{ padding: "0 40px" }}>
+                  <Text style={{ fontSize: "36px", fontWeight: "bold" }}>투표 중인 깐부</Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
+                    TBD
+                  </Text>
+                </div>
+
+                {/* <SimpleGrid
+                  style={{ padding: "0 80px" }}
+                  cols={3}
+                  spacing="lg"
+                  breakpoints={[
+                    { maxWidth: 1160, cols: 2, spacing: "md" },
+                    { maxWidth: 840, cols: 1, spacing: "sm" },
+                  ]}
+                >
+                  {rentAssets.map((nft, i) => {
+                    // console.log(nft);
+                    return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
+                  })}
+                </SimpleGrid> */}
+              </CTabs.Tab>
+              <CTabs.Tab icon={<MdOutlineHistory style={{ width: 18, height: 18 }} />} label="깐부 내역">
+                <div style={{ padding: "0 40px" }}>
+                  <Text style={{ fontSize: "36px", fontWeight: "bold" }}>깐부 내역</Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
+                    TBD 깐부에 참여했던 내역과 수익률을 나타냅니다.
+                  </Text>
+                </div>
+
+                {/* <RentHistory elements={rentHistoryAssets} /> */}
+              </CTabs.Tab>
+
+              {/* <CTabs.Tab icon={<MdOutlineCancelPresentation style={{ width: 18, height: 18 }} />} label="Canceled">
+                Third tab content
+              </CTabs.Tab> */}
+            </CTabs>
+          </CTabs.Tab>
+          <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="D A O">
+            <CTabs
+              style={{ fontSize: "20px" }}
+              active={activeSubTab}
+              onTabChange={setActiveSubTab}
+              color="yellow"
+              tabPadding="md"
+              position="center"
+            >
+              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="가입한 D A O">
+                <div style={{ padding: "0 40px" }}>
+                  <Text style={{ fontSize: "36px", fontWeight: "bold" }}>가입한 subDAO</Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
+                    TBD
+                  </Text>
+                </div>
+
+                {/* <SimpleGrid
+                  style={{ padding: "0 80px" }}
+                  cols={3}
+                  spacing="lg"
+                  breakpoints={[
+                    { maxWidth: 1160, cols: 2, spacing: "md" },
+                    { maxWidth: 840, cols: 1, spacing: "sm" },
+                  ]}
+                >
+                  {lendAssets.map((nft, i) => {
+                    // console.log(nft);
+                    return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
+                  })}
+                </SimpleGrid> */}
+              </CTabs.Tab>
+              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="투표 중">
+                <div style={{ padding: "0 40px" }}>
+                  <Text style={{ fontSize: "36px", fontWeight: "bold" }}>투표 중</Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
+                    TBD
+                  </Text>
+                </div>
+
+                {/* <SimpleGrid
+                  style={{ padding: "0 80px" }}
+                  cols={3}
+                  spacing="lg"
+                  breakpoints={[
+                    { maxWidth: 1160, cols: 2, spacing: "md" },
+                    { maxWidth: 840, cols: 1, spacing: "sm" },
+                  ]}
+                >
+                  {rentAssets.map((nft, i) => {
+                    // console.log(nft);
+                    return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
+                  })}
+                </SimpleGrid> */}
+              </CTabs.Tab>
+              <CTabs.Tab icon={<MdOutlineHistory style={{ width: 18, height: 18 }} />} label="D A O 내역">
+                <div style={{ padding: "0 40px" }}>
+                  <Text style={{ fontSize: "36px", fontWeight: "bold" }}>subDAO 내역</Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
+                    TBD
+                  </Text>
+                </div>
+
+                {/* <RentHistory elements={rentHistoryAssets} /> */}
+              </CTabs.Tab>
+
+              {/* <CTabs.Tab icon={<MdOutlineCancelPresentation style={{ width: 18, height: 18 }} />} label="Canceled">
+                Third tab content
+              </CTabs.Tab> */}
+            </CTabs>
+          </CTabs.Tab>
           {/* <CTabs.Tab icon={<MdOutlineCancelPresentation style={{ width: 18, height: 18 }} />} label="Canceled">
             Third tab content
           </CTabs.Tab> */}
