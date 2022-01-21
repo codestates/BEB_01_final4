@@ -190,7 +190,7 @@ contract GGanbuCollection is ERC721URIStorage, Ownable {
     }
 
 //대여 등록된 상태인지 아닌지 확인
-    function getIsRental(uint256 tokenId) public view returns(uint256){
+    function getIsRental(uint256 tokenId) public view returns(bool){
         return isRental[tokenId];
     }
         
