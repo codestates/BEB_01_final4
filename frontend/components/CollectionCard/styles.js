@@ -15,7 +15,7 @@ export const CImage = styled(Image)`
 `;
 
 export const EllipsisDiv = styled.div`
-  height: 50%;
+  height: 55%;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 3;
