@@ -42,8 +42,8 @@ export const connectWallet = async ({ setAccount, setUser }) => {
     } = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
       address: accounts[0],
     });
-    console.log(newUser);
-    if (newUser) {
+    // console.log(newUser);
+    if (Object.keys(newUser).length !== 0) {
       setUser(newUser);
     }
   } catch (e) {

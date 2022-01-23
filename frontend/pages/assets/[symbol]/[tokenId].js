@@ -20,6 +20,7 @@ import NFTCard from "../../../components/nftCard";
 import axios from "axios";
 import { useStore } from "../../../utils/store";
 import { GGanbuCollection } from "../../../public/compiledContracts/GGanbuCollection";
+import { Coffer } from "../../../public/compiledContracts/Coffer";
 import Listings from "../../../components/listings";
 import PriceHistory from "../../../components/priceHistory";
 import Web3 from "web3";
@@ -87,6 +88,7 @@ const Asset = () => {
   const [lendPrice, setLendPrice] = useState(null);
   const [opened, setOpened] = useState(false);
   const [gganbuPrice, setGGanbuPrice] = useInputState("");
+  const [gganbuDesc, setGGanbuDesc] = useInputState("");
 
   // db에서 nft 정보 조회: 해당 nft의 컬렉션 정보를 얻기 위해서
   const getNft = async () => {
@@ -160,11 +162,10 @@ const Asset = () => {
 
   // 판매 / 대여 등록 상태인 nft의 가격 정보 조회
   const checkNftPriceFromContract = async () => {
-    console.log("checkNftPriceFromContract");
     if (isSelling && collectionContract) {
       const sellPrice = await collectionContract.methods.getPrice(tokenId).call();
 
-      console.log(sellPrice);
+      // console.log(sellPrice);
 
       setSellPrice(web3.utils.fromWei(sellPrice, "ether"));
     }
@@ -172,7 +173,7 @@ const Asset = () => {
     if (isLending && collectionContract) {
       const lendPrice = await collectionContract.methods.getPrice(tokenId).call();
 
-      console.log(lendPrice);
+      // console.log(lendPrice);
 
       setLendPrice(web3.utils.fromWei(lendPrice, "ether"));
     }
@@ -288,14 +289,48 @@ const Asset = () => {
 
   const handleGGanbuInput = (e) => {
     e.target.value = e.target.value.replace(/(\.\d{2})\d+/g, "$1");
+    if (parseFloat(e.target.value) >= parseFloat(sellPrice)) {
+      alert("참여 금액은 판매 금액보다 작아야 합니다.");
+      e.target.value = "";
+    }
   };
 
-  const handleJoinGGanbu = () => {
+  const handleJoinGGanbu = async () => {
     if (!gganbuPrice) {
       alert("참여 금액을 입력해주세요.");
       return;
     }
     console.log(gganbuPrice);
+
+    // 깐부 월렛 생성
+    if (nft) {
+      // console.log(nft.contractAddress, nft.token_ids, web3.utils.toWei(sellPrice, "ether"), 1);
+      // console.log(parseInt(web3.utils.toWei(sellPrice, "ether")));
+      // return;
+
+      const contract = await new web3.eth.Contract(Coffer.abi)
+        .deploy({
+          data: Coffer.bytecode,
+          arguments: [nft.contractAddress, nft.token_ids, web3.utils.toWei(sellPrice, "ether"), 1], // Writing you arguments in the array
+        })
+        .send({ from: account, value: web3.utils.toWei(gganbuPrice, "ether") });
+
+      console.log(contract._address);
+
+      // TODO: 공동월렛 생성 후 백엔드에 정보 전달
+      if (contract._address) {
+        // await axios.post(
+        //   `${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`,
+        //   { contractAddress: contract._address },
+        //   { withCredentials: true },
+        // );
+        // setMyCollections([...myCollections, { ...newCollection, contractAddress: contract._address, assets: [] }]);
+        // router.push(`/collections/${symbol}`);
+      }
+      setOpened(false);
+      setGGanbuDesc("");
+      setGGanbuPrice("");
+    }
   };
 
   return (
@@ -424,7 +459,6 @@ const Asset = () => {
                   <MdOutlineWatchLater style={{ color: "rgb(112, 122, 131)" }} />
 
                   {/* TODO: 판매 / 대여 중인 상태에 따라 변경 필요 */}
-                  {console.log(nft?.trade_selling)}
                   <Text style={{ fontSize: "18px", color: "rgb(112, 122, 131)", marginLeft: "10px" }}>
                     {nft?.trade_selling || nft?.lending || nft?.renting ? (
                       <>
@@ -467,7 +501,18 @@ const Asset = () => {
                     <Button onClick={handleClickBuy} color="teal" size="lg">
                       Buy now
                     </Button>
-                    <Button onClick={() => setOpened(!opened)} style={{ marginTop: "15px" }} color="teal" size="lg">
+                    <Button
+                      onClick={() => {
+                        if (account === nftOwner) {
+                          alert("판매자는 구매할 수 없습니다.");
+                          return;
+                        }
+                        setOpened(!opened);
+                      }}
+                      style={{ marginTop: "15px" }}
+                      color="teal"
+                      size="lg"
+                    >
                       Buy with GGanbu
                     </Button>
                   </>
@@ -649,6 +694,14 @@ const Asset = () => {
           type="number"
           placeholder="참여 금액"
         /> */}
+        <TextInput
+          value={gganbuDesc}
+          onChange={setGGanbuDesc}
+          style={{ margin: "20px 0" }}
+          placeholder="깐부 설명"
+          label="깐부 설명"
+          type="text"
+        />
         <div style={{ textAlign: "center" }}>
           <Button onClick={handleJoinGGanbu}>확인</Button>
         </div>
