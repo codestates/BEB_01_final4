@@ -296,8 +296,9 @@ const Asset = () => {
   };
 
   const handleJoinGGanbu = async () => {
-    if (!gganbuPrice) {
-      alert("참여 금액을 입력해주세요.");
+    console.log(gganbuPrice, gganbuDesc);
+    if (!gganbuPrice || !gganbuDesc) {
+      alert("참여 금액과 깐부 설명을 입력해주세요.");
       return;
     }
     console.log(gganbuPrice);
@@ -668,7 +669,7 @@ const Asset = () => {
       </CAccordion>
       <Modal opened={opened} onClose={() => setOpened(false)}>
         <Text style={{ fontSize: "20px", fontWeight: "bold" }} align="center">
-          깐부 생성
+          깐부 등록
         </Text>
         <div style={{ display: "flex", margin: "12px 0" }}>
           <Image src="/images/eth.svg" width={16} height={16} alt="" />
@@ -700,6 +701,7 @@ const Asset = () => {
           style={{ margin: "20px 0" }}
           placeholder="깐부 설명"
           label="깐부 설명"
+          required
           type="text"
         />
         <div style={{ textAlign: "center" }}>
