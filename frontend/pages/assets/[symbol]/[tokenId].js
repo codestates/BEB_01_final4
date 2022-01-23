@@ -1,4 +1,4 @@
-import { Accordion, Button, Divider, Grid, Input, Modal, SimpleGrid, Text, TextInput } from "@mantine/core";
+import { Accordion, Button, Divider, Grid, Modal, ScrollArea, SimpleGrid, Text, TextInput } from "@mantine/core";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import {
@@ -11,6 +11,7 @@ import {
   MdLocalOffer,
   MdFormatListBulleted,
 } from "react-icons/md";
+import { FaRegAddressCard } from "react-icons/fa";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import Link from "next/link";
 import styled from "styled-components";
@@ -27,6 +28,7 @@ import Web3 from "web3";
 import { compressAddress } from "../../../utils";
 import Traits from "../../../components/traits";
 import { useInputState } from "@mantine/hooks";
+import GGanbuList from "../../../components/GGanbuList";
 
 const EmptyHeartIcon = styled(AiOutlineHeart)`
   &&:hover {
@@ -89,6 +91,14 @@ const Asset = () => {
   const [opened, setOpened] = useState(false);
   const [gganbuPrice, setGGanbuPrice] = useInputState("");
   const [gganbuDesc, setGGanbuDesc] = useInputState("");
+
+  const gganbuAddresses = [
+    "0x1111111111111111111111111111111111111111",
+    "0x1111111111111111111111111111111111111112",
+    "0x1111111111111111111111111111111111111113",
+    "0x1111111111111111111111111111111111111114",
+    "0x1111111111111111111111111111111111111115",
+  ];
 
   // db에서 nft 정보 조회: 해당 nft의 컬렉션 정보를 얻기 위해서
   const getNft = async () => {
@@ -391,7 +401,9 @@ const Asset = () => {
                 </div>
               }
             >
-              {nft?.traits?.length > 0 && <Traits elements={nft?.traits ? JSON.parse(nft?.traits) : []} />}
+              <ScrollArea style={{ height: 250 }}>
+                {nft?.traits?.length > 0 && <Traits elements={nft?.traits ? JSON.parse(nft?.traits) : []} />}
+              </ScrollArea>
             </CAccordion.Item>
 
             <CAccordion.Item
@@ -549,6 +561,21 @@ const Asset = () => {
               </div>
             </TradeBox>
           )}
+
+          <CAccordion initialItem={0} style={{ fontSize: "20px", margin: "20px 0" }} iconPosition="right">
+            <CAccordion.Item
+              label={
+                <div style={{ display: "flex", alignItems: "center", padding: "8px" }}>
+                  <FaRegAddressCard />
+                  <Text style={{ marginLeft: "10px" }}>GGanbu list</Text>
+                </div>
+              }
+            >
+              <ScrollArea style={{ height: 250 }}>
+                <GGanbuList elements={gganbuAddresses} />
+              </ScrollArea>
+            </CAccordion.Item>
+          </CAccordion>
 
           <CAccordion style={{ fontSize: "20px", margin: "20px 0" }} iconPosition="right">
             <CAccordion.Item
