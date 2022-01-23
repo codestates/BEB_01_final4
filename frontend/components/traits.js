@@ -2,7 +2,6 @@ import { Table } from "@mantine/core";
 
 function Traits({ elements }) {
   let rows;
-  console.log(elements);
   if (elements && elements.length > 0) {
     rows = elements.map((element, idx) => (
       <tr key={idx}>

@@ -20,7 +20,7 @@ const Listings = ({ elements }) => {
         {element.price}
       </td>
       <td>{element.seller}</td>
-      <td>{new Date(element.updatedAt).toLocaleDateString()}</td>
+      <td>{`${new Date(element.updatedAt).toLocaleString("en-US")}`}</td>
     </tr>
   ));
 
