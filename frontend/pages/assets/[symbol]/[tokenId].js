@@ -1,4 +1,4 @@
-import { Accordion, Button, Divider, Grid, SimpleGrid, Text } from "@mantine/core";
+import { Accordion, Button, Divider, Grid, Input, Modal, SimpleGrid, Text, TextInput } from "@mantine/core";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import {
@@ -25,6 +25,7 @@ import PriceHistory from "../../../components/priceHistory";
 import Web3 from "web3";
 import { compressAddress } from "../../../utils";
 import Traits from "../../../components/traits";
+import { useInputState } from "@mantine/hooks";
 
 const EmptyHeartIcon = styled(AiOutlineHeart)`
   &&:hover {
@@ -84,6 +85,8 @@ const Asset = () => {
   const [collectionContract, setCollectionContract] = useState(null);
   const [sellPrice, setSellPrice] = useState(null);
   const [lendPrice, setLendPrice] = useState(null);
+  const [opened, setOpened] = useState(false);
+  const [gganbuPrice, setGGanbuPrice] = useInputState("");
 
   // db에서 nft 정보 조회: 해당 nft의 컬렉션 정보를 얻기 위해서
   const getNft = async () => {
@@ -283,6 +286,18 @@ const Asset = () => {
     }
   };
 
+  const handleGGanbuInput = (e) => {
+    e.target.value = e.target.value.replace(/(\.\d{2})\d+/g, "$1");
+  };
+
+  const handleJoinGGanbu = () => {
+    if (!gganbuPrice) {
+      alert("참여 금액을 입력해주세요.");
+      return;
+    }
+    console.log(gganbuPrice);
+  };
+
   return (
     <div style={{ padding: "30px 0" }}>
       <Grid>
@@ -452,7 +467,7 @@ const Asset = () => {
                     <Button onClick={handleClickBuy} color="teal" size="lg">
                       Buy now
                     </Button>
-                    <Button style={{ marginTop: "15px" }} color="teal" size="lg">
+                    <Button onClick={() => setOpened(!opened)} style={{ marginTop: "15px" }} color="teal" size="lg">
                       Buy with GGanbu
                     </Button>
                   </>
@@ -606,6 +621,38 @@ const Asset = () => {
           </div>
         </CAccordion.Item>
       </CAccordion>
+      <Modal opened={opened} onClose={() => setOpened(false)}>
+        <Text style={{ fontSize: "20px", fontWeight: "bold" }} align="center">
+          깐부 생성
+        </Text>
+        <div style={{ display: "flex", margin: "12px 0" }}>
+          <Image src="/images/eth.svg" width={16} height={16} alt="" />
+          <Text style={{ fontSize: "16px", marginLeft: "10px" }}>
+            판매금액: {sellPrice === null ? lendPrice : sellPrice}
+          </Text>
+        </div>
+        <TextInput
+          value={gganbuPrice}
+          onChange={setGGanbuPrice}
+          onInput={handleGGanbuInput}
+          style={{ margin: "20px 0" }}
+          placeholder="참여 금액"
+          label="참여 금액"
+          required
+          type="number"
+        />
+        {/* <Input
+          // value={gganbuPrice}
+          onChange={setGGanbuPrice}
+          onInput={handleGGanbuInput}
+          style={{ margin: "20px 0" }}
+          type="number"
+          placeholder="참여 금액"
+        /> */}
+        <div style={{ textAlign: "center" }}>
+          <Button onClick={handleJoinGGanbu}>확인</Button>
+        </div>
+      </Modal>
     </div>
   );
 };
