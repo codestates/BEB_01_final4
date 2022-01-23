@@ -409,11 +409,11 @@ const Asset = () => {
                   <MdOutlineWatchLater style={{ color: "rgb(112, 122, 131)" }} />
 
                   {/* TODO: 판매 / 대여 중인 상태에 따라 변경 필요 */}
-                  {console.log(nft?.trande_selling)}
+                  {console.log(nft?.trade_selling)}
                   <Text style={{ fontSize: "18px", color: "rgb(112, 122, 131)", marginLeft: "10px" }}>
                     {nft?.trade_selling || nft?.lending || nft?.renting ? (
                       <>
-                        {nft?.trande_selling
+                        {nft?.trade_selling
                           ? `판매 등록: ${new Date(nft?.trade_selling?.createdAt).toLocaleString("en-US")}`
                           : null}
                         {nft?.lending !== null
