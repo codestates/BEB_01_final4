@@ -146,7 +146,7 @@ const MyPage = () => {
         style={{
           width: "100%",
           height: "220px",
-          backgroundImage: `url(/images/nft-bg.jpg)`,
+          backgroundImage: `url(/images/mypage-banner.png)`,
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
@@ -158,7 +158,7 @@ const MyPage = () => {
           marginRight: "auto",
           width: "126px",
           height: "126px",
-          backgroundImage: `url(/images/profile20.png)`,
+          backgroundImage: `url(${myData?.imageURL ? myData?.imageURL : "/images/profile20.png"})`,
           backgroundSize: "cover",
           borderRadius: "50%",
           border: "1px solid white",
@@ -213,12 +213,12 @@ const MyPage = () => {
           </CTabs.Tab>
           <CTabs.Tab icon={<MdOutlineCollections style={{ width: 18, height: 18 }} />} label="Collected">
             <CTabs
-            style={{ fontSize: "20px" }}
-            active={activeSubTab}
-            onTabChange={setActiveSubTab}
-            color="yellow"
-            tabPadding="md"
-            position="center"
+              style={{ fontSize: "20px" }}
+              active={activeSubTab}
+              onTabChange={setActiveSubTab}
+              color="yellow"
+              tabPadding="md"
+              position="center"
             >
               <CTabs.Tab icon={<MdOutlineCollections style={{ width: 18, height: 18 }} />} label="보유 중">
                 <SimpleGrid
