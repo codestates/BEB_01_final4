@@ -4,7 +4,6 @@ const morgan = require('morgan');
 var cors = require('cors')
 const { sequelize } = require('./models'); // db.sequelize
 const collectionsRouter = require('./routes/collections');
-const nftsRouters = require('./routes/nfts');
 const assetsRouter = require('./routes/assets');
 const usersRouter = require('./routes/users');
 const metadataRouter = require('./routes/metadata');
