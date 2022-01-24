@@ -260,20 +260,43 @@ contract coffer is Ownable {
     function requestTrade(
         uint8 _type,
         uint256 _idx,
+        address _collection,
+        uint256 _tokenId,
         uint256 _price
     ) public onlyOwner {
-        require(
+        if(_type == 1 || _type == 2){
+            require(
             _nfts[_idx].info.collection != address(0x0),
             "Coffer: Invalid collection address"
-        );
-        require(_nfts[_idx].info.tokenId != 0, "Coffer: Invalid tokenId");
-        _setSuggestion(
+            );
+            require(_nfts[_idx].info.tokenId != 0, "Coffer: Invalid tokenId");
+             _setSuggestion(
             _type,
             _nfts[_idx].info.collection,
             _nfts[_idx].info.tokenId,
             _price,
             _idx
         );
+
+        }else if(_type == 3 || _type == 4 || _type == 5 || _type == 6){
+            require(
+            _collection != address(0x0),
+            "Coffer: Invalid collection address"
+            );
+            require(_tokenId != 0, "Coffer: Invalid tokenId");
+             _setSuggestion(
+            _type,
+            _collection,
+            _tokenId,
+            _price,
+            _idx
+        );
+
+        }else{
+            require(false,"Coffer: Invalid type");
+        }
+        
+       
     }
 
     //투표권 개수 반환
