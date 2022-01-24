@@ -28,7 +28,7 @@ import Web3 from "web3";
 import { compressAddress } from "../../../utils";
 import Traits from "../../../components/traits";
 import { useInputState } from "@mantine/hooks";
-import GGanbuList from "../../../components/GGanbuList";
+import GGanbuList from "../../../components/gganbuList";
 
 const EmptyHeartIcon = styled(AiOutlineHeart)`
   &&:hover {
@@ -370,8 +370,7 @@ const Asset = () => {
           { withCredentials: true },
         );
 
-        // TODO: 백엔드 전달 후 깐부 정보 가져와야 함. 백엔드에서 가져오고, 추후에 컨트랙트에서 가져오는 것으로 변경 필요
-        // setMyCollections([...myCollections, { ...newCollection, contractAddress: contract._address, assets: [] }]);
+        // 깐부 정보를 DB에서 새로 가져옴
         getNft();
       }
       setOpened(false);
@@ -381,8 +380,24 @@ const Asset = () => {
   };
 
   const handleJoinGGanbu = async () => {
-    console.log("handleJoinGGanbu Clicked");
-    return;
+    // console.log("handleJoinGGanbu Clicked");
+    // console.log(gganbuPrice);
+    console.log(nft?.recruiting?.gganbuAddress);
+    const cofferContract = await new web3.eth.Contract(Coffer.abi, nft?.recruiting?.gganbuAddress);
+    const txResult = await cofferContract.methods
+      .requestJoin(0)
+      .send({ from: account, value: web3.utils.toWei(gganbuPrice, "ether") });
+
+    let event = await cofferContract.getPastEvents("set_suggestion", {
+      fromBlock: txResult.blockNumber,
+      toBlock: txResult.blockNumber,
+    });
+
+    let log = event.find((log) => log.transactionHash == txResult.transactionHash);
+    console.log(log.returnValues);
+    setGGanbuPrice("");
+    setOpened(false);
+    // TODO: nft정보 업데이트해서 gganbu list에 현재 지갑 추가되었는지 확인
   };
 
   return (
