@@ -69,6 +69,7 @@ contract coffer is Ownable {
     );
     event set_trade(uint256 indexed listIdx, uint256 price, uint256 option);
     event set_suggestion(
+        uint256 indexed _suggestionIdx,
         uint8 _type,
         address indexed _target,
         uint256 _tokenId,
@@ -238,7 +239,7 @@ contract coffer is Ownable {
             voteData(_target, _tokenId, _price, _idx),
             block.timestamp
         );
-        emit set_suggestion(_type, _target, _tokenId, _price);
+        emit set_suggestion(_suggestIdx.current(),_type, _target, _tokenId, _price);
     }
 
     //0이면 공동구매 하기위해 들어옴, 1이면 그냥 wallt 가입
