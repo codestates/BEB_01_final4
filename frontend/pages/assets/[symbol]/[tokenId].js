@@ -91,7 +91,7 @@ const Asset = () => {
   const [opened, setOpened] = useState(false);
   const [gganbuPrice, setGGanbuPrice] = useInputState("");
   const [gganbuDesc, setGGanbuDesc] = useInputState("");
-  const [joinableGGanbuPrice, setJoinableGGanbuPrice] = useState("");
+  const [joinableGGanbuPrice, setJoinableGGanbuPrice] = useState(sellPrice);
 
   // db에서 nft 정보 조회: 해당 nft의 컬렉션 정보를 얻기 위해서
   const getNft = async () => {
@@ -107,14 +107,6 @@ const Asset = () => {
 
         setNft(nftData);
 
-        if (nftData?.isRecruiting) {
-          setJoinableGGanbuPrice(
-            Math.round(
-              (parseFloat(sellPrice) - nft?.recruiting?.members.reduce((acc, cur) => acc + cur.staking_value, 0)) * 100,
-            ) / 100,
-          );
-        }
-
         const {
           data: { data: nftsData },
         } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}/`, { withCredentials: true });
@@ -126,6 +118,26 @@ const Asset = () => {
       console.log(e.response);
     }
   };
+
+  const calculateJoinableGGanbuPrice = () => {
+    if (nft?.isRecruiting) {
+      setJoinableGGanbuPrice(
+        Math.round(
+          (parseFloat(sellPrice) -
+            parseFloat(nft?.recruiting?.members.reduce((acc, cur) => acc + cur.staking_value, 0))) *
+            100,
+        ) / 100,
+      );
+    } else {
+      setJoinableGGanbuPrice(sellPrice);
+    }
+
+    // setJoinableGGanbuPrice(sellPrice - nft?.recruiting?.members.reduce((acc, cur) => acc + cur.staking_value, 0));
+  };
+
+  useEffect(() => {
+    calculateJoinableGGanbuPrice();
+  }, [sellPrice, nft]);
 
   // 컨트랙트에서 nft 정보 조회: 소유자, 빌린사람, 판매, 대여 상태 등을 온체인에서 확인
   const getNftFromContract = async () => {
@@ -737,6 +749,7 @@ const Asset = () => {
 
           <div style={{ display: "flex" }}>
             <Image src="/images/eth.svg" width={12} height={12} alt="" />
+            {console.log(joinableGGanbuPrice)}
             <Text style={{ fontSize: "16px", marginLeft: "10px" }}>참여 가능 금액: {joinableGGanbuPrice}</Text>
           </div>
         </div>
