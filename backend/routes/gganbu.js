@@ -74,13 +74,13 @@ router.get('/', async (req, res, next) => {
  *  /gganbus
  *  깐부 지갑데이터 생성
  *  required: userAddress, gganbuAddress, description
- *  optional: collectionAddress, token_ids, userAddress, staking_value,
+ *  optional: collectionAddress, token_ids
  */
 router.post('/', async (req, res, next) => {
   try {
     console.log(`======== [POST] /ggangbu ========`);
     //입력 인자 가공
-    if (!req.body.userAddress || !req.body.gganbuAddress || !req.body.description) {
+    if (!req.body.gganbuAddress || !req.body.description) {
       throw new SyntaxError("required: gganbuAddress, description");
     }
 
@@ -90,7 +90,7 @@ router.post('/', async (req, res, next) => {
     const balance = await web3.eth.getBalance(req.body.gganbuAddress);
     const iBalance = web3.utils.fromWei(balance, 'ether');
 
-    //[required] 사용자지분(ratio) 임시 staking_ratio 계산 (NFT타겟정보, 제안자eth)
+    //[required] 사용자 투자금, 사용자지분(ratio) 임시 staking_ratio 계산 (NFT타겟정보, 제안자eth)
     let qPrice = await Trades.findOne({ 
       where: {
         collectionAddress: req.body.collectionAddress,
@@ -118,10 +118,6 @@ router.post('/', async (req, res, next) => {
       defaults: reqData
     });
 
-    if (qWallets[1] === false) {
-      throw new Error('깐부 지갑주소가 이미 존재합니다');
-    }
-
     const memberData = {
       memberAddress: req.body.userAddress,
       gganbuAddress: req.body.gganbuAddress,
@@ -132,12 +128,18 @@ router.post('/', async (req, res, next) => {
     };
 
     let qMembers = await GGanbu_members.findOrCreate({ 
-      where: { memberAddress: req.body.userAddress },
+      where: { 
+        gganbuAddress: req.body.gganbuAddress,
+      },
       defaults: memberData
     });
 
-    if (qMembers[1] === false) {
-      throw new Error('해당 깐부지갑주소에 사용자가 이미 등록되어 있습니다');
+    if (qWallets[1] === false || qMembers[1] === false) {
+      if (qWallets[1] === false) {
+        throw new Error('깐부 지갑주소가 이미 존재합니다');
+      } else {
+        throw new Error('해당 깐부지갑주소에 사용자가 이미 등록되어 있습니다');
+      }
     }
 
     res.status(200).json({
