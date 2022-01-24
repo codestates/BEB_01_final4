@@ -8,6 +8,23 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 contract coffer is Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _nftIdx;
+    Counters.Counter private _suggestIdx;
+
+    struct voteData {
+        address target; //가입 요청 address 또는 collection address
+        uint256 idx; //가입 요청의 경우 0, 이외엔 tokenid
+        uint256 price; //가입 요청의 경우 임시 staking 금액, 이외엔 가격
+        uint256 nftIdx; //가입=0, 나머지 idx값;
+    }
+
+    struct suggest {
+        uint8 state; //1: reject 2: wait 3:pass
+        uint8 types; //0:join , 1: sell, 2: rent, 3: pay
+        uint256 agree;
+        uint256 disagree;
+        voteData data;
+        uint256 date; //최초 등록일
+    }
 
     struct nftInfo {
         address collection;
@@ -28,21 +45,32 @@ contract coffer is Ownable {
     mapping(uint256 => tradableNft) private _nfts; //거래가 완료되면 _targetNft가 들어간다. 이후 _isReady가 false로 바뀌고 target도 초기화
 
     uint256 private _totalStake = 0; //현재 wallet에 얼마가 들어있나 기록
-    mapping(address => uint256) private _stake; //누가 얼마나 예치했나 기록
+    mapping(address => uint256) private _stake; //누가 얼마나 예치했나 기록 => 현재 ether형태로 존재하는 금액
+    mapping(address => uint256) private _totalBalance; //누가 얼마나 예치했나 기록 => ether 형태 + nft 금액
+    mapping(uint256 => suggest) private _suggestion; //투표 안건
+
     //event start//
     event set_target(
-        address _collection,
+        address indexed _collection,
         uint256 _tokenId,
         uint256 _price,
         uint8 _option
     ); //거래하고자 하는 nft info set할때 발생하는 event
     event payment(
-        address _collection,
+        address indexed _collection,
         uint256 _tokenId,
         uint256 _price,
         uint8 _option
     );
-    event setTrade(uint256 listIdx, uint256 price, uint256 option);
+    event set_trade(uint256 indexed listIdx, uint256 price, uint256 option);
+    event set_suggestion(
+        uint8 _type,
+        address indexed _target,
+        uint256 _tokenId,
+        uint256 _price
+    );
+    event pass(uint8 _type, uint256 indexed _idx);
+    event reject(uint8 _type, uint256 indexed _idx);
 
     //event end//
     constructor(
@@ -65,13 +93,202 @@ contract coffer is Ownable {
             _isReady = true;
             _totalStake += msg.value;
             _stake[msg.sender] += msg.value;
-            _setTarget(_collection, _tokenId, _price, _option, msg.value);
+            _totalBalance[msg.sender] += msg.value;
+            _setTarget(
+                _collection,
+                _tokenId,
+                _price,
+                _option,
+                msg.sender,
+                msg.value
+            );
         }
     }
 
     //data 없이 ether만 전송된 경우 reject
     receive() external payable {
         require(false, "Coffer: Tx must has data");
+    }
+
+    /*
+    //문자열 비교 => suggest type 비교에만 사용
+    function _compareStr(bytes8 _to, bytes8 _from) private pure returns(bool){
+        return keccak256(abi.encodePacked(_to)) == keccak256(abi.encodePacked(_from));
+    }
+
+*/
+    //suggest 등록
+    function _setSuggestion(
+        uint8 _type,
+        address _target,
+        uint256 _tokenId,
+        uint256 _price,
+        uint256 _idx
+    ) internal {
+        //state, type, agree, disagree, data, date
+        //1: reject 2: wait 3: pass
+        //type 0:join , 1: set sell, 2: set rent, 3: buy, 4: rent
+        require(
+            _type == 0 || _type == 1 || _type == 2 || _type == 3,
+            "Coffer: Invalid type"
+        );
+        _suggestIdx.increment();
+        _suggestion[_suggestIdx.current()] = suggest(
+            2,
+            _type,
+            0,
+            0,
+            voteData(_target, _tokenId, _price, _idx),
+            block.timestamp
+        );
+        emit set_suggestion(_type, _target, _tokenId, _price);
+    }
+
+    function requestJoin() public payable {
+        require(msg.sender != address(0x0), "Coffer: Invalid wallet address");
+        require(msg.value < 0.01 ether, "Coffer: Not enough ether to staking");
+        //임시 staking 하기
+        _setSuggestion(0, msg.sender, 0, msg.value, 0);
+    }
+
+    function requestTrade(
+        uint8 _type,
+        uint256 _idx,
+        uint256 _price
+    ) public onlyOwner {
+        require(
+            _nfts[_idx].info.collection != address(0x0),
+            "Coffer: Invalid collection address"
+        );
+        require(_nfts[_idx].info.tokenId != 0, "Coffer: Invalid tokenId");
+        _setSuggestion(
+            _type,
+            _nfts[_idx].info.collection,
+            _nfts[_idx].info.tokenId,
+            _price,
+            _idx
+        );
+    }
+
+    function getVoteNum() private view onlyOwner returns (uint256) {
+        uint256 maxKey = _nftIdx.current();
+        uint256 _sum = 0;
+        for (uint256 i = 1; i <= maxKey; i++) {
+            if (_nfts[i].option != 0) {
+                _sum += _nfts[i].price;
+            }
+        }
+        (bool check, uint256 _voteNum) = SafeMath.tryDiv(
+            (_totalBalance[msg.sender] * 100),
+            _sum
+        );
+        if (check) {
+            if (_voteNum >= 50) {
+                return 3;
+            } else if (_voteNum >= 25) {
+                return 2;
+            } else {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    function vote(uint256 _idx, bool _vote) public onlyOwner {
+        //state, type, agree, disagree, data, date
+        //1: reject 2: wait 3: pass
+        //type 0:join , 1: set sell, 2: set rent, 3: buy, 4: rent
+        uint8 targetState = _suggestion[_idx].state;
+        require(targetState != 2, "Coffer: Already end"); //이미 종료된 suggestion이면 정지
+
+        uint256 targetDate = _suggestion[_idx].date;
+        uint8 targetType = _suggestion[_idx].types;
+        uint256 targetAgree = _suggestion[_idx].agree;
+        uint256 targetDisagree = _suggestion[_idx].disagree;
+
+        if (targetDate + 1 days < block.timestamp) {
+            //reject
+            targetState = 1;
+            emit reject(targetType, _idx);
+        } else {
+            uint256 _voteNum;
+            (bool check, uint256 _base) = SafeMath.tryDiv(getTotal(), 3);
+            require(check, "Coffer: Get base member fail");
+
+            //지분에따라 투표권 개수 파악
+            //전체 owner의 수가 5명 미만이면 1명당 1표
+            if (getTotal() < 5) {
+                _voteNum = 1;
+            } else {
+                _voteNum = getVoteNum();
+            }
+            //찬반 계산
+            if (_vote) {
+                targetAgree += _voteNum;
+                if (targetAgree >= 2 * _base + 1) {
+                    //pass
+                    targetState = 3;
+
+                    if (targetType == 0) {
+                        //join
+                        //참여 승인하고 임시 staking 이전
+                        //가격 다 찬 경우 바로 구매
+                    } else if (targetType == 1) {
+                        //set sell
+                        //판매등록
+                        _setTrade(
+                            _suggestion[_idx].data.nftIdx,
+                            _suggestion[_idx].data.price,
+                            1
+                        );
+                    } else if (targetType == 2) {
+                        //set rent
+                        //대여등록
+                        _setTrade(
+                            _suggestion[_idx].data.nftIdx,
+                            _suggestion[_idx].data.price,
+                            2
+                        );
+                    } else if (targetType == 3) {
+                        //buy
+                        //구매 target 등록
+                        _setTarget(
+                            _suggestion[_idx].data.target,
+                            _suggestion[_idx].data.idx,
+                            _suggestion[_idx].data.price,
+                            1,
+                            address(0x0),
+                            0
+                        );
+                    } else if (targetType == 4) {
+                        _setTarget(
+                            _suggestion[_idx].data.target,
+                            _suggestion[_idx].data.idx,
+                            _suggestion[_idx].data.price,
+                            2,
+                            address(0x0),
+                            0
+                        );
+                    }
+
+                    emit pass(targetType, _idx);
+                }
+            } else {
+                targetDisagree += _voteNum;
+                if (targetDisagree >= _base) {
+                    //reject
+                    targetState = 1;
+
+                    if (targetType == 0) {
+                        //join
+                        //임시 stake 금액 반환
+                    }
+                    //나머지는 처리할것 없음
+
+                    emit reject(targetType, _idx);
+                }
+            }
+        }
     }
 
     //거래하려는 nft setting start
@@ -81,6 +298,7 @@ contract coffer is Ownable {
         uint256 _tokenId,
         uint256 _price,
         uint8 _option,
+        address _target,
         uint256 stake_
     ) internal onlyOwner {
         require(_collection != address(0x0), "Coffer: Invalid address");
@@ -92,28 +310,11 @@ contract coffer is Ownable {
         _targetNft.info.tokenId = _tokenId;
         _targetNft.price = _price;
         _targetNft.option = _option;
-        _targetNft.stake[msg.sender] = stake_;
-        _targetNft.joinAddr.push(msg.sender);
+        _targetNft.stake[_target] = stake_;
+        _targetNft.joinAddr.push(_target);
 
         emit set_target(_collection, _tokenId, _price, _option);
     }
-
-    //외부에서 target 설정할 때 사용
-    /*
-      function setTarget(
-        address _collection,
-        uint256 _tokenId,
-        uint256 _price,
-        uint8 _option
-    ) public payable onlyOwner {
-        require(msg.value != 0, "Coffer: Stake ether fail");
-        require(!_isReady, "Coffer: Already has target");//한번에 하나의 nft만 거래할 수 있다.
-        _totalStake += msg.value;
-        _stake[msg.sender] += msg.value;
-        _setTarget(_collection, _tokenId, _price,_option,msg.value);
-        
-    }    
-    */
 
     //거래하려는 nft setting end
 
@@ -174,6 +375,7 @@ contract coffer is Ownable {
         (bool check, ) = payable(msg.sender).call{value: _price}("");
         require(check, "Coffer: Payback fail");
         _stake[msg.sender] -= _price;
+        _totalBalance[msg.sender] -= _price;
         _totalStake -= _price;
     }
 
@@ -238,6 +440,6 @@ contract coffer is Ownable {
             require(check, "Coffer: Sell fail");
         }
 
-        emit setTrade(listIdx, price, option);
+        emit set_trade(listIdx, price, option);
     }
 }
