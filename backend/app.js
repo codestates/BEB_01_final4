@@ -33,7 +33,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/collections', collectionsRouter);
-app.use('/nfts', nftsRouters);
 app.use('/assets', assetsRouter);
 app.use('/users', usersRouter);
 app.use('/metadata', metadataRouter);
