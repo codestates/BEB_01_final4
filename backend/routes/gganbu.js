@@ -118,10 +118,6 @@ router.post('/', async (req, res, next) => {
       defaults: reqData
     });
 
-    if (qWallets[1] === false) {
-      throw new Error('깐부 지갑주소가 이미 존재합니다');
-    }
-
     const memberData = {
       memberAddress: req.body.userAddress,
       gganbuAddress: req.body.gganbuAddress,
@@ -138,8 +134,12 @@ router.post('/', async (req, res, next) => {
       defaults: memberData
     });
 
-    if (qMembers[1] === false) {
-      throw new Error('해당 깐부지갑주소에 사용자가 이미 등록되어 있습니다');
+    if (qWallets[1] === false || qMembers[1] === false) {
+      if (qWallets[1] === false) {
+        throw new Error('깐부 지갑주소가 이미 존재합니다');
+      } else {
+        throw new Error('해당 깐부지갑주소에 사용자가 이미 등록되어 있습니다');
+      }
     }
 
     res.status(200).json({
