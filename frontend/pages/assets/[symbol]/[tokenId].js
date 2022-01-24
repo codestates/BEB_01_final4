@@ -560,6 +560,12 @@ const Asset = () => {
                           alert("판매자는 구매할 수 없습니다.");
                           return;
                         }
+
+                        if (nft?.recruiting?.members.find((member) => member.memberAddress === account)) {
+                          alert("이미 깐부로 참여 중입니다.");
+                          return;
+                        }
+
                         setOpened(!opened);
                       }}
                       style={{ marginTop: "15px" }}
@@ -749,7 +755,6 @@ const Asset = () => {
 
           <div style={{ display: "flex" }}>
             <Image src="/images/eth.svg" width={12} height={12} alt="" />
-            {console.log(joinableGGanbuPrice)}
             <Text style={{ fontSize: "16px", marginLeft: "10px" }}>참여 가능 금액: {joinableGGanbuPrice}</Text>
           </div>
         </div>
