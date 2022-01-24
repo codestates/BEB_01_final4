@@ -69,6 +69,7 @@ contract coffer is Ownable {
     );
     event set_trade(uint256 indexed listIdx, uint256 price, uint256 option);
     event set_suggestion(
+        uint256 indexed _suggestionIdx,
         uint8 _type,
         address indexed _target,
         uint256 _tokenId,
