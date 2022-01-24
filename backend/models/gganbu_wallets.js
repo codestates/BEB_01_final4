@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     balance: DataTypes.FLOAT,
     isActive: DataTypes.BOOLEAN,
     description: DataTypes.TEXT,
-    rewards: DataTypes.FLOAT
+    rewards: DataTypes.FLOAT,
+    status: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'GGanbu_wallets',

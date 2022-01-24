@@ -1,23 +1,35 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('GGanbu_members', {
+    await queryInterface.createTable('GGanbu_wallets', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      memberAddress: {
+      type: {
         type: Sequelize.STRING
       },
       gganbuAddress: {
         type: Sequelize.STRING
       },
-      staking_value: {
+      nft_collectionAddress: {
+        type: Sequelize.STRING
+      },
+      nft_token_ids: {
+        type: Sequelize.INTEGER
+      },
+      balance: {
         type: Sequelize.FLOAT
       },
-      my_rewards: {
+      isActive: {
+        type: Sequelize.BOOLEAN
+      },
+      description: {
+        type: Sequelize.TEXT
+      },
+      rewards: {
         type: Sequelize.FLOAT
       },
       status: {
@@ -34,6 +46,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('GGanbu_members');
+    await queryInterface.dropTable('GGanbu_wallets');
   }
 };

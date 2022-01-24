@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     memberAddress: DataTypes.STRING,
     gganbuAddress: DataTypes.STRING,
     staking_value: DataTypes.FLOAT,
+    staking_ratio: DataTypes.FLOAT,
     my_rewards: DataTypes.FLOAT,
     status: DataTypes.STRING
   }, {

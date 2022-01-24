@@ -1,48 +1,30 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Vote_suggestions', {
+    await queryInterface.createTable('GGanbu_members', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      orgAddress: {
+      memberAddress: {
         type: Sequelize.STRING
       },
-      option: {
+      gganbuAddress: {
         type: Sequelize.STRING
       },
-      type: {
-        type: Sequelize.STRING
-      },
-      targetAddress: {
-        type: Sequelize.STRING
-      },
-      targetTokenId: {
-        type: Sequelize.STRING
-      },
-      totalAccept: {
-        type: Sequelize.INTEGER
-      },
-      totalReject: {
-        type: Sequelize.INTEGER
-      },
-      totalAcceptRatio: {
+      staking_value: {
         type: Sequelize.FLOAT
       },
-      totalRejectRatio: {
+      staking_ratio: {
         type: Sequelize.FLOAT
       },
-      suggestedAt: {
-        type: Sequelize.DATE
+      my_rewards: {
+        type: Sequelize.FLOAT
       },
       status: {
         type: Sequelize.STRING
-      },
-      isValid: {
-        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,
@@ -55,6 +37,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Vote_suggestions');
+    await queryInterface.dropTable('GGanbu_members');
   }
 };
