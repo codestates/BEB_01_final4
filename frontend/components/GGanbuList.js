@@ -8,11 +8,11 @@ function GGanbuList({ elements }) {
       <td>
         <Jazzicon diameter={50} seed={Math.round(Math.random() * 10000000)} />
       </td>
-      <td style={{ fontSize: "16px" }}>{element}</td>
+      <td style={{ fontSize: "16px" }}>{element?.memberAddress}</td>
       <td>
         <div style={{ display: "flex" }}>
           <Image src="/images/eth.svg" width={9} height={9} alt="" />
-          <span style={{ marginLeft: "6px", fontSize: "16px" }}>{idx}</span>
+          <span style={{ marginLeft: "6px", fontSize: "16px" }}>{element?.staking_value}</span>
         </div>
       </td>
     </tr>

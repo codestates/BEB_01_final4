@@ -91,14 +91,7 @@ const Asset = () => {
   const [opened, setOpened] = useState(false);
   const [gganbuPrice, setGGanbuPrice] = useInputState("");
   const [gganbuDesc, setGGanbuDesc] = useInputState("");
-
-  const gganbuAddresses = [
-    "0x1111111111111111111111111111111111111111",
-    "0x1111111111111111111111111111111111111112",
-    "0x1111111111111111111111111111111111111113",
-    "0x1111111111111111111111111111111111111114",
-    "0x1111111111111111111111111111111111111115",
-  ];
+  const [joinableGGanbuPrice, setJoinableGGanbuPrice] = useState(sellPrice);
 
   // db에서 nft 정보 조회: 해당 nft의 컬렉션 정보를 얻기 위해서
   const getNft = async () => {
@@ -125,6 +118,26 @@ const Asset = () => {
       console.log(e.response);
     }
   };
+
+  const calculateJoinableGGanbuPrice = () => {
+    if (nft?.isRecruiting) {
+      setJoinableGGanbuPrice(
+        Math.round(
+          (parseFloat(sellPrice) -
+            parseFloat(nft?.recruiting?.members.reduce((acc, cur) => acc + cur.staking_value, 0))) *
+            100,
+        ) / 100,
+      );
+    } else {
+      setJoinableGGanbuPrice(sellPrice);
+    }
+
+    // setJoinableGGanbuPrice(sellPrice - nft?.recruiting?.members.reduce((acc, cur) => acc + cur.staking_value, 0));
+  };
+
+  useEffect(() => {
+    calculateJoinableGGanbuPrice();
+  }, [sellPrice, nft]);
 
   // 컨트랙트에서 nft 정보 조회: 소유자, 빌린사람, 판매, 대여 상태 등을 온체인에서 확인
   const getNftFromContract = async () => {
@@ -299,13 +312,20 @@ const Asset = () => {
 
   const handleGGanbuInput = (e) => {
     e.target.value = e.target.value.replace(/(\.\d{2})\d+/g, "$1");
-    if (parseFloat(e.target.value) >= parseFloat(sellPrice)) {
-      alert("참여 금액은 판매 금액보다 작아야 합니다.");
-      e.target.value = "";
+    if (!joinableGGanbuPrice) {
+      if (parseFloat(e.target.value) > parseFloat(sellPrice)) {
+        alert("참여 금액은 판매 금액보다 클 수 없습니다.");
+        e.target.value = "";
+      }
+    } else {
+      if (parseFloat(e.target.value) > parseFloat(joinableGGanbuPrice)) {
+        alert("참여 금액은 판매 금액보다 클 수 없습니다.");
+        e.target.value = "";
+      }
     }
   };
 
-  const handleJoinGGanbu = async () => {
+  const handleCreateGGanbu = async () => {
     console.log(gganbuPrice, gganbuDesc);
     if (!gganbuPrice || !gganbuDesc) {
       alert("참여 금액과 깐부 설명을 입력해주세요.");
@@ -319,29 +339,50 @@ const Asset = () => {
       // console.log(parseInt(web3.utils.toWei(sellPrice, "ether")));
       // return;
 
-      const contract = await new web3.eth.Contract(Coffer.abi)
+      const cofferContract = await new web3.eth.Contract(Coffer.abi)
         .deploy({
           data: Coffer.bytecode,
           arguments: [nft.contractAddress, nft.token_ids, web3.utils.toWei(sellPrice, "ether"), 1], // Writing you arguments in the array
         })
         .send({ from: account, value: web3.utils.toWei(gganbuPrice, "ether") });
 
-      console.log(contract._address);
+      if (cofferContract._address) {
+        console.log({
+          userAddress: account,
+          gganbuAddress: cofferContract._address,
+          description: gganbuDesc,
+          collectionAddress: nft.contractAddress,
+          token_ids: nft.token_ids,
+        });
+      }
 
-      // TODO: 공동월렛 생성 후 백엔드에 정보 전달
-      if (contract._address) {
-        // await axios.post(
-        //   `${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`,
-        //   { contractAddress: contract._address },
-        //   { withCredentials: true },
-        // );
+      // TODO: 공동월렛 생성 후 백엔드에 정보 전달, 현재 post api로 전달하는 인자 중 일부는 빠질 예정(컨트랙트에서 get method 추가되면)
+      if (cofferContract._address) {
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/gganbu`,
+          {
+            userAddress: account,
+            gganbuAddress: cofferContract._address,
+            description: gganbuDesc,
+            collectionAddress: nft.contractAddress,
+            token_ids: nft.token_ids,
+          },
+          { withCredentials: true },
+        );
+
+        // TODO: 백엔드 전달 후 깐부 정보 가져와야 함. 백엔드에서 가져오고, 추후에 컨트랙트에서 가져오는 것으로 변경 필요
         // setMyCollections([...myCollections, { ...newCollection, contractAddress: contract._address, assets: [] }]);
-        // router.push(`/collections/${symbol}`);
+        getNft();
       }
       setOpened(false);
       setGGanbuDesc("");
       setGGanbuPrice("");
     }
+  };
+
+  const handleJoinGGanbu = async () => {
+    console.log("handleJoinGGanbu Clicked");
+    return;
   };
 
   return (
@@ -520,6 +561,12 @@ const Asset = () => {
                           alert("판매자는 구매할 수 없습니다.");
                           return;
                         }
+
+                        if (nft?.recruiting?.members.find((member) => member.memberAddress === account)) {
+                          alert("이미 깐부로 참여 중입니다.");
+                          return;
+                        }
+
                         setOpened(!opened);
                       }}
                       style={{ marginTop: "15px" }}
@@ -562,20 +609,23 @@ const Asset = () => {
             </TradeBox>
           )}
 
-          <CAccordion initialItem={0} style={{ fontSize: "20px", margin: "20px 0" }} iconPosition="right">
-            <CAccordion.Item
-              label={
-                <div style={{ display: "flex", alignItems: "center", padding: "8px" }}>
-                  <FaRegAddressCard />
-                  <Text style={{ marginLeft: "10px" }}>GGanbu list</Text>
-                </div>
-              }
-            >
-              <ScrollArea style={{ height: 250 }}>
-                <GGanbuList elements={gganbuAddresses} />
-              </ScrollArea>
-            </CAccordion.Item>
-          </CAccordion>
+          {nft?.isRecruiting && (
+            <CAccordion initialItem={0} style={{ fontSize: "20px", margin: "20px 0" }} iconPosition="right">
+              <CAccordion.Item
+                label={
+                  <div style={{ display: "flex", alignItems: "center", padding: "8px" }}>
+                    <FaRegAddressCard />
+                    <Text style={{ marginLeft: "10px" }}>깐부 모집 중</Text>
+                  </div>
+                }
+              >
+                <div style={{ marginBottom: "10px" }}>{nft.recruiting?.description}</div>
+                <ScrollArea style={{ height: 250 }}>
+                  <GGanbuList elements={nft?.recruiting?.members} />
+                </ScrollArea>
+              </CAccordion.Item>
+            </CAccordion>
+          )}
 
           <CAccordion style={{ fontSize: "20px", margin: "20px 0" }} iconPosition="right">
             <CAccordion.Item
@@ -594,7 +644,7 @@ const Asset = () => {
                   padding: "15px",
                 }}
               >
-                {nft?.trade_history.length > 0 ? (
+                {nft?.trade_history?.length > 0 ? (
                   <PriceHistory
                     labels={nft?.trade_history.map((asset) => new Date(asset.updatedAt).toLocaleDateString()).reverse()}
                     priceArr={nft?.trade_history.map((asset) => asset.price).reverse()}
@@ -625,7 +675,7 @@ const Asset = () => {
                   padding: "15px",
                 }}
               >
-                {nft?.trade_history.length > 0 ? (
+                {nft?.trade_history?.length > 0 ? (
                   <Listings elements={nft?.trade_history} />
                 ) : (
                   <>
@@ -696,13 +746,18 @@ const Asset = () => {
       </CAccordion>
       <Modal opened={opened} onClose={() => setOpened(false)}>
         <Text style={{ fontSize: "20px", fontWeight: "bold" }} align="center">
-          깐부 등록
+          {nft?.isRecruiting ? "깐부 참여" : "깐부 등록"}
         </Text>
-        <div style={{ display: "flex", margin: "12px 0" }}>
-          <Image src="/images/eth.svg" width={16} height={16} alt="" />
-          <Text style={{ fontSize: "16px", marginLeft: "10px" }}>
-            판매금액: {sellPrice === null ? lendPrice : sellPrice}
-          </Text>
+        <div style={{ display: "flex", margin: "30px 0", justifyContent: "space-between" }}>
+          <div style={{ display: "flex" }}>
+            <Image src="/images/eth.svg" width={12} height={12} alt="" />
+            <Text style={{ fontSize: "16px", marginLeft: "10px" }}>판매금액: {sellPrice}</Text>
+          </div>
+
+          <div style={{ display: "flex" }}>
+            <Image src="/images/eth.svg" width={12} height={12} alt="" />
+            <Text style={{ fontSize: "16px", marginLeft: "10px" }}>참여 가능 금액: {joinableGGanbuPrice}</Text>
+          </div>
         </div>
         <TextInput
           value={gganbuPrice}
@@ -714,25 +769,19 @@ const Asset = () => {
           required
           type="number"
         />
-        {/* <Input
-          // value={gganbuPrice}
-          onChange={setGGanbuPrice}
-          onInput={handleGGanbuInput}
-          style={{ margin: "20px 0" }}
-          type="number"
-          placeholder="참여 금액"
-        /> */}
-        <TextInput
-          value={gganbuDesc}
-          onChange={setGGanbuDesc}
-          style={{ margin: "20px 0" }}
-          placeholder="깐부 설명"
-          label="깐부 설명"
-          required
-          type="text"
-        />
+        {nft?.isRecruiting ? null : (
+          <TextInput
+            value={gganbuDesc}
+            onChange={setGGanbuDesc}
+            style={{ margin: "20px 0" }}
+            placeholder="깐부 설명"
+            label="깐부 설명"
+            required
+            type="text"
+          />
+        )}
         <div style={{ textAlign: "center" }}>
-          <Button onClick={handleJoinGGanbu}>확인</Button>
+          <Button onClick={nft?.isRecruiting ? handleJoinGGanbu : handleCreateGGanbu}>확인</Button>
         </div>
       </Modal>
     </div>

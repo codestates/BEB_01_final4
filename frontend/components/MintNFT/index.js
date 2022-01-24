@@ -122,7 +122,7 @@ const MintNFT = () => {
 
   useEffect(() => {
     if (querySymbol) {
-      console.log("getCollection");
+      // console.log("getCollection");
       getCollection();
     }
   }, [querySymbol]);
