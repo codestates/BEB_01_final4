@@ -372,6 +372,7 @@ const Asset = () => {
 
         // TODO: 백엔드 전달 후 깐부 정보 가져와야 함. 백엔드에서 가져오고, 추후에 컨트랙트에서 가져오는 것으로 변경 필요
         // setMyCollections([...myCollections, { ...newCollection, contractAddress: contract._address, assets: [] }]);
+        getNft();
       }
       setOpened(false);
       setGGanbuDesc("");
