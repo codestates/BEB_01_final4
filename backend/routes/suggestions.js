@@ -66,6 +66,9 @@ router.get('/', async (req, res, next) => {
     }
     
     for (let i=0; i<result.length; i++) {
+      //joiner 정보
+      result[i].joiner_info = await utils.addUserInfo(result[i].joiner);
+
       //투표 정보
       let qMembers = await GGanbu_members.findAll({
         where: {
@@ -79,7 +82,6 @@ router.get('/', async (req, res, next) => {
       result[i].num_of_vote_accept = 0;
       result[i].num_of_vote_reject = 0;
       result[i].vote_info = [];
-
       
       for(let j=0;j<qMembers.length;j++) {
         let voters = qMembers[j].dataValues;
