@@ -401,6 +401,25 @@ export default [
 				"type": "uint256"
 			}
 		],
+		"name": "getIsRental",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
 		"name": "getIsSelling",
 		"outputs": [
 			{
@@ -439,7 +458,7 @@ export default [
 				"type": "uint256"
 			}
 		],
-		"name": "getRental",
+		"name": "getRentalAddress",
 		"outputs": [
 			{
 				"internalType": "address",
