@@ -43,7 +43,6 @@ router.get('/', async (req, res, next) => {
         },
       });
       result[i].members = qMembers;
-
       /*
       *suggestion 정보
       */
@@ -62,6 +61,11 @@ router.get('/', async (req, res, next) => {
       let NFT = qNFT.dataValues;
       NFT = await utils.addNftInfo(NFT);
       result[i].asset = NFT;
+
+      //참여자 수, xx% 모집 완료
+      result[i].num_of_members = qMembers.length;
+      result[i].ratio_of_staking = result[i].balance / result[i].asset.trade_selling.price * 100;
+      result[i].ratio_of_staking = Math.round(result[i].ratio_of_staking * 100) / 100;
     }
 
     res.json({ message: "ok", data: qGGanbus });
