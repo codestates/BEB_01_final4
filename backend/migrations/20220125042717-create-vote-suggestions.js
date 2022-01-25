@@ -8,6 +8,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      suggestion_idx: {
+        type: Sequelize.INTEGER
+      },
       orgAddress: {
         type: Sequelize.STRING
       },
@@ -22,6 +25,9 @@ module.exports = {
       },
       targetTokenId: {
         type: Sequelize.STRING
+      },
+      targetPrice: {
+        type: Sequelize.FLOAT
       },
       totalAccept: {
         type: Sequelize.INTEGER
@@ -43,6 +49,12 @@ module.exports = {
       },
       isValid: {
         type: Sequelize.BOOLEAN
+      },
+      joiner: {
+        type: Sequelize.STRING
+      },
+      joiner_staking_value: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

@@ -18,7 +18,7 @@ const privateKey = '4475b37738aaff7f44e541a577cf878a947a647378a9004e84dc0103abaa
 const ca = '0x51E34270f02C57a384c1c1C47Efc7eCC982C60Ab';
 
 //tran
-const tran = '0xe31a100a9cb3c2394b608764159354c78ba3a44b29be7b5314f5537c213eef4c';
+const tran = '0x0c9b9265f8c142814cb295cb7b110fd5460c6a71617db54e4b8dc8d9f22be8fc';
 
 //NFT 토큰 정보
 const iToken_ids = 6;
@@ -29,10 +29,13 @@ const iPrice = 300;
 /*==========================================================*/
 const abi = require("./MyERC721_ABI");
 const bytecode = require("./MyERC721_Bytecode");
+const coffer_abi = require("./CofferERC721_ABI");
+const coffer_bytecode = require("./CofferERC721_Bytecode");
 const serverPath = 'http://localhost:4000';
 
 const abiDecoder = require('abi-decoder'); // NodeJS
 abiDecoder.addABI(abi);
+abiDecoder.addABI(coffer_abi);
 /*==========================================================*/
 
 test(tran);
@@ -40,8 +43,23 @@ async function test(tran) {
   try { 
     let tx = await web3.eth.getTransaction(tran);
     console.log(tx);
+    console.log('===============================================');
     let decodedData = abiDecoder.decodeMethod(tx.input);
     console.log(decodedData);
+    console.log('===============================================');
+    
+    //Receipt
+    tx = await web3.eth.getTransactionReceipt(tran);
+    console.log(tx);
+    decodedData = abiDecoder.decodeLogs(tx.logs);
+    console.log(decodedData);
+    console.log('===============================================');
+    
+    //events
+    for(let i=0;i<decodedData[0].events.length;i++) {
+      console.log(decodedData[0].events[i]);
+    }
+
 
     let curBlkNum = await web3.eth.getBlockNumber();
     console.log(curBlkNum);
@@ -147,7 +165,7 @@ const checkNFTs = async (MyAbi, MyCA) => {
     console.log(e);
   }
 }
-checkNFTs(abi, ca);
+//checkNFTs(abi, ca);
 
 
 
