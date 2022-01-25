@@ -1,5 +1,6 @@
 import { Table } from "@mantine/core";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import styled from "styled-components";
 
 const CTable = styled(Table)`
@@ -12,7 +13,13 @@ const CTable = styled(Table)`
   }
 `;
 
+const handleClick = async () => {
+  router.push(`/assets/${symbol}/${token_ids}`);
+};
+
 const GGanbuBoard = ({ gganbuList }) => {
+  const router = useRouter();
+
   const rows = gganbuList.map((gganbu, idx) => (
     <tr key={idx}>
       <td>{gganbu.asset.name}</td>

@@ -17,6 +17,7 @@ import NFTCard from "../components/nftCard";
 import History from "../components/history";
 import RentHistory from "../components/rent_history";
 import { compressAddress } from "../utils";
+import GGanbuVote from "../components/gganbuVote";
 
 const Description = styled.div`
   max-width: 720px;
@@ -55,6 +56,7 @@ const MyPage = () => {
   const [lendAssets, setLendAssets] = useState([]);
   const [rentAssets, setRentAssets] = useState([]);
   const [rentHistoryAssets, setRentHistoryAssets] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
 
   const getDataOnTabChange = async () => {
     if (activeTab === 0) {
@@ -99,6 +101,19 @@ const MyPage = () => {
         data: { data: myData },
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}?tab=rent-history`);
       setRentHistoryAssets(myData.rents);
+    } else if (activeTab === 3 && activeSubTab === 0) {
+      // GGanbu -> 모집 중인 깐부
+    } else if (activeTab === 3 && activeSubTab === 1) {
+      // GGanbu -> 깐부 보유 NFT
+    } else if (activeTab === 3 && activeSubTab === 2) {
+      // GGanbu -> 투표 중인 깐부
+      const {
+        data: { data: suggestions },
+      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/suggestions?user=${account}&tab=in-progress`);
+      console.log(suggestions);
+      setSuggestions(suggestions);
+    } else if (activeTab === 3 && activeSubTab === 3) {
+      // GGanbu -> 깐부 내역
     }
 
     // else if (activeTab === 5) {
@@ -117,7 +132,6 @@ const MyPage = () => {
   useEffect(() => {
     setActiveSubTab(0);
   }, [activeTab]);
-
 
   const getMyData = async () => {
     try {
@@ -267,7 +281,9 @@ const MyPage = () => {
                 >
                   {sellingAssets.map((nft, i) => {
                     // console.log(nft);
-                    return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
+                    return nft.imageURI === null ? null : (
+                      <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />
+                    );
                   })}
                 </SimpleGrid>
               </CTabs.Tab>
@@ -275,7 +291,6 @@ const MyPage = () => {
                 <History elements={activityAssets} />
               </CTabs.Tab>
             </CTabs>
-
           </CTabs.Tab>
           <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="Rent">
             <CTabs
@@ -305,7 +320,9 @@ const MyPage = () => {
                 >
                   {lendAssets.map((nft, i) => {
                     // console.log(nft);
-                    return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
+                    return nft.imageURI === null ? null : (
+                      <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />
+                    );
                   })}
                 </SimpleGrid>
               </CTabs.Tab>
@@ -328,7 +345,9 @@ const MyPage = () => {
                 >
                   {rentAssets.map((nft, i) => {
                     // console.log(nft);
-                    return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
+                    return nft.imageURI === null ? null : (
+                      <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />
+                    );
                   })}
                 </SimpleGrid>
               </CTabs.Tab>
@@ -360,9 +379,7 @@ const MyPage = () => {
               <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="모집 중인 깐부">
                 <div style={{ padding: "0 40px" }}>
                   <Text style={{ fontSize: "36px", fontWeight: "bold" }}>참여 중인 깐부</Text>
-                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
-                    TBD
-                  </Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>TBD</Text>
                 </div>
 
                 {/* <SimpleGrid
@@ -383,9 +400,7 @@ const MyPage = () => {
               <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="깐부 보유 NFT">
                 <div style={{ padding: "0 40px" }}>
                   <Text style={{ fontSize: "36px", fontWeight: "bold" }}>깐부 보유 NFT</Text>
-                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
-                    TBD
-                  </Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>TBD</Text>
                 </div>
 
                 {/* <SimpleGrid
@@ -405,10 +420,8 @@ const MyPage = () => {
               </CTabs.Tab>
               <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="투표 중인 깐부">
                 <div style={{ padding: "0 40px" }}>
-                  <Text style={{ fontSize: "36px", fontWeight: "bold" }}>투표 중인 깐부</Text>
-                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
-                    TBD
-                  </Text>
+                  {/* <Text style={{ fontSize: "36px", fontWeight: "bold" }}>투표 중인 깐부</Text> */}
+                  <GGanbuVote suggestions={suggestions} />
                 </div>
 
                 {/* <SimpleGrid
@@ -454,9 +467,7 @@ const MyPage = () => {
               <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="가입한 D A O">
                 <div style={{ padding: "0 40px" }}>
                   <Text style={{ fontSize: "36px", fontWeight: "bold" }}>가입한 subDAO</Text>
-                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
-                    TBD
-                  </Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>TBD</Text>
                 </div>
 
                 {/* <SimpleGrid
@@ -477,9 +488,7 @@ const MyPage = () => {
               <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="투표 중">
                 <div style={{ padding: "0 40px" }}>
                   <Text style={{ fontSize: "36px", fontWeight: "bold" }}>투표 중</Text>
-                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
-                    TBD
-                  </Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>TBD</Text>
                 </div>
 
                 {/* <SimpleGrid
@@ -500,9 +509,7 @@ const MyPage = () => {
               <CTabs.Tab icon={<MdOutlineHistory style={{ width: 18, height: 18 }} />} label="D A O 내역">
                 <div style={{ padding: "0 40px" }}>
                   <Text style={{ fontSize: "36px", fontWeight: "bold" }}>subDAO 내역</Text>
-                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>
-                    TBD
-                  </Text>
+                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>TBD</Text>
                 </div>
 
                 {/* <RentHistory elements={rentHistoryAssets} /> */}
