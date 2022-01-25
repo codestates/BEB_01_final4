@@ -9,7 +9,7 @@ const hostURI = config.development.host_metadata;
 const utils = require('./utils');
 
 /*
- *  /gganbu
+ *  /dao
  *  모든 깐부 리스트
  *  optional:
  *  ?tab=operate        <= 운영 중인
@@ -31,21 +31,21 @@ router.get('/', async (req, res, next) => {
     let result = [];
 
     if(req.query.user) {
-      //내가 참여하는 GGanbu
-      const qMyMembers = await GGanbu_members.findAll({
+      //내가 참여하는 dao
+      const qMyMembers = await DAO_members.findAll({
         where: {status:'active',memberAddress:req.query.user},
         order: [
           ['createdAt', 'DESC']
         ],
       });
 
-      //내가 참여하고 있는 GGanbu 들 정보
+      //내가 참여하고 있는 DAO 들 정보
       for(let i=0;i<qMyMembers.length;i++) {
         if(req.query.user) {
-          whereOption.gganbuAddress = qMyMembers[i].dataValues.gganbuAddress;
+          whereOption.daoAddress = qMyMembers[i].dataValues.daoAddress;
         }
 
-        const qMyGGanbus = await GGanbu_wallets.findOne({
+        const qMyGGanbus = await DAO_wallets.findOne({
           where: whereOption,
         });
         if(qMyGGanbus) {
@@ -53,7 +53,7 @@ router.get('/', async (req, res, next) => {
         }
       }
     } else {
-      const qGGanbus = await GGanbu_wallets.findAll({
+      const qGGanbus = await DAO_wallets.findAll({
         where: whereOption,
         order: [
           ['createdAt', 'DESC']
@@ -83,14 +83,14 @@ router.post('/', async (req, res, next) => {
   try {
     console.log(`======== [POST] /dao ========`);
     //입력 인자 가공
-    if (!req.body.gganbuAddress || !req.body.description || !req.body.name) {
-      throw new SyntaxError("required: gganbuAddress, description, name");
+    if (!req.body.daoAddress || !req.body.description || !req.body.name) {
+      throw new SyntaxError("required: daoAddress, description, name");
     }
 
     //[required] nft_collectionAddress, nft_token_ids
 
     //[required] balance
-    const balance = await web3.eth.getBalance(req.body.gganbuAddress);
+    const balance = await web3.eth.getBalance(req.body.daoAddress);
     const iBalance = web3.utils.fromWei(balance, 'ether');
     const iRatio = 0;
     if(iBalance != 0) {
@@ -100,42 +100,40 @@ router.post('/', async (req, res, next) => {
     //정규
     const reqData = {
       type: 'dao',
-      gganbuAddress: req.body.gganbuAddress,
+      daoAddress: req.body.daoAddress,
       description: req.body.description,
-      nft_collectionAddress: null,
-      nft_token_ids: null,
       balance: iBalance,
       isActive: true,
       rewards : 0,
       status: 'operate'
     };
 
-    let qWallets = await GGanbu_wallets.findOrCreate({ 
-      where: { gganbuAddress: req.body.gganbuAddress },
+    let qWallets = await DAO_wallets.findOrCreate({ 
+      where: { daoAddress: req.body.daoAddress },
       defaults: reqData
     });
 
     const memberData = {
       memberAddress: req.body.userAddress,
-      gganbuAddress: req.body.gganbuAddress,
+      daoAddress: req.body.daoAddress,
       staking_value: iBalance,
       staking_ratio: iRatio,
       my_rewards : 0,
       status: 'active'
     };
 
-    let qMembers = await GGanbu_members.findOrCreate({ 
+    let qMembers = await DAO_members.findOrCreate({ 
       where: { 
-        gganbuAddress: req.body.gganbuAddress,
+        daoAddress: req.body.daoAddress,
       },
       defaults: memberData
     });
 
     if (qWallets[1] === false || qMembers[1] === false) {
       if (qWallets[1] === false) {
-        throw new Error('깐부 지갑주소가 이미 존재합니다');
+        throw new Error('DAO 지갑주소가 이미 존재합니다');
       } else {
-        throw new Error('해당 깐부지갑주소에 사용자가 이미 등록되어 있습니다');
+        throw new Error('해당 DAO지갑주소에 사용자가 이미 등록되어 있습니다');
       }
     }
 
