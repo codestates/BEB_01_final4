@@ -40,7 +40,7 @@ const FillHeartIcon = styled(AiFillHeart)`
   color: rgb(235, 87, 87);
 `;
 
-const ImageWrapper = styled.div`
+export const ImageWrapper = styled.div`
   -webkit-user-drag: none;
   -khtml-user-drag: none;
   -moz-user-drag: none;
