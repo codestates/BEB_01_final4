@@ -101,6 +101,11 @@ const Layout = ({ children }) => {
                 <CText>GGanbu</CText>
               </Link>
             </CButton>
+            <CButton variant="white" onClick={() => setOpened(!opened)}>
+              <Link href="/dao" passHref>
+                <CText>D A O</CText>
+              </Link>
+            </CButton>
           </Navbar>
         </MediaQuery>
       }
@@ -162,6 +167,9 @@ const Layout = ({ children }) => {
                   </Link>
                   <Link href="/gganbu" passHref>
                     <CText>GGanbu</CText>
+                  </Link>
+                  <Link href="/dao" passHref>
+                    <CText>D A O</CText>
                   </Link>
                 </CHeader>
               </MediaQuery>

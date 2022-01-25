@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class GGanbu_wallets extends Model {
+  class DAO_wallets extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,12 +13,10 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   };
-  GGanbu_wallets.init({
+  DAO_wallets.init({
     type: DataTypes.STRING,
     name: DataTypes.STRING,
-    gganbuAddress: DataTypes.STRING,
-    nft_collectionAddress: DataTypes.STRING,
-    nft_token_ids: DataTypes.INTEGER,
+    daoAddress: DataTypes.STRING,
     balance: DataTypes.FLOAT,
     isActive: DataTypes.BOOLEAN,
     description: DataTypes.TEXT,
@@ -26,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     status: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'GGanbu_wallets',
+    modelName: 'DAO_wallets',
   });
-  return GGanbu_wallets;
+  return DAO_wallets;
 };

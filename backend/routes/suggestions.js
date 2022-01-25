@@ -16,7 +16,7 @@ const utils = require('./utils');
  *  ?user=<address> <= 내 꺼만
  */
 router.get('/', async (req, res, next) => {
-  let whereOption = {};
+  let whereOption = {option:'gganbu'};
   //0x3a6a5D954f8480e430D09937B0c40cbeAbfC78d4
   if(req.query.tab) {
     if(req.query.tab == 'in-progress') {
@@ -41,6 +41,8 @@ router.get('/', async (req, res, next) => {
         const qMyGGanbus = await GGanbu_wallets.findOne({
           where: {isActive:true,gganbuAddress:qMyMembers[i].dataValues.gganbuAddress}
         });
+
+        whereOption.orgAddress = qMyGGanbus.gganbuAddress;
 
         const qSuggestions = await Vote_suggestions.findAll({
           where: whereOption,
