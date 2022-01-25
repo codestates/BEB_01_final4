@@ -210,15 +210,58 @@ const utils = {
           token_ids: gganbu.nft_token_ids
         }
       });
-
       let NFT = qNFT.dataValues;
       NFT = await utils.addNftInfo(NFT);
+      
       gganbu.asset = NFT;
 
       //참여자 수, xx% 모집 완료
       gganbu.num_of_members = qMembers.length;
       gganbu.ratio_of_staking = gganbu.balance / gganbu.asset.trade_selling.price * 100;
       gganbu.ratio_of_staking = Math.round(gganbu.ratio_of_staking * 100) / 100;
+
+      return gganbu;
+    } 
+    catch (err) {
+      console.log(err)
+      return err;
+    }
+  },
+  //dao instance 넣으면 정보 추가
+  addDaoInfo: async (gganbu) => {
+    try {
+      //members 정보
+      let qMembers = await GGanbu_members.findAll({
+        where: {
+          gganbuAddress: gganbu.gganbuAddress
+        },
+      });
+      gganbu.members = qMembers;
+      /*
+      *suggestion 정보
+      */
+      //gganbu.hasSuggestion = false;
+      //gganbu.suggestions = null;
+      //gganbu.suggestion_history = [];
+
+      //NFT 정보 (NFT 의 collection, trade 정보 추가)
+      // const qNFT = await NFTs.findOne({
+      //   where: {
+      //     contractAddress: gganbu.nft_collectionAddress,
+      //     token_ids: gganbu.nft_token_ids
+      //   }
+      // });
+      // let NFT = null;
+      // if(qNFT) {
+      //   let NFT = qNFT.dataValues;
+      //   NFT = await utils.addNftInfo(NFT);
+      // }
+      // gganbu.asset = NFT;
+
+      //참여자 수, xx% 모집 완료
+      gganbu.num_of_members = qMembers.length;
+      // gganbu.ratio_of_staking = gganbu.balance / gganbu.asset.trade_selling.price * 100;
+      // gganbu.ratio_of_staking = Math.round(gganbu.ratio_of_staking * 100) / 100;
 
       return gganbu;
     } 

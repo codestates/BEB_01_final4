@@ -475,7 +475,7 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
 
     let txReceipt = await web3.eth.getTransactionReceipt(txID);
     
-    // 만약 mintNFT 트랜잭션이라면
+    // join
     if(tx.input_name === 'requestJoin') {
       decodedLogs = abiDecoder.decodeLogs(txReceipt.logs);
       //console.log(decodedLogs[0].name); <= 'set_suggestion'
@@ -509,7 +509,7 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
       const inputData = {
         suggestion_idx: iSuggestionIdx,
         orgAddress: tx.to,
-        option: null,
+        option: 'gganbu',
         type: iType,
         targetAddress: null,
         targetTokenId: null,
