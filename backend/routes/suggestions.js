@@ -9,63 +9,40 @@ const hostURI = config.development.host_metadata;
 const utils = require('./utils');
 
 /*
- *  /gganbu
- *  모든 깐부 리스트
+ *  /suggestions
+ *  모든 제안 리스트
  *  optional:
- *  ?tab=recruit        <= 모집 중인
+ *  ?tab=in-progress   <= 투표 중인
  */
 router.get('/', async (req, res, next) => {
-  let whereOption = {type:'gganbu'};
+  let whereOption = {};
   if(req.params.tab) {
-    if(req.params.tab == 'recruit') {
-      whereOption.status = req.params.tab;
+    if(req.params.tab == 'in-progress') {
+      whereOption.status = 'in progress';
     }
   } 
 
   try {
     let result = [];
 
-    const qGGanbus = await GGanbu_wallets.findAll({
+    const qSuggestions = await Vote_suggestions.findAll({
       where: whereOption,
       order: [
         ['createdAt', 'DESC']
       ],
     });
-    result = qGGanbus.map(el => el.dataValues);
-    console.log(result);   
+    result = qSuggestions.map(el => el.dataValues);
+    
+    for (let i=0; i<result.length; i++) {
 
-    for (let i = 0; i < result.length; i++) {
-      
-      //members 정보
-      let qMembers = await GGanbu_members.findAll({
+      //깐부 정보
+      let qGGanbu = await GGanbu_wallets.findOne({
         where: {
-          gganbuAddress: result[i].gganbuAddress
+          gganbuAddress: result[i].orgAddress
         },
       });
-      result[i].members = qMembers;
-      /*
-      *suggestion 정보
-      */
-      result[i].hasSuggestion = false;
-      result[i].suggestions = null;
-      result[i].suggestion_history = [];
-
-      //NFT 정보 (NFT 의 collection, trade 정보 추가)
-      const qNFT = await NFTs.findOne({
-        where: {
-          contractAddress: result[i].nft_collectionAddress,
-          token_ids: result[i].nft_token_ids
-        }
-      });
-
-      let NFT = qNFT.dataValues;
-      NFT = await utils.addNftInfo(NFT);
-      result[i].asset = NFT;
-
-      //참여자 수, xx% 모집 완료
-      result[i].num_of_members = qMembers.length;
-      result[i].ratio_of_staking = result[i].balance / result[i].asset.trade_selling.price * 100;
-      result[i].ratio_of_staking = Math.round(result[i].ratio_of_staking * 100) / 100;
+      result[i].gganbu = qGGanbu.dataValues;
+      result[i].gganbu = await utils.addGGanbuInfo(result[i].gganbu);
     }
 
     res.json({ message: "ok", data: result });
