@@ -13,13 +13,17 @@ const utils = require('./utils');
  *  모든 깐부 리스트
  *  optional:
  *  ?tab=recruit        <= 모집 중인
- *  ?user=<address> <= 내 꺼만
+ *  ?user=<address>     <= 내 꺼만
+ *  ?tab=history        <= 종료된 내역
  */
 router.get('/', async (req, res, next) => {
   let whereOption = {type:'gganbu'};
-  if(req.params.tab) {
-    if(req.params.tab == 'recruit') {
+  if(req.query.tab) {
+    if(req.query.tab == 'recruit') {
       whereOption.status = req.params.tab;
+    } 
+    else if(req.query.tab == 'history') {
+      whereOption.isActive = false;
     }
   } 
 
