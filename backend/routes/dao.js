@@ -76,7 +76,7 @@ router.get('/', async (req, res, next) => {
 /*
  *  /dao
  *  DAO 지갑데이터 생성
- *  required: userAddress, gganbuAddress, name, description
+ *  required: userAddress, daoAddress, name, description
  *  optional: collectionAddress, token_ids
  */
 router.post('/', async (req, res, next) => {
@@ -92,7 +92,7 @@ router.post('/', async (req, res, next) => {
     //[required] balance
     const balance = await web3.eth.getBalance(req.body.daoAddress);
     const iBalance = web3.utils.fromWei(balance, 'ether');
-    const iRatio = 0;
+    let iRatio = 0;
     if(iBalance != 0) {
       iRatio = 100;
     }
@@ -101,6 +101,7 @@ router.post('/', async (req, res, next) => {
     const reqData = {
       type: 'dao',
       daoAddress: req.body.daoAddress,
+      name: req.body.name,
       description: req.body.description,
       balance: iBalance,
       isActive: true,
@@ -112,6 +113,8 @@ router.post('/', async (req, res, next) => {
       where: { daoAddress: req.body.daoAddress },
       defaults: reqData
     });
+    console.log(qWallets);
+    console.log(`지갑 생성 완료`);
 
     const memberData = {
       memberAddress: req.body.userAddress,
@@ -128,6 +131,8 @@ router.post('/', async (req, res, next) => {
       },
       defaults: memberData
     });
+    console.log(qWallets);
+    console.log(`사용자 생성 완료`);
 
     if (qWallets[1] === false || qMembers[1] === false) {
       if (qWallets[1] === false) {

@@ -1,6 +1,6 @@
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
-const { sequelize, NFTs, Collections, Trades, Rents, Users, GGanbu_wallets, GGanbu_members, Vote_suggestions, Vote_submits } = require('../models');
+const { sequelize, NFTs, Collections, Trades, Rents, Users, GGanbu_wallets, GGanbu_members, Vote_suggestions, Vote_submits, DAO_wallets, DAO_members } = require('../models');
 const { Op, QueryTypes } = require("sequelize");
 const config = require('../config/config');
 const hostURI = config.development.host_metadata;
@@ -210,15 +210,18 @@ const utils = {
           token_ids: gganbu.nft_token_ids
         }
       });
+
+
       let NFT = qNFT.dataValues;
       NFT = await utils.addNftInfo(NFT);
       
       gganbu.asset = NFT;
+      gganbu.ratio_of_staking = gganbu.balance / gganbu.asset.trade_selling.price * 100;
+      gganbu.ratio_of_staking = Math.round(gganbu.ratio_of_staking * 100) / 100;  
+
 
       //참여자 수, xx% 모집 완료
       gganbu.num_of_members = qMembers.length;
-      gganbu.ratio_of_staking = gganbu.balance / gganbu.asset.trade_selling.price * 100;
-      gganbu.ratio_of_staking = Math.round(gganbu.ratio_of_staking * 100) / 100;
 
       return gganbu;
     } 
@@ -228,15 +231,15 @@ const utils = {
     }
   },
   //dao instance 넣으면 정보 추가
-  addDaoInfo: async (gganbu) => {
+  addDaoInfo: async (dao) => {
     try {
       //members 정보
-      let qMembers = await GGanbu_members.findAll({
+      let qMembers = await DAO_members.findAll({
         where: {
-          gganbuAddress: gganbu.gganbuAddress
+          daoAddress: dao.daoAddress
         },
       });
-      gganbu.members = qMembers;
+      dao.members = qMembers;
       /*
       *suggestion 정보
       */
@@ -259,11 +262,95 @@ const utils = {
       // gganbu.asset = NFT;
 
       //참여자 수, xx% 모집 완료
-      gganbu.num_of_members = qMembers.length;
+      dao.num_of_members = qMembers.length;
       // gganbu.ratio_of_staking = gganbu.balance / gganbu.asset.trade_selling.price * 100;
       // gganbu.ratio_of_staking = Math.round(gganbu.ratio_of_staking * 100) / 100;
 
-      return gganbu;
+      return dao;
+    } 
+    catch (err) {
+      console.log(err)
+      return err;
+    }
+  },
+  //user address 넣으면 정보 추가
+  addUserInfo: async (address) => {
+    try {
+      const user = await Users.findOne({ where: { address: address } });
+  
+      if (!user) {
+        throw new Error("address가 일치하는 user가 없습니다");
+      }
+  
+      //유저가 보유한 collection
+      const myCollections = await Collections.findAll({
+        where: {
+          ownerAddress: address,
+          is_created: true
+        },
+        order: [
+          ['updatedAt', 'DESC']
+        ],
+      })
+  
+      let result = user.dataValues;
+  
+      //NFT 검색 옵션
+      let whereOption_NFT = {
+        ownerAddress: address,
+        is_minted: true
+      };
+  
+      //유저가 보유한 NFTs
+      const myNFTs = await NFTs.findAll({
+        where: whereOption_NFT,
+        order: [
+          ['updatedAt', 'DESC']
+        ],
+      });
+  
+      //유저가 보유한 rent NFTs
+      const myRents = await Rents.findAll({
+        where: { status: 'rent', renter: address },
+        order: [
+          ['updatedAt', 'DESC']
+        ],
+      });
+  
+      //컬랙션 수, 자산 수 추가
+      result.num_of_collections = myCollections.length;
+      result.num_of_assets = myNFTs.length;
+      result.num_of_rents = myRents.length;
+  
+      //컬랙션 리스트 추가
+      result.collections = [];
+      for (let i = 0; i < myCollections.length; i++) {
+        result.collections.push(myCollections[i].dataValues);
+      }
+      result.assets = myNFTs;
+      result.rents = myRents;
+
+      //유저가 가입한 깐부
+      const qMyMembers = await GGanbu_members.findAll({
+        where: {status:'active',memberAddress:address},
+        order: [
+          ['createdAt', 'DESC']
+        ],
+      });
+
+      //내가 참여하고 있는 GGanbu 들
+      result.gganbus = [];
+      for(let i=0;i<qMyMembers.length;i++) {
+        const qMyGGanbu = await GGanbu_wallets.findOne({
+          where: {isActive:true,gganbuAddress:qMyMembers[i].dataValues.gganbuAddress}
+        });
+        if(qMyGGanbu) {
+          test = await utils.addGGanbuInfo(qMyGGanbu);
+          result.gganbus.push(test);
+        }
+      }
+
+      return result;
     } 
     catch (err) {
       console.log(err)
