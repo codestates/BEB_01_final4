@@ -1,6 +1,6 @@
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
-const { Transactions, Collections, NFTs, Trades, Rents, GGanbu_wallets, GGanbu_members, Vote_suggestions, Vote_submits, sequelize } = require(".././models");
+const { Transactions, Collections, NFTs, Trades, Rents, sequelize } = require(".././models");
 const { Op, ConnectionTimedOutError } = require("sequelize");
 const fs = require('fs');
 const path = require("path");
@@ -25,10 +25,9 @@ const basePath = __dirname;
  */
   // ABI
   const abi = require("./MyERC721_ABI");
-  const coffer_abi = require("./CofferERC721_ABI");
 
   // 조회를 원하는 시작 블록 번호
-  //let startBlockNumber = 38; 
+  //let startBlockNumber = 0; 
   let startBlockNumber = Number(
     fs.readFileSync(path.join(basePath, '/blockNumber'), {
       encoding: 'utf-8',
@@ -39,7 +38,6 @@ const abiDecoder = require('abi-decoder'); // NodeJS
 //const { mainModule } = require('process');
 //const { default: cluster } = require('cluster');
 abiDecoder.addABI(abi);
-abiDecoder.addABI(coffer_abi);
 let curBlkNum = 0;
 
 let COUNT = {
@@ -49,12 +47,7 @@ let COUNT = {
   "cancel" : 0,
   "lend" : 0,
   "rent" : 0,
-  "returnNFT" : 0,
-  "suggestion_join" : 0,
-  "suggestion_sell" : 0,
-  "suggestion_buy" : 0,
-  "suggestion_lend" : 0,
-  "suggestion_rent" : 0,
+  "returnNFT" : 0,  
 };
 
 //트랜잭션 가져오기
@@ -467,85 +460,6 @@ const updateTrade = async (tx, MyCA, MyAbi, tradeCA, trade) => {
   }  
 }
 
-//트랜잭션 정보 받아서, 깐부 관련 정보는 DB에 적재
-const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
-  try {
-    const decodedData = abiDecoder.decodeMethod(tx.input);
-    tx.input_name = decodedData.name;
-
-    let txReceipt = await web3.eth.getTransactionReceipt(txID);
-    
-    // 만약 mintNFT 트랜잭션이라면
-    if(tx.input_name === 'requestJoin') {
-      decodedLogs = abiDecoder.decodeLogs(txReceipt.logs);
-      //console.log(decodedLogs[0].name); <= 'set_suggestion'
-
-      //데이터
-      let iSuggestionIdx;
-      let iType;
-      let iJoiner;
-      let iPrice;
-
-      //events
-      for(let i=0;i<decodedLogs[0].events.length;i++) {
-        let eventName = decodedLogs[0].events[i].name;
-        let eventValue = decodedLogs[0].events[i].value;
-        
-        if(eventName == '_suggestionIdx') {
-          iSuggestionIdx = eventValue;
-        } else if(eventName == '_target') {
-          iType = 'join';
-        } else if(eventName == '_type') {
-          //join 시 해당 값은 참여자 지갑주소
-          iJoiner = eventValue;
-        } else if(eventName == '_tokenId') {
-          //join 시 해당 값은 의미없음
-        } else if(eventName == '_price') {
-          iPrice = await web3.utils.fromWei(eventValue, "ether");
-        }
-      }
-
-      //insert data
-      const inputData = {
-        suggestion_idx: iSuggestionIdx,
-        orgAddress: tx.to,
-        option: null,
-        type: iType,
-        targetAddress: null,
-        targetTokenId: null,
-        targetPrice: null,
-        totalAccept: 0,
-        totalReject: 0,
-        totalAcceptRatio: 0,
-        totalRejectRatio: 0,
-        suggestedAt: new Date(),
-        status: 'in progress',
-        isValid: true,
-        joiner: iJoiner,
-        joiner_staking_value: iPrice
-      };
-
-      let result = await Vote_suggestions.findOrCreate({
-        where:{
-          suggestion_idx: iSuggestionIdx,
-          orgAddress: tx.to,
-        },
-        defaults:inputData
-      });
-
-      if(result[1] === true) {
-        console.log(`========== New suggestion(join) has been enrolled=======`);
-        console.log(result[0].dataValues);
-        COUNT.suggestion_join++;
-      }
-    }
-  }
-  catch(err) {
-    console.log(err);
-  }
-};
-
-
 //각 블록의 각 트랜을 순차적으로 조회하여 플랫폼과 관련있는 트랜 정보를 업데이트한다
 const main = async (MyAbi, START_BLOCK) => {
   try {
@@ -558,9 +472,6 @@ const main = async (MyAbi, START_BLOCK) => {
 
     //collection 리스트
     const collections = await Collections.findAll({where:{is_created:true}});
-    
-    //깐부 리스트
-    const gganbus = await GGanbu_wallets.findAll({where:{}});
     
     //selling trade 리스트
     const trades = await Trades.findAll({where:{status:'selling'}});
@@ -583,20 +494,6 @@ const main = async (MyAbi, START_BLOCK) => {
             defaults:tx
           });
           await updateNFTtoDB(tx, MyCA, MyAbi);
-        }
-      }
-
-      //깐부 지갑 별로 관련 tx 인지 검사
-      for(let j=0;j<gganbus.length;j++) {
-        let MyCA = gganbus[j].gganbuAddress;
-
-        if (tx.to === MyCA) {
-          //DB 업데이트
-          await Transactions.findOrCreate({
-            where:{hash:tx.hash},
-            defaults:tx
-          });
-          await updateGGanbuActivity(tx, arrTranIDs[i], MyCA, MyAbi);
         }
       }
 
@@ -636,11 +533,6 @@ const main = async (MyAbi, START_BLOCK) => {
     console.log(`# of lend enrollment : ${COUNT.lend}`);
     console.log(`# of rent            : ${COUNT.rent}`);
     console.log(`# of returnNFT       : ${COUNT.returnNFT}`);
-    console.log(`# of suggestion_join : ${COUNT.suggestion_join}`);
-    console.log(`# of suggestion_sell : ${COUNT.suggestion_sell}`);
-    console.log(`# of suggestion_buy  : ${COUNT.suggestion_buy}`);
-    console.log(`# of suggestion_lend : ${COUNT.suggestion_lend}`);
-    console.log(`# of suggestion_rent : ${COUNT.suggestion_rent}`);
 
     sequelize.close();
   }

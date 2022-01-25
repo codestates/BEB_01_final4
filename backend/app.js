@@ -11,6 +11,7 @@ const tradesRouter = require('./routes/trades');
 const rentsRouter = require('./routes/rents');
 const mainRouter = require('./routes/main');
 const gganbuRouter = require('./routes/gganbu');
+const suggestionsRouter = require('./routes/suggestions');
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use('/trades', tradesRouter);
 app.use('/rents', rentsRouter);
 app.use('/main', mainRouter);
 app.use('/gganbu', gganbuRouter);
+app.use('/suggestions', suggestionsRouter);
 
 app.get('/', (req, res) => {
     res.json(`${req.method}: ${req.url}`);
