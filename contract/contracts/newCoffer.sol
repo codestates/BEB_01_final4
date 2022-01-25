@@ -249,7 +249,7 @@ contract coffer is Ownable {
             //staking 하면서 들어옴
             require(_isReady, "Coffer: This coffer not have target");
             require(
-                msg.value < 0.01 ether,
+                msg.value >= 0.01 ether,
                 "Coffer: Not enough ether to staking"
             );
             _queue[msg.sender] = msg.value; //임시 staking
