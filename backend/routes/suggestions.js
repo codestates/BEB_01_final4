@@ -28,7 +28,6 @@ router.get('/', async (req, res, next) => {
     let result = [];
 
     if(req.query.user) {
-      console.log('왜 이거 안타지')
       //내가 참여하는 GGanbu 에 대해서만 qSuggestions 를 찾아야 한다.
       const qMyMembers = await GGanbu_members.findAll({
         where: {status:'active',memberAddress:req.query.user},
