@@ -44,10 +44,7 @@ abstract contract Ownable {
     }
 
 //owner 삭제
-    function delOwnership(address Owner) public virtual onlyOwner {
-        require(Owner != address(0), "Ownable: owner is the zero address");
-        _delOwnership(Owner);
-    }
+   
 
     function _delOwnership(address Owner) internal virtual {
         require(Owner != address(0), "Ownable: owner is the zero address");
