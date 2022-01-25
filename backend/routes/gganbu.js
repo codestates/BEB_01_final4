@@ -35,37 +35,7 @@ router.get('/', async (req, res, next) => {
     console.log(result);   
 
     for (let i = 0; i < result.length; i++) {
-      
-      //members 정보
-      let qMembers = await GGanbu_members.findAll({
-        where: {
-          gganbuAddress: result[i].gganbuAddress
-        },
-      });
-      result[i].members = qMembers;
-      /*
-      *suggestion 정보
-      */
-      result[i].hasSuggestion = false;
-      result[i].suggestions = null;
-      result[i].suggestion_history = [];
-
-      //NFT 정보 (NFT 의 collection, trade 정보 추가)
-      const qNFT = await NFTs.findOne({
-        where: {
-          contractAddress: result[i].nft_collectionAddress,
-          token_ids: result[i].nft_token_ids
-        }
-      });
-
-      let NFT = qNFT.dataValues;
-      NFT = await utils.addNftInfo(NFT);
-      result[i].asset = NFT;
-
-      //참여자 수, xx% 모집 완료
-      result[i].num_of_members = qMembers.length;
-      result[i].ratio_of_staking = result[i].balance / result[i].asset.trade_selling.price * 100;
-      result[i].ratio_of_staking = Math.round(result[i].ratio_of_staking * 100) / 100;
+      result[i] = await utils.addGGanbuInfo(result[i]);
     }
 
     res.json({ message: "ok", data: result });

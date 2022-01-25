@@ -34,6 +34,52 @@ router.get('/', async (req, res, next) => {
     result = qSuggestions.map(el => el.dataValues);
     
     for (let i=0; i<result.length; i++) {
+      //투표 정보
+      let qMembers = await GGanbu_members.findAll({
+        where: {
+          gganbuAddress: result[i].orgAddress,
+          status: 'active'
+        }
+      })
+      
+      result[i].num_of_vote_members = qMembers.length;
+      result[i].num_of_vote_submit = 0;
+      result[i].num_of_vote_accept = 0;
+      result[i].num_of_vote_reject = 0;
+      result[i].vote_info = [];
+
+      
+      for(let j=0;j<qMembers.length;j++) {
+        let voters = qMembers[j].dataValues;
+        
+        let qVote = await Vote_submits.findOne({
+          where: {
+            suggestion_id: result[i].id,
+            memberAddress: voters.memberAddress
+          }
+        });
+
+        if(qVote) {
+          voters.vote_status = 'submitted'
+          voters.vote_result = qVote.vote;
+          voters.vote_submittedAt = qVote.createdAt;
+          result[i].num_of_vote_submit++;
+
+          if(voters.vote_result == false) {
+            result[i].num_of_vote_reject++;
+          }
+          else {
+            result[i].num_of_vote_accept++;
+          }
+        } 
+        else {
+          voters.vote_status = 'not submitted'
+          voters.vote_result = null,
+          voters.vote_submittedAt = null;
+        }
+        result[i].vote_info.push(voters);
+      }
+         
 
       //깐부 정보
       let qGGanbu = await GGanbu_wallets.findOne({
