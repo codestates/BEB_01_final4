@@ -149,7 +149,11 @@ contract GGanbuCollection is ERC721URIStorage, Ownable {
         (bool checkSendCompany, ) = payable(company).call{value: fee}(""); //회사에 수수료 납부
         require(checkSendCompany, "Collection: Send trade fee fail");
 
-        (bool checkSend, ) = payable(ownerOf(tokenId)).call{value:balance }(""); //from에게 금액 전송
+        (bool checkSend, ) = payable(ownerOf(tokenId)).call{value:balance }(abi.encodeWithSignature(
+                "allocate(address,uint256)",
+                address(this),
+                tokenId
+            )); //from에게 금액 전송
         require(checkSend, "Collection: Trande send Eth fail");
 
         (bool check, ) = address(this).call(
@@ -169,7 +173,11 @@ contract GGanbuCollection is ERC721URIStorage, Ownable {
     function _setRented(uint256 tokenId) internal {
         require(isRental[tokenId],"Collection: This nft is not on rental");
 
-        (bool checkSend, ) = payable(ownerOf(tokenId)).call{value:price[tokenId] }(""); //from에게 금액 전송
+        (bool checkSend, ) = payable(ownerOf(tokenId)).call{value:price[tokenId] }(abi.encodeWithSignature(
+                "allocate(address,uint256)",
+                address(this),
+                tokenId
+            )); //from에게 금액 전송
         require(checkSend, "Collection: Trande send Eth fail");
 
         rental[tokenId] = msg.sender;
