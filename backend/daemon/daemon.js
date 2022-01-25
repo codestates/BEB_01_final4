@@ -28,7 +28,7 @@ const basePath = __dirname;
   const coffer_abi = require("./CofferERC721_ABI");
 
   // 조회를 원하는 시작 블록 번호
-  //let startBlockNumber = 38; 
+  //let startBlockNumber = 46; 
   let startBlockNumber = Number(
     fs.readFileSync(path.join(basePath, '/blockNumber'), {
       encoding: 'utf-8',
@@ -490,14 +490,16 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
       for(let i=0;i<decodedLogs[0].events.length;i++) {
         let eventName = decodedLogs[0].events[i].name;
         let eventValue = decodedLogs[0].events[i].value;
-        
+        console.log(eventName);
+        console.log(eventValue);
+
         if(eventName == '_suggestionIdx') {
           iSuggestionIdx = eventValue;
         } else if(eventName == '_target') {
-          iType = 'join';
-        } else if(eventName == '_type') {
           //join 시 해당 값은 참여자 지갑주소
           iJoiner = eventValue;
+        } else if(eventName == '_type') {
+          iType = 'join';
         } else if(eventName == '_tokenId') {
           //join 시 해당 값은 의미없음
         } else if(eventName == '_price') {

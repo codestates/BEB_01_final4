@@ -11,7 +11,7 @@ module.exports = {
       memberAddress: {
         type: Sequelize.STRING
       },
-      gganbuAddress: {
+      daoAddress: {
         type: Sequelize.STRING
       },
       staking_value: {
