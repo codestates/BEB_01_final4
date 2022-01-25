@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   DAO_members.init({
     memberAddress: DataTypes.STRING,
-    gganbuAddress: DataTypes.STRING,
+    daoAddress: DataTypes.STRING,
     staking_value: DataTypes.FLOAT,
     staking_ratio: DataTypes.FLOAT,
     my_rewards: DataTypes.FLOAT,
