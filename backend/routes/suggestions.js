@@ -13,25 +13,56 @@ const utils = require('./utils');
  *  모든 제안 리스트
  *  optional:
  *  ?tab=in-progress   <= 투표 중인
+ *  ?user=<address> <= 내 꺼만
  */
 router.get('/', async (req, res, next) => {
   let whereOption = {};
-  if(req.params.tab) {
-    if(req.params.tab == 'in-progress') {
+  //0x3a6a5D954f8480e430D09937B0c40cbeAbfC78d4
+  if(req.query.tab) {
+    if(req.query.tab == 'in-progress') {
       whereOption.status = 'in progress';
     }
-  } 
+  }
 
   try {
     let result = [];
 
-    const qSuggestions = await Vote_suggestions.findAll({
-      where: whereOption,
-      order: [
-        ['createdAt', 'DESC']
-      ],
-    });
-    result = qSuggestions.map(el => el.dataValues);
+    if(req.query.user) {
+      console.log('왜 이거 안타지')
+      //내가 참여하는 GGanbu 에 대해서만 qSuggestions 를 찾아야 한다.
+      const qMyMembers = await GGanbu_members.findAll({
+        where: {status:'active',memberAddress:req.query.user},
+        order: [
+          ['createdAt', 'DESC']
+        ],
+      });
+
+      //내가 참여하고 있는 GGanbu 들
+      for(let i=0;i<qMyMembers.length;i++) {
+        const qMyGGanbus = await GGanbu_wallets.findOne({
+          where: {isActive:true,gganbuAddress:qMyMembers[i].dataValues.gganbuAddress}
+        });
+
+        const qSuggestions = await Vote_suggestions.findAll({
+          where: whereOption,
+          order: [
+            ['createdAt', 'DESC']
+          ],
+        });
+        
+        for(let j=0;j<qSuggestions.length;j++) {
+          result.push(qSuggestions[j].dataValues);
+        }
+      }
+    } else {
+      const qSuggestions = await Vote_suggestions.findAll({
+        where: whereOption,
+        order: [
+          ['createdAt', 'DESC']
+        ],
+      });
+      result = qSuggestions.map(el => el.dataValues);
+    }
     
     for (let i=0; i<result.length; i++) {
       //투표 정보
