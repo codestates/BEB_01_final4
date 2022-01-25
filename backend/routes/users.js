@@ -1,8 +1,9 @@
 const express = require('express');
-const { Users, Collections, NFTs, Trades, Rents } = require('../models');
+const { Users, Collections, NFTs, Trades, Rents, GGanbu_wallets, GGanbu_members, Vote_suggestions, Vote_submits } = require('../models');
 const { Op } = require("sequelize");
 const collections = require('../models/collections');
 const router = express.Router();
+const utils = require('./utils');
 
 //trade instance 넣으면 colection / asset 정보 추가해 줌
 const addTradeInfo = async (trade) => {
@@ -522,7 +523,7 @@ router.post('/', async (req, res, next) => { // User: address, imageURL, name, e
       console.log(err);
       res.json({ message: "false" });
     })
-
 })
+
 
 module.exports = router;
