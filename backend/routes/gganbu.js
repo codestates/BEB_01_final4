@@ -13,25 +13,29 @@ const utils = require('./utils');
  *  모든 깐부 리스트
  *  optional:
  *  ?tab=recruit        <= 모집 중인
- *  ?user=<address>     <= 내 꺼만
+ *  ?user=<address>     <= 내가 참여 중인
+ *  ?tab=own            <= 타겟을 구매한 상태
  *  ?tab=history        <= 종료된 내역
  */
 router.get('/', async (req, res, next) => {
   let whereOption = {type:'gganbu'};
   if(req.query.tab) {
     if(req.query.tab == 'recruit') {
-      whereOption.status = req.params.tab;
-    } 
+      whereOption.status = req.query.tab;
+    }
+    else if(req.query.tab == 'own') {
+      whereOption.status = req.query.tab;
+    }
     else if(req.query.tab == 'history') {
       whereOption.isActive = false;
     }
-  } 
+  }
 
   try {
     let result = [];
 
     if(req.query.user) {
-      //내가 참여하는 GGanbu 에 대해서만 qSuggestions 를 찾아야 한다.
+      //내가 참여하는 GGanbu
       const qMyMembers = await GGanbu_members.findAll({
         where: {status:'active',memberAddress:req.query.user},
         order: [
@@ -39,13 +43,18 @@ router.get('/', async (req, res, next) => {
         ],
       });
 
-      //내가 참여하고 있는 GGanbu 들
+      //내가 참여하고 있는 GGanbu 들 정보
       for(let i=0;i<qMyMembers.length;i++) {
+        if(req.query.user) {
+          whereOption.gganbuAddress = qMyMembers[i].dataValues.gganbuAddress;
+        }
+
         const qMyGGanbus = await GGanbu_wallets.findOne({
-          where: {isActive:true,gganbuAddress:qMyMembers[i].dataValues.gganbuAddress}
+          where: whereOption,
         });
-        
-        result.push(qMyGGanbus.dataValues);
+        if(qMyGGanbus) {
+          result.push(qMyGGanbus.dataValues);
+        }
       }
     } else {
       const qGGanbus = await GGanbu_wallets.findAll({
