@@ -639,7 +639,7 @@ contract coffer is Ownable {
         );
         require(option == 1 || option == 2, "Coffer: Invalid option");
         require(_nfts[listIdx].option != 2, "Coffer: Can not trade rental nft"); //대여중인 nft는 거래 x
-        _nfts[listIdx].price = price; //재 설정한 가격으로 변경
+        //_nfts[listIdx].price = price; //재 설정한 가격으로 변경
         address tradeTarget = _nfts[listIdx].info.collection;
         uint256 tradeId = _nfts[listIdx].info.tokenId;
         if (option == 1) {
