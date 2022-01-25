@@ -231,15 +231,15 @@ const utils = {
     }
   },
   //dao instance 넣으면 정보 추가
-  addDaoInfo: async (gganbu) => {
+  addDaoInfo: async (dao) => {
     try {
       //members 정보
-      let qMembers = await GGanbu_members.findAll({
+      let qMembers = await DAO_members.findAll({
         where: {
-          gganbuAddress: gganbu.gganbuAddress
+          daoAddress: dao.daoAddress
         },
       });
-      gganbu.members = qMembers;
+      dao.members = qMembers;
       /*
       *suggestion 정보
       */
@@ -262,11 +262,11 @@ const utils = {
       // gganbu.asset = NFT;
 
       //참여자 수, xx% 모집 완료
-      gganbu.num_of_members = qMembers.length;
+      dao.num_of_members = qMembers.length;
       // gganbu.ratio_of_staking = gganbu.balance / gganbu.asset.trade_selling.price * 100;
       // gganbu.ratio_of_staking = Math.round(gganbu.ratio_of_staking * 100) / 100;
 
-      return gganbu;
+      return dao;
     } 
     catch (err) {
       console.log(err)

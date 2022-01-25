@@ -92,7 +92,7 @@ router.post('/', async (req, res, next) => {
     //[required] balance
     const balance = await web3.eth.getBalance(req.body.daoAddress);
     const iBalance = web3.utils.fromWei(balance, 'ether');
-    const iRatio = 0;
+    let iRatio = 0;
     if(iBalance != 0) {
       iRatio = 100;
     }
@@ -101,6 +101,7 @@ router.post('/', async (req, res, next) => {
     const reqData = {
       type: 'dao',
       daoAddress: req.body.daoAddress,
+      name: req.body.name,
       description: req.body.description,
       balance: iBalance,
       isActive: true,
