@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('GGanbu_wallets', {
+    await queryInterface.createTable('DAO_wallets', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,14 +11,11 @@ module.exports = {
       type: {
         type: Sequelize.STRING
       },
-      gganbuAddress: {
+      name: {
         type: Sequelize.STRING
       },
-      nft_collectionAddress: {
+      daoAddress: {
         type: Sequelize.STRING
-      },
-      nft_token_ids: {
-        type: Sequelize.INTEGER
       },
       balance: {
         type: Sequelize.FLOAT
@@ -46,6 +43,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('GGanbu_wallets');
+    await queryInterface.dropTable('DAO_wallets');
   }
 };
