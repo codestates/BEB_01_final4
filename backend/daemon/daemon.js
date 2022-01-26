@@ -28,11 +28,11 @@ const basePath = __dirname;
   const coffer_abi = require("./CofferERC721_ABI");
 
   // 조회를 원하는 시작 블록 번호
-  let startBlockNumber = 52; 
-  // let startBlockNumber = Number(
-  //   fs.readFileSync(path.join(basePath, '/blockNumber'), {
-  //     encoding: 'utf-8',
-  //   }),) + 1;
+  //let startBlockNumber = 52; 
+  let startBlockNumber = Number(
+    fs.readFileSync(path.join(basePath, '/blockNumber'), {
+      encoding: 'utf-8',
+    }),) + 1;
 /*=======================================================*/
 
 const abiDecoder = require('abi-decoder'); // NodeJS
