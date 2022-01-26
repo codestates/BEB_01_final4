@@ -79,6 +79,7 @@ contract coffer is Ownable {
     event reject(uint8 _type, uint256 indexed _idx);
     event sellNftStake(uint256 indexed _idx, uint256 price, address _owner);
     event buyNftStake(uint256 indexed _idx, uint256 price, address _owner);
+   
 
     //event end//
     constructor(
@@ -87,7 +88,7 @@ contract coffer is Ownable {
         uint256 _price,
         uint8 _option
     ) payable {
-        _addOwnership(address(this)); //wallet 자기자신이 wallet의 ower이다.
+       // _addOwnership(address(this)); //wallet 자기자신이 wallet의 ower이다.
         //multiOwner에서 msg.sender은 자동으로 owner 등록
         if (
             _collection != address(0x0) &&
@@ -115,9 +116,28 @@ contract coffer is Ownable {
     }
 
     //public getter function
+    function getTargetBalance() public view returns(uint256){
+        return _targetBalance;
+    }
+
+    function getTempStaking(address _id)public view returns(uint256){
+        return _queue[_id];
+    }
+
+
+    function getTarget()public view returns(address,uint256,uint256,address[] memory){
+        return (_targetNft.info.collection,_targetNft.info.tokenId,_targetNft.price * ( 1 ether ),_targetNft.joinAddr);
+    }
+    function getIsReady()public view returns(bool){
+        return _isReady;
+    }
+
+    function getBalance() public view returns(uint256){
+        return address(this).balance;
+    }
 
     function getStateOfSuggestion(uint256 _idx) public view returns (uint8) {
-        if (_suggestion[_idx].date + 1 days > block.timestamp) {
+        if (_suggestion[_idx].date + 1 days < block.timestamp) {
             return 1; //reject
         }
         return _suggestion[_idx].state;
@@ -129,16 +149,6 @@ contract coffer is Ownable {
         returns (uint256)
     {
         return _nfts[_idx].stake[_target];
-    }
-
-    function getSuggestionState(uint256 _idx)
-        public
-        view
-        onlyOwner
-        returns (uint8)
-    {
-        return _suggestion[_idx].state;
-        //1: reject 2: wait 3:pass
     }
 
     function getOwnersOfNFT(uint256 _idx)
@@ -173,7 +183,7 @@ contract coffer is Ownable {
     function allocate(address _collection, uint256 _tokenId) public payable {
         require(
             _allocateNft[_collection][_tokenId] != 0,
-            "Coffer: This nft not on trade"
+            "Coffer: Not on trade"
         );
         uint256 _idx = _allocateNft[_collection][_tokenId];
         uint256 profit = msg.value;
@@ -189,7 +199,7 @@ contract coffer is Ownable {
                 (percentage * 100),
                 profit
             );
-            require(profitCheck, "Coffer: Allocate profit fail");
+            require(profitCheck, "Coffer: Profit fail");
             _stake[_nfts[_idx].joinAddr[i]] += profitPerMember;
             _totalBalance[_nfts[_idx].joinAddr[i]] += profitPerMember;
         }
@@ -204,19 +214,14 @@ contract coffer is Ownable {
     //지분 판매 등록
     function sellStakeOFNFT(uint256 _idx, uint256 _price) public onlyOwner {
         require(
-            _nfts[_idx].info.collection != address(0x0),
+            _nfts[_idx].info.collection != address(0x0)
+            &&_nfts[_idx].info.tokenId != 0
+            &&_price != 0
+            &&_nfts[_idx].stake[msg.sender] != 0
+            &&_nfts[_idx].stake[msg.sender] >= _price,
             "Coffer: Invalid collection address"
         );
-        require(_nfts[_idx].info.tokenId != 0, "Coffer: Invalid tokenId");
-        require(_price != 0, "Coffer: Price can not 0");
-        require(
-            _nfts[_idx].stake[msg.sender] != 0,
-            "Coffer: This address not have stake of target nft"
-        );
-        require(
-            _nfts[_idx].stake[msg.sender] >= _price,
-            "Coffer: Can not sell over stake"
-        );
+        
         _sellNftStake[_idx][msg.sender] = _price;
         emit sellNftStake(_idx, _price, msg.sender);
     }
@@ -307,10 +312,10 @@ contract coffer is Ownable {
     ) public onlyOwner {
         if (_type == 1 || _type == 2) {
             require(
-                _nfts[_idx].info.collection != address(0x0),
+                _nfts[_idx].info.collection != address(0x0) && _nfts[_idx].info.tokenId != 0,
                 "Coffer: Invalid collection address"
             );
-            require(_nfts[_idx].info.tokenId != 0, "Coffer: Invalid tokenId");
+           
             _setSuggestion(
                 _type,
                 _nfts[_idx].info.collection,
@@ -320,10 +325,10 @@ contract coffer is Ownable {
             );
         } else if (_type == 3 || _type == 4 || _type == 5 || _type == 6) {
             require(
-                _collection != address(0x0),
+                _collection != address(0x0) && _tokenId != 0,
                 "Coffer: Invalid collection address"
             );
-            require(_tokenId != 0, "Coffer: Invalid tokenId");
+           
             _setSuggestion(_type, _collection, _tokenId, _price, _idx);
         } else {
             require(false, "Coffer: Invalid type");
@@ -370,22 +375,22 @@ contract coffer is Ownable {
         _totalBalance[targetAddr] += _bal;
         (bool _check, uint256 overBalance) = SafeMath.trySub(
             (_targetBalance + _bal),
-            _targetNft.price
+            _targetNft.price * ( 1 ether )
         );
 
         if (!_check) {
-            overBalance = _bal;
+            overBalance = 0;
         }
 
         //target에 정보 등록
 
         _targetNft.stake[targetAddr] += overBalance; //퍼센트로 관리
         _targetNft.joinAddr.push(targetAddr);
-        _targetBalance += overBalance;
+        _targetBalance += (_bal - overBalance);
 
         _queue[targetAddr] = 0; //초기화
 
-        if (_targetBalance == _targetNft.price) {
+        if (_targetBalance == _targetNft.price * ( 1 ether )) {
             //구매 진행
             _payment();
         }
@@ -404,7 +409,7 @@ contract coffer is Ownable {
 
         if (targetDate + 1 days < block.timestamp) {
             //reject
-            targetState = 1;
+            _suggestion[_idx].state = 1;
             emit reject(targetType, _idx);
         } else {
             uint256 _voteNum;
@@ -420,8 +425,7 @@ contract coffer is Ownable {
                 targetAgree += _voteNum;
                 if (targetAgree >= 2 * _base + 1) {
                     //pass
-                    targetState = 3;
-
+                    _suggestion[_idx].state = 3;
                     if (targetType == 0) {
                         if (_isReady && _queue[targetAddr] != 0) {
                             staking(targetAddr);
@@ -488,7 +492,7 @@ contract coffer is Ownable {
                 targetDisagree += _voteNum;
                 if (targetDisagree >= _base) {
                     //reject
-                    targetState = 1;
+                    _suggestion[_idx].state = 1;
 
                     if (targetType == 0) {
                         //join
@@ -541,7 +545,7 @@ contract coffer is Ownable {
     function _payment() internal onlyOwner {
         require(_totalStake >= _targetNft.price, "Coffer: Not enough ether");
         (bool check, ) = payable(_targetNft.info.collection).call{
-            value: _targetNft.price
+            value: _targetNft.price * (1 ether)
         }(
             abi.encodeWithSignature(
                 "payment(uint256,uint256)",
