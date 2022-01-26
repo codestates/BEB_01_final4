@@ -11,13 +11,15 @@ const Joined = () => {
   const [name, setName] = useInputState("");
   const [description, setDescription] = useInputState("");
 
-  const getMyDAO = async () => {
-    await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/dao`, { withCredentials: true });
-  };
+  // const getMyDAO = async () => {
+  //   if (account) {
+  //     await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/dao?user=${account}`, { withCredentials: true });
+  //   }
+  // };
 
-  useEffect(() => {
-    getMyDAO();
-  }, []);
+  // useEffect(() => {
+  //   getMyDAO();
+  // }, [account]);
 
   const handleCreateDAO = async () => {
     // console.log(name);
