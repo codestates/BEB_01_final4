@@ -1,596 +1,676 @@
 const abi = [
 	{
-		inputs: [
+		"inputs": [
 			{
-				internalType: "address",
-				name: "_collection",
-				type: "address",
-			},
-			{
-				internalType: "uint256",
-				name: "_tokenId",
-				type: "uint256",
-			},
-			{
-				internalType: "uint256",
-				name: "_price",
-				type: "uint256",
-			},
-			{
-				internalType: "uint8",
-				name: "_option",
-				type: "uint8",
-			},
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
 		],
-		stateMutability: "payable",
-		type: "constructor",
+		"name": "addOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
-		anonymous: false,
-		inputs: [
+		"inputs": [
 			{
-				indexed: true,
-				internalType: "address",
-				name: "Owner",
-				type: "address",
+				"internalType": "address",
+				"name": "_collection",
+				"type": "address"
 			},
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			}
 		],
-		name: "OwnershipAdd",
-		type: "event",
+		"name": "allocate",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
 	},
 	{
-		anonymous: false,
-		inputs: [
+		"inputs": [
 			{
-				indexed: true,
-				internalType: "address",
-				name: "Owner",
-				type: "address",
+				"internalType": "uint256",
+				"name": "_idx",
+				"type": "uint256"
 			},
+			{
+				"internalType": "address",
+				"name": "_owner",
+				"type": "address"
+			}
 		],
-		name: "OwnershipDel",
-		type: "event",
+		"name": "buyStakeOfNFT",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
 	},
 	{
-		anonymous: false,
-		inputs: [
+		"inputs": [
 			{
-				indexed: true,
-				internalType: "uint256",
-				name: "_idx",
-				type: "uint256",
-			},
-			{
-				indexed: false,
-				internalType: "uint256",
-				name: "price",
-				type: "uint256",
-			},
-			{
-				indexed: false,
-				internalType: "address",
-				name: "_owner",
-				type: "address",
-			},
+				"internalType": "address",
+				"name": "Owner",
+				"type": "address"
+			}
 		],
-		name: "buyNftStake",
-		type: "event",
+		"name": "delOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
-		anonymous: false,
-		inputs: [
+		"inputs": [
 			{
-				indexed: false,
-				internalType: "uint8",
-				name: "_type",
-				type: "uint8",
+				"internalType": "address",
+				"name": "_collection",
+				"type": "address"
 			},
 			{
-				indexed: true,
-				internalType: "uint256",
-				name: "_idx",
-				type: "uint256",
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
 			},
+			{
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint8",
+				"name": "_option",
+				"type": "uint8"
+			}
 		],
-		name: "pass",
-		type: "event",
+		"stateMutability": "payable",
+		"type": "constructor"
 	},
 	{
-		anonymous: false,
-		inputs: [
+		"anonymous": false,
+		"inputs": [
 			{
-				indexed: true,
-				internalType: "address",
-				name: "_collection",
-				type: "address",
-			},
-			{
-				indexed: false,
-				internalType: "uint256",
-				name: "_tokenId",
-				type: "uint256",
-			},
-			{
-				indexed: false,
-				internalType: "uint256",
-				name: "_price",
-				type: "uint256",
-			},
-			{
-				indexed: false,
-				internalType: "uint8",
-				name: "_option",
-				type: "uint8",
-			},
+				"indexed": true,
+				"internalType": "address",
+				"name": "Owner",
+				"type": "address"
+			}
 		],
-		name: "payment",
-		type: "event",
+		"name": "OwnershipAdd",
+		"type": "event"
 	},
 	{
-		anonymous: false,
-		inputs: [
+		"anonymous": false,
+		"inputs": [
 			{
-				indexed: false,
-				internalType: "uint8",
-				name: "_type",
-				type: "uint8",
-			},
-			{
-				indexed: true,
-				internalType: "uint256",
-				name: "_idx",
-				type: "uint256",
-			},
+				"indexed": true,
+				"internalType": "address",
+				"name": "Owner",
+				"type": "address"
+			}
 		],
-		name: "reject",
-		type: "event",
+		"name": "OwnershipDel",
+		"type": "event"
 	},
 	{
-		anonymous: false,
-		inputs: [
+		"anonymous": false,
+		"inputs": [
 			{
-				indexed: true,
-				internalType: "uint256",
-				name: "_idx",
-				type: "uint256",
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "_idx",
+				"type": "uint256"
 			},
 			{
-				indexed: false,
-				internalType: "uint256",
-				name: "price",
-				type: "uint256",
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
 			},
 			{
-				indexed: false,
-				internalType: "address",
-				name: "_owner",
-				type: "address",
-			},
+				"indexed": false,
+				"internalType": "address",
+				"name": "_owner",
+				"type": "address"
+			}
 		],
-		name: "sellNftStake",
-		type: "event",
+		"name": "buyNftStake",
+		"type": "event"
 	},
 	{
-		anonymous: false,
-		inputs: [
+		"anonymous": false,
+		"inputs": [
 			{
-				indexed: true,
-				internalType: "uint256",
-				name: "_suggestionIdx",
-				type: "uint256",
+				"indexed": false,
+				"internalType": "uint8",
+				"name": "_type",
+				"type": "uint8"
 			},
 			{
-				indexed: false,
-				internalType: "uint8",
-				name: "_type",
-				type: "uint8",
-			},
-			{
-				indexed: false,
-				internalType: "address",
-				name: "_target",
-				type: "address",
-			},
-			{
-				indexed: false,
-				internalType: "uint256",
-				name: "_tokenId",
-				type: "uint256",
-			},
-			{
-				indexed: false,
-				internalType: "uint256",
-				name: "_price",
-				type: "uint256",
-			},
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "_idx",
+				"type": "uint256"
+			}
 		],
-		name: "set_suggestion",
-		type: "event",
+		"name": "pass",
+		"type": "event"
 	},
 	{
-		anonymous: false,
-		inputs: [
+		"inputs": [
 			{
-				indexed: true,
-				internalType: "address",
-				name: "_collection",
-				type: "address",
-			},
-			{
-				indexed: false,
-				internalType: "uint256",
-				name: "_tokenId",
-				type: "uint256",
-			},
-			{
-				indexed: false,
-				internalType: "uint256",
-				name: "_price",
-				type: "uint256",
-			},
-			{
-				indexed: false,
-				internalType: "uint8",
-				name: "_option",
-				type: "uint8",
-			},
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			}
 		],
-		name: "set_target",
-		type: "event",
+		"name": "payback",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
 	},
 	{
-		anonymous: false,
-		inputs: [
+		"anonymous": false,
+		"inputs": [
 			{
-				indexed: true,
-				internalType: "uint256",
-				name: "listIdx",
-				type: "uint256",
+				"indexed": true,
+				"internalType": "address",
+				"name": "_collection",
+				"type": "address"
 			},
 			{
-				indexed: false,
-				internalType: "uint256",
-				name: "price",
-				type: "uint256",
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
 			},
 			{
-				indexed: false,
-				internalType: "uint256",
-				name: "option",
-				type: "uint256",
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
 			},
+			{
+				"indexed": false,
+				"internalType": "uint8",
+				"name": "_option",
+				"type": "uint8"
+			}
 		],
-		name: "set_trade",
-		type: "event",
+		"name": "payment",
+		"type": "event"
 	},
 	{
-		inputs: [
+		"anonymous": false,
+		"inputs": [
 			{
-				internalType: "address",
-				name: "newOwner",
-				type: "address",
+				"indexed": false,
+				"internalType": "uint8",
+				"name": "_type",
+				"type": "uint8"
 			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "_idx",
+				"type": "uint256"
+			}
 		],
-		name: "addOwnership",
-		outputs: [],
-		stateMutability: "nonpayable",
-		type: "function",
+		"name": "reject",
+		"type": "event"
 	},
 	{
-		inputs: [],
-		name: "getTotal",
-		outputs: [
+		"inputs": [
 			{
-				internalType: "uint256",
-				name: "",
-				type: "uint256",
-			},
+				"internalType": "uint8",
+				"name": "_option",
+				"type": "uint8"
+			}
 		],
-		stateMutability: "view",
-		type: "function",
+		"name": "requestJoin",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
 	},
 	{
-		inputs: [
+		"inputs": [
 			{
-				internalType: "address",
-				name: "target",
-				type: "address",
+				"internalType": "uint8",
+				"name": "_type",
+				"type": "uint8"
 			},
-		],
-		name: "isOwner",
-		outputs: [
 			{
-				internalType: "bool",
-				name: "",
-				type: "bool",
+				"internalType": "uint256",
+				"name": "_idx",
+				"type": "uint256"
 			},
+			{
+				"internalType": "address",
+				"name": "_collection",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			}
 		],
-		stateMutability: "view",
-		type: "function",
+		"name": "requestTrade",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
-		stateMutability: "payable",
-		type: "receive",
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "_idx",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "_owner",
+				"type": "address"
+			}
+		],
+		"name": "sellNftStake",
+		"type": "event"
 	},
 	{
-		inputs: [
+		"inputs": [
 			{
-				internalType: "uint256",
-				name: "_idx",
-				type: "uint256",
+				"internalType": "uint256",
+				"name": "_idx",
+				"type": "uint256"
 			},
-		],
-		name: "getStateOfSuggestion",
-		outputs: [
 			{
-				internalType: "uint8",
-				name: "",
-				type: "uint8",
-			},
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			}
 		],
-		stateMutability: "view",
-		type: "function",
+		"name": "sellStakeOFNFT",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
-		inputs: [
+		"anonymous": false,
+		"inputs": [
 			{
-				internalType: "uint256",
-				name: "_idx",
-				type: "uint256",
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "_suggestionIdx",
+				"type": "uint256"
 			},
 			{
-				internalType: "address",
-				name: "_target",
-				type: "address",
+				"indexed": false,
+				"internalType": "uint8",
+				"name": "_type",
+				"type": "uint8"
 			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "_target",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			}
 		],
-		name: "getStakeFromNFT",
-		outputs: [
-			{
-				internalType: "uint256",
-				name: "",
-				type: "uint256",
-			},
-		],
-		stateMutability: "view",
-		type: "function",
+		"name": "set_suggestion",
+		"type": "event"
 	},
 	{
-		inputs: [
+		"anonymous": false,
+		"inputs": [
 			{
-				internalType: "uint256",
-				name: "_idx",
-				type: "uint256",
+				"indexed": true,
+				"internalType": "address",
+				"name": "_collection",
+				"type": "address"
 			},
-		],
-		name: "getSuggestionState",
-		outputs: [
 			{
-				internalType: "uint8",
-				name: "",
-				type: "uint8",
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
 			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint8",
+				"name": "_option",
+				"type": "uint8"
+			}
 		],
-		stateMutability: "view",
-		type: "function",
+		"name": "set_target",
+		"type": "event"
 	},
 	{
-		inputs: [
+		"anonymous": false,
+		"inputs": [
 			{
-				internalType: "uint256",
-				name: "_idx",
-				type: "uint256",
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "listIdx",
+				"type": "uint256"
 			},
-		],
-		name: "getOwnersOfNFT",
-		outputs: [
 			{
-				internalType: "address[]",
-				name: "",
-				type: "address[]",
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
 			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "option",
+				"type": "uint256"
+			}
 		],
-		stateMutability: "view",
-		type: "function",
+		"name": "set_trade",
+		"type": "event"
 	},
 	{
-		inputs: [
+		"inputs": [
 			{
-				internalType: "uint256",
-				name: "_idx",
-				type: "uint256",
-			},
-			{
-				internalType: "address",
-				name: "_owner",
-				type: "address",
-			},
+				"internalType": "address",
+				"name": "targetAddr",
+				"type": "address"
+			}
 		],
-		name: "isOnSale",
-		outputs: [
-			{
-				internalType: "bool",
-				name: "",
-				type: "bool",
-			},
-		],
-		stateMutability: "view",
-		type: "function",
+		"name": "staking",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
 	},
 	{
-		inputs: [],
-		name: "withdraw",
-		outputs: [],
-		stateMutability: "nonpayable",
-		type: "function",
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_collection",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
+			}
+		],
+		"name": "transferNft",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
-		inputs: [
+		"inputs": [
 			{
-				internalType: "address",
-				name: "_collection",
-				type: "address",
+				"internalType": "uint256",
+				"name": "_idx",
+				"type": "uint256"
 			},
 			{
-				internalType: "uint256",
-				name: "_tokenId",
-				type: "uint256",
-			},
+				"internalType": "bool",
+				"name": "_vote",
+				"type": "bool"
+			}
 		],
-		name: "allocate",
-		outputs: [],
-		stateMutability: "payable",
-		type: "function",
+		"name": "vote",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
 	},
 	{
-		inputs: [
-			{
-				internalType: "uint256",
-				name: "_idx",
-				type: "uint256",
-			},
-			{
-				internalType: "uint256",
-				name: "_price",
-				type: "uint256",
-			},
-		],
-		name: "sellStakeOFNFT",
-		outputs: [],
-		stateMutability: "nonpayable",
-		type: "function",
+		"inputs": [],
+		"name": "withdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
-		inputs: [
-			{
-				internalType: "uint256",
-				name: "_idx",
-				type: "uint256",
-			},
-			{
-				internalType: "address",
-				name: "_owner",
-				type: "address",
-			},
-		],
-		name: "buyStakeOfNFT",
-		outputs: [],
-		stateMutability: "payable",
-		type: "function",
+		"stateMutability": "payable",
+		"type": "receive"
 	},
 	{
-		inputs: [
+		"inputs": [],
+		"name": "getBalance",
+		"outputs": [
 			{
-				internalType: "uint8",
-				name: "_option",
-				type: "uint8",
-			},
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
 		],
-		name: "requestJoin",
-		outputs: [],
-		stateMutability: "payable",
-		type: "function",
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
-		inputs: [
+		"inputs": [],
+		"name": "getIsReady",
+		"outputs": [
 			{
-				internalType: "uint8",
-				name: "_type",
-				type: "uint8",
-			},
-			{
-				internalType: "uint256",
-				name: "_idx",
-				type: "uint256",
-			},
-			{
-				internalType: "address",
-				name: "_collection",
-				type: "address",
-			},
-			{
-				internalType: "uint256",
-				name: "_tokenId",
-				type: "uint256",
-			},
-			{
-				internalType: "uint256",
-				name: "_price",
-				type: "uint256",
-			},
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
 		],
-		name: "requestTrade",
-		outputs: [],
-		stateMutability: "nonpayable",
-		type: "function",
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
-		inputs: [
+		"inputs": [
 			{
-				internalType: "address",
-				name: "targetAddr",
-				type: "address",
-			},
+				"internalType": "uint256",
+				"name": "_idx",
+				"type": "uint256"
+			}
 		],
-		name: "staking",
-		outputs: [],
-		stateMutability: "payable",
-		type: "function",
+		"name": "getOwnersOfNFT",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
-		inputs: [
+		"inputs": [
 			{
-				internalType: "uint256",
-				name: "_idx",
-				type: "uint256",
+				"internalType": "uint256",
+				"name": "_idx",
+				"type": "uint256"
 			},
 			{
-				internalType: "bool",
-				name: "_vote",
-				type: "bool",
-			},
+				"internalType": "address",
+				"name": "_target",
+				"type": "address"
+			}
 		],
-		name: "vote",
-		outputs: [],
-		stateMutability: "payable",
-		type: "function",
+		"name": "getStakeFromNFT",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
-		inputs: [
+		"inputs": [
 			{
-				internalType: "uint256",
-				name: "_price",
-				type: "uint256",
-			},
+				"internalType": "uint256",
+				"name": "_idx",
+				"type": "uint256"
+			}
 		],
-		name: "payback",
-		outputs: [],
-		stateMutability: "payable",
-		type: "function",
+		"name": "getStateOfSuggestion",
+		"outputs": [
+			{
+				"internalType": "uint8",
+				"name": "",
+				"type": "uint8"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
-		inputs: [
+		"inputs": [],
+		"name": "getTarget",
+		"outputs": [
 			{
-				internalType: "address",
-				name: "_collection",
-				type: "address",
+				"internalType": "address",
+				"name": "",
+				"type": "address"
 			},
 			{
-				internalType: "uint256",
-				name: "_tokenId",
-				type: "uint256",
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			},
 			{
-				internalType: "uint256",
-				name: "_price",
-				type: "uint256",
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
 			},
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
+			}
 		],
-		name: "transferNft",
-		outputs: [],
-		stateMutability: "nonpayable",
-		type: "function",
+		"stateMutability": "view",
+		"type": "function"
 	},
+	{
+		"inputs": [],
+		"name": "getTargetBalance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_id",
+				"type": "address"
+			}
+		],
+		"name": "getTempStaking",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getTotal",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_idx",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_owner",
+				"type": "address"
+			}
+		],
+		"name": "isOnSale",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "target",
+				"type": "address"
+			}
+		],
+		"name": "isOwner",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
 ];
 
 module.exports = abi;
