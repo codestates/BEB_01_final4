@@ -44,6 +44,7 @@ router.get('/', async (req, res, next) => {
 
         whereOption.orgAddress = qMyGGanbus.gganbuAddress;
 
+        //내가 참여하는 각 깐부의 제안들
         const qSuggestions = await Vote_suggestions.findAll({
           where: whereOption,
           order: [
@@ -52,7 +53,17 @@ router.get('/', async (req, res, next) => {
         });
         
         for(let j=0;j<qSuggestions.length;j++) {
-          result.push(qSuggestions[j].dataValues);
+          //만약 내가 이미 투표한 제안이라면 제외
+          let qMyVote = await Vote_submits.findOne({
+            where: {
+              suggestion_id: qSuggestions[j].id,
+              memberAddress: req.query.user
+            }
+          });
+
+          if(!qMyVote) {
+            result.push(qSuggestions[j].dataValues);
+          }
         }
       }
     } else {
