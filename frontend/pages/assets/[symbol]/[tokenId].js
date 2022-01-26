@@ -1,4 +1,4 @@
-import { Accordion, Button, Divider, Grid, Modal, ScrollArea, SimpleGrid, Text, TextInput } from "@mantine/core";
+import { Accordion, Badge, Button, Divider, Grid, Modal, ScrollArea, SimpleGrid, Text, TextInput } from "@mantine/core";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import {
@@ -488,6 +488,13 @@ const Asset = () => {
             </span>
           </Link>
           <Text style={{ fontSize: "32px", fontWeight: "bold", margin: "20px 0" }}>{nft?.name}</Text>
+
+          <Text style={{ marginBottom: "20px", fontSize: "18px" }}>
+            Owned by{" "}
+            <Badge style={{ fontSize: "18px" }} radius={4}>
+              {compressAddress(nft?.ownerAddress)}
+            </Badge>
+          </Text>
 
           {/* 판매 X, 대여 등록 X 상태 */}
           {!isSelling && !isLending && (
