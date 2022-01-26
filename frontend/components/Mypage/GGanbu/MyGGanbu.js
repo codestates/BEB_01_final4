@@ -13,7 +13,7 @@ const MyGGanbu = ({ activeSubTab }) => {
     } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/gganbu?user=${account}`, {
       withCredentials: true,
     });
-
+    console.log(myGGanbuList);
     setMyGGanbuList(myGGanbuList);
   };
 

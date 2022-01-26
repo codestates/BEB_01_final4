@@ -106,7 +106,7 @@ const GGanbuDetail = () => {
   // 목표 NFT, 판매금액, 모금액, 참여자, 투표 현황
   return (
     <div>
-      <Text align="center" style={{ fontSize: "32px", margin: "30px 0 80px 0" }}>
+      <Text align="center" style={{ fontSize: "32px", margin: "20px 0 30px 0" }}>
         깐부
       </Text>
       <Grid>
@@ -121,7 +121,7 @@ const GGanbuDetail = () => {
               }}
             ></div>
             <div style={{ display: "flex", justifyContent: "center", paddingBottom: "20px" }}>
-              {nft?.imageURI && <Image className="nft-image" src={nft?.imageURI} width={4201} height={385} alt="" />}
+              {nft?.imageURI && <Image className="nft-image" src={nft?.imageURI} width={400} height={385} alt="" />}
               <style jsx global>{`
                 .nft-image {
                   -webkit-user-drag: none;

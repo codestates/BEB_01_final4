@@ -21,7 +21,13 @@ const GGanbuBoard = ({ gganbuList }) => {
   const router = useRouter();
 
   const rows = gganbuList.map((gganbu, idx) => (
-    <tr key={idx}>
+    <tr
+      style={{ cursor: "pointer" }}
+      onClick={() => {
+        router.push(`/assets/${gganbu.asset.collection.symbol}/${gganbu.asset.token_ids}`);
+      }}
+      key={idx}
+    >
       <td>{gganbu.asset.name}</td>
       <td>
         <Image src={gganbu.asset.imageURI} width={128} height={128} alt="" />
@@ -47,7 +53,7 @@ const GGanbuBoard = ({ gganbuList }) => {
   ));
 
   return (
-    <CTable>
+    <CTable highlightOnHover>
       <thead>
         <tr>
           <th>name</th>

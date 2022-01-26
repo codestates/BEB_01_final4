@@ -420,7 +420,7 @@ const Asset = () => {
               )}
             </div>
             <div style={{ display: "flex", justifyContent: "center", paddingBottom: "20px" }}>
-              {nft?.imageURI && <Image className="nft-image" src={nft?.imageURI} width={500} height={385} alt="" />}
+              {nft?.imageURI && <Image className="nft-image" src={nft?.imageURI} width={385} height={385} alt="" />}
               <style jsx global>{`
                 .nft-image {
                   -webkit-user-drag: none;
