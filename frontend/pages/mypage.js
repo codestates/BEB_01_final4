@@ -20,6 +20,7 @@ import { compressAddress } from "../utils";
 import GGanbuVote from "../components/gganbuVote";
 import Web3 from "web3";
 import { Coffer } from "../public/compiledContracts/Coffer";
+import Joined from "../components/Mypage/DAO/Joined";
 
 const Description = styled.div`
   max-width: 720px;
@@ -135,23 +136,6 @@ const MyPage = () => {
   useEffect(() => {
     setActiveSubTab(0);
   }, [activeTab]);
-
-  const handleCreateDAO = async () => {
-    const cofferContract = await new web3.eth.Contract(Coffer.abi)
-      .deploy({
-        data: Coffer.bytecode,
-        arguments: ["0x0000000000000000000000000000000000000000", 0, 0, 4],
-      })
-      .send({ from: account });
-
-    console.log(cofferContract);
-    console.log(cofferContract._address);
-
-    // let event = await cofferContract.getPastEvents("set_target", {
-    //   fromBlock: txResult.blockNumber,
-    //   toBlock: txResult.blockNumber,
-    // });
-  };
 
   const getMyData = async () => {
     try {
@@ -486,8 +470,7 @@ const MyPage = () => {
             >
               <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="가입한 D A O">
                 <div style={{ padding: "0 40px" }}>
-                  <Text style={{ fontSize: "36px", fontWeight: "bold", margin: "20px 0" }}>가입한 subDAO</Text>
-                  <Button onClick={handleCreateDAO}>DAO 만들기</Button>
+                  <Joined />
                 </div>
 
                 {/* <SimpleGrid
