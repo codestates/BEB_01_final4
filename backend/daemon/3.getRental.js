@@ -18,7 +18,7 @@ const privateKey = '4475b37738aaff7f44e541a577cf878a947a647378a9004e84dc0103abaa
 const ca = '0x51E34270f02C57a384c1c1C47Efc7eCC982C60Ab';
 
 //tran
-const tran = '0x0c9b9265f8c142814cb295cb7b110fd5460c6a71617db54e4b8dc8d9f22be8fc';
+const tran = '0xf812c034ef5a748891c2f540bda96e194bc75f7b4a07621c199973cf61abc5de';
 
 //NFT 토큰 정보
 const iToken_ids = 6;
@@ -52,12 +52,22 @@ async function test(tran) {
     tx = await web3.eth.getTransactionReceipt(tran);
     console.log(tx);
     decodedData = abiDecoder.decodeLogs(tx.logs);
+    console.log('===============================================');
     console.log(decodedData);
     console.log('===============================================');
     
     //events
-    for(let i=0;i<decodedData[0].events.length;i++) {
-      console.log(decodedData[0].events[i]);
+    for(let i=0;i<decodedData.length;i++) {
+      if(decodedData[i].name == 'pass') {
+        console.log(`찬성자 : ${tx.from}`)
+        console.log('찬성');
+      } else if(decodedData[i].name == 'reject') {
+        console.log(`거절자 : ${tx.from}`)
+        console.log('거절');
+      } else if(decodedData[i].name == 'OwnershipAdd') {
+        console.log(`멤버추가: ${decodedData[i].events[0].value}`);
+        console.log('금액도 추가');
+      }
     }
 
 
