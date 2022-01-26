@@ -28,11 +28,11 @@ const basePath = __dirname;
   const coffer_abi = require("./CofferERC721_ABI");
 
   // 조회를 원하는 시작 블록 번호
-  let startBlockNumber = 52; 
-  // let startBlockNumber = Number(
-  //   fs.readFileSync(path.join(basePath, '/blockNumber'), {
-  //     encoding: 'utf-8',
-  //   }),) + 1;
+  //let startBlockNumber = 52; 
+  let startBlockNumber = Number(
+    fs.readFileSync(path.join(basePath, '/blockNumber'), {
+      encoding: 'utf-8',
+    }),) + 1;
 /*=======================================================*/
 
 const abiDecoder = require('abi-decoder'); // NodeJS
@@ -589,6 +589,18 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
           },
       });
 
+      await Vote_submits.findOrCreate({
+        where:{
+          suggestion_id: qSuggestion.id,
+          memberAddress: tx.from
+        },
+        defaults: {
+          suggestion_id: qSuggestion.id,
+          memberAddress: tx.from,
+          vote: tx.input_vote
+        }
+      });
+
       //투표 이벤트 (Vote_Submits) insert
       //suggestion_id, memberAddress, vote
       decodedLogs = abiDecoder.decodeLogs(txReceipt.logs);
@@ -659,6 +671,19 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
               my_rewards: 0,
               status: 'active',
             }
+          });
+
+          //깐부 지갑 balance 정보 수정
+          const balance = await web3.eth.getBalance(qSuggestion.orgAddress);
+          const iBalance = web3.utils.fromWei(balance, 'ether');
+          await GGanbu_wallets.update(
+            {
+              balance: iBalance
+            },
+            {
+              where:{
+                gganbuAddress: qSuggestion.orgAddress
+              },
           });
 
           if(result[1] === true) {
