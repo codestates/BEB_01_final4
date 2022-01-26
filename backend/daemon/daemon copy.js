@@ -28,7 +28,7 @@ const basePath = __dirname;
   const coffer_abi = require("./CofferERC721_ABI");
 
   // 조회를 원하는 시작 블록 번호
-  //let startBlockNumber = 96; 
+  //let startBlockNumber = 71; 
   let startBlockNumber = Number(
     fs.readFileSync(path.join(basePath, '/blockNumber'), {
       encoding: 'utf-8',
@@ -187,7 +187,6 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
     }
     // 만약 payment(1), 즉 buy 트랜잭션이라면
     else if(tx.input_name === 'payment' && Number(decodedData.params[0].value) == 1) {
-
       tx.input_tokenId = Number(decodedData.params[1].value);
       tx.input_price = Number(tx.value);
       
@@ -492,6 +491,8 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
       for(let i=0;i<decodedLogs[0].events.length;i++) {
         let eventName = decodedLogs[0].events[i].name;
         let eventValue = decodedLogs[0].events[i].value;
+        console.log(eventName);
+        console.log(eventValue);
 
         if(eventName == '_suggestionIdx') {
           iSuggestionIdx = eventValue;
@@ -541,11 +542,8 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
         COUNT.suggestion_join++;
       }
     }
-    // vote
+    // join
     else if(tx.input_name === 'vote') {
-      let targetCollectionAddress;
-      let targetTokenId;
-      
       tx.input_suggestion_idx = decodedData.params[0].value;
       tx.input_vote = decodedData.params[1].value;
       
@@ -587,6 +585,7 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
         let totalReject = qSuggestion.totalReject + iReject;
         let totalAcceptRatio = totalAccept / numOfMembers * 100;
         totalAcceptRatio = Math.round(totalAcceptRatio * 100) / 100;
+        console.log(`동의율 ${totalAcceptRatio}`);
         let totalRejectRatio = totalReject / numOfMembers * 100;
         totalRejectRatio = Math.round(totalRejectRatio * 100) / 100;
         
@@ -627,7 +626,7 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
           console.log(`========== suggestion passed =======`);
           
         } else if(decodedLogs[i].name == 'reject') {
-          console.log(`투표결과(반대) : ${tx.from}`)
+          console.log(`거절자 : ${tx.from}`)
           //반대 결과 업데이트 (Vote_suggestions)
           await Vote_suggestions.update(
             {
@@ -694,62 +693,6 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
             console.log(`========== New joiner has been enrolled=======`);
             console.log(result[0].dataValues);
             COUNT.suggestion_join_approved++;
-          }
-        } else if(decodedLogs[i].name == 'payment') {
-          //payment 컬랙션주소, 토큰ID, 가격, 옵션
-
-          // 만약 payment(1), 즉 buy 트랜잭션이라면
-          if(decodedLogs[i].events[3].value == 1) {
-            tx.input_tokenId = Number(decodedLogs[i].events[1].value);
-            tx.input_price = Number(decodedLogs[i].events[2].value);
-            tx.input_collectionAddress = decodedLogs[i].events[0].value;
-
-            //payment 가 발생하면 구매를 한거기 때문에 gganbu_wallets 상태가 바뀐다
-            await GGanbu_wallets.update(
-              {
-                status: 'own'
-              },
-              {
-                where:{
-                  gganbuAddress: qSuggestion.orgAddress
-                },
-            });
-
-            //DB업데이트
-            await NFTs.update(
-              {
-                ownerAddress: tx.to
-              },
-              {
-                where: {
-                  contractAddress: tx.input_collectionAddress,
-                  token_ids: tx.input_tokenId
-                }
-              }
-            );
-
-            const result = await Trades.update(
-              {
-                status: 'completed',
-                buyer: tx.to,
-                buyHash: tx.hash
-              },
-              {
-                where: {
-                  status: 'selling',
-                  collectionAddress: tx.input_collectionAddress,
-                  token_ids: tx.input_tokenId,
-                },
-              }
-            );
-
-            if(result > 0) {
-              console.log(`========== GGanbu Trade has been dealed =======`);
-              console.log(tx);
-              COUNT.buy++;
-            } else {
-              //console.log('buy 업데이트 안됨');
-            }
           }
         }
       }
