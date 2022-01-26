@@ -28,11 +28,11 @@ const basePath = __dirname;
   const coffer_abi = require("./CofferERC721_ABI");
 
   // 조회를 원하는 시작 블록 번호
-  //let startBlockNumber = 52; 
-  let startBlockNumber = Number(
-    fs.readFileSync(path.join(basePath, '/blockNumber'), {
-      encoding: 'utf-8',
-    }),) + 1;
+  let startBlockNumber = 52; 
+  // let startBlockNumber = Number(
+  //   fs.readFileSync(path.join(basePath, '/blockNumber'), {
+  //     encoding: 'utf-8',
+  //   }),) + 1;
 /*=======================================================*/
 
 const abiDecoder = require('abi-decoder'); // NodeJS
@@ -567,29 +567,8 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
       let qMembers = await GGanbu_members.findAll({
         where: {gganbuAddress: qSuggestion.orgAddress}
       })
-      let numOfMembers = qMembers.length;
-      let totalAccept = qSuggestion.totalAccept + iAccept;
-      let totalReject = qSuggestion.totalReject + iReject;
-      let totalAcceptRatio = totalAccept / numOfMembers * 100;
-      totalAcceptRatio = Math.round(totalAcceptRatio * 100) / 100;
-      let totalRejectRatio = totalReject / numOfMembers * 100;
-      totalRejectRatio = Math.round(totalRejectRatio * 100) / 100;
-      
-      const suggestionData = {
-        totalAccept: totalAccept,
-        totalReject: totalReject,
-        totalAcceptRatio: totalAcceptRatio,
-        totalRejectRatio: totalRejectRatio,
-      };
-      
-      await Vote_suggestions.update(suggestionData,
-        {
-          where:{
-            id: qSuggestion.id
-          },
-      });
 
-      await Vote_submits.findOrCreate({
+      const qVote = await Vote_submits.findOrCreate({
         where:{
           suggestion_id: qSuggestion.id,
           memberAddress: tx.from
@@ -600,6 +579,30 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
           vote: tx.input_vote
         }
       });
+      if(qVote[1] == true) {
+        let numOfMembers = qMembers.length;
+        let totalAccept = qSuggestion.totalAccept + iAccept;
+        let totalReject = qSuggestion.totalReject + iReject;
+        let totalAcceptRatio = totalAccept / numOfMembers * 100;
+        totalAcceptRatio = Math.round(totalAcceptRatio * 100) / 100;
+        console.log(`동의율 ${totalAcceptRatio}`);
+        let totalRejectRatio = totalReject / numOfMembers * 100;
+        totalRejectRatio = Math.round(totalRejectRatio * 100) / 100;
+        
+        const suggestionData = {
+          totalAccept: totalAccept,
+          totalReject: totalReject,
+          totalAcceptRatio: totalAcceptRatio,
+          totalRejectRatio: totalRejectRatio,
+        };
+        
+        await Vote_suggestions.update(suggestionData,
+          {
+            where:{
+              id: qSuggestion.id
+            },
+        });
+      }
 
       //투표 이벤트 (Vote_Submits) insert
       //suggestion_id, memberAddress, vote
