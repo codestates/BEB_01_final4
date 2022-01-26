@@ -129,7 +129,7 @@ contract coffer is Ownable {
 
 
     function getTarget()public view returns(address,uint256,uint256,address[] memory){
-        return (_targetNft.info.collection,_targetNft.info.tokenId,_targetNft.price * ( 1 ether ),_targetNft.joinAddr);
+        return (_targetNft.info.collection,_targetNft.info.tokenId,_targetNft.price ,_targetNft.joinAddr);
     }
     function getIsReady()public view returns(bool){
         return _isReady;
@@ -377,7 +377,7 @@ contract coffer is Ownable {
         _totalBalance[targetAddr] += _bal;
         (bool _check, uint256 overBalance) = SafeMath.trySub(
             (_targetBalance + _bal),
-            _targetNft.price * ( 1 ether )
+            _targetNft.price 
         );
 
         if (!_check) {
@@ -392,7 +392,7 @@ contract coffer is Ownable {
 
         _queue[targetAddr] = 0; //초기화
 
-        if (_targetBalance == _targetNft.price * ( 1 ether )) {
+        if (_targetBalance == _targetNft.price ) {
             //구매 진행
             _payment();
         }
@@ -547,7 +547,7 @@ contract coffer is Ownable {
     function _payment() internal onlyOwner {
         require(_totalStake >= _targetNft.price, "Coffer: Not enough ether");
         (bool check, ) = payable(_targetNft.info.collection).call{
-            value: _targetNft.price * (1 ether)
+            value: _targetNft.price 
         }(
             abi.encodeWithSignature(
                 "payment(uint256,uint256)",
