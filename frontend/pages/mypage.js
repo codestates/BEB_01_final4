@@ -17,10 +17,9 @@ import NFTCard from "../components/nftCard";
 import History from "../components/history";
 import RentHistory from "../components/rent_history";
 import { compressAddress } from "../utils";
-import GGanbuVote from "../components/gganbuVote";
-import Web3 from "web3";
-import { Coffer } from "../public/compiledContracts/Coffer";
 import Joined from "../components/Mypage/DAO/Joined";
+import GGanbuVote from "../components/Mypage/GGanbu/GGanbuVote";
+import MyGGanbu from "../components/Mypage/GGanbu/MyGGanbu";
 
 const Description = styled.div`
   max-width: 720px;
@@ -382,26 +381,8 @@ const MyPage = () => {
               tabPadding="md"
               position="center"
             >
-              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="모집 중인 깐부">
-                <div style={{ padding: "0 40px" }}>
-                  <Text style={{ fontSize: "36px", fontWeight: "bold" }}>참여 중인 깐부</Text>
-                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>TBD</Text>
-                </div>
-
-                {/* <SimpleGrid
-                  style={{ padding: "0 80px" }}
-                  cols={3}
-                  spacing="lg"
-                  breakpoints={[
-                    { maxWidth: 1160, cols: 2, spacing: "md" },
-                    { maxWidth: 840, cols: 1, spacing: "sm" },
-                  ]}
-                >
-                  {lendAssets.map((nft, i) => {
-                    // console.log(nft);
-                    return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
-                  })}
-                </SimpleGrid> */}
+              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="참여 중인 깐부">
+                <MyGGanbu activeSubTab={activeSubTab} />
               </CTabs.Tab>
               <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="깐부 보유 NFT">
                 <div style={{ padding: "0 40px" }}>
