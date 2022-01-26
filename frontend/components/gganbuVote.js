@@ -1,4 +1,5 @@
 import { Badge, Button, Modal, Table, Text } from "@mantine/core";
+import axios from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -15,27 +16,36 @@ const CTable = styled(Table)`
   }
 `;
 
-const GGanbuVote = ({ suggestions }) => {
+const GGanbuVote = ({ suggestions, setSuggestions }) => {
   const [opened, setOpened] = useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const account = useStore((state) => state.account);
   const web3 = useStore((state) => state.web3);
 
   const getCoffer = async () => {
-    const cofferContract = await new web3.eth.Contract(Coffer.abi, selectedSuggestion?.orgAddress);
+    // const cofferContract = await new web3.eth.Contract(Coffer.abi, selectedSuggestion?.orgAddress);
+    // console.log(cofferContract);
+  };
 
-    console.log(cofferContract);
+  const refetchSuggestions = async () => {
+    const {
+      data: { data: suggestions },
+    } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/suggestions?user=${account}&tab=in-progress`);
+    console.log(suggestions);
+    setSuggestions(suggestions);
   };
 
   useEffect(() => {
-    getCoffer();
-  }, []);
+    refetchSuggestions();
+  }, [account]);
 
   const handleVote = async (vote) => {
     const cofferContract = await new web3.eth.Contract(Coffer.abi, selectedSuggestion?.orgAddress);
     const txResult = await cofferContract.methods
       .vote(selectedSuggestion?.suggestion_idx, vote)
       .send({ from: account });
+
+    console.log(txResult);
 
     if (vote) {
       let event = await cofferContract.getPastEvents("pass", {
@@ -51,8 +61,9 @@ const GGanbuVote = ({ suggestions }) => {
       });
 
       console.log(event);
-      setOpened(false);
     }
+    setOpened(false);
+    // refetchSuggestions();
   };
 
   const rows = suggestions.map((suggestion, idx) => (
@@ -97,7 +108,6 @@ const GGanbuVote = ({ suggestions }) => {
         </div>
       </td>
       <Modal opened={opened} onClose={() => setOpened(false)}>
-        {console.log(selectedSuggestion)}
         {selectedSuggestion?.type === "join" && (
           <div>
             <Text style={{ fontSize: "18px" }} align="center">
