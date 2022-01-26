@@ -28,11 +28,11 @@ const basePath = __dirname;
   const coffer_abi = require("./CofferERC721_ABI");
 
   // 조회를 원하는 시작 블록 번호
-  //let startBlockNumber = 46; 
-  let startBlockNumber = Number(
-    fs.readFileSync(path.join(basePath, '/blockNumber'), {
-      encoding: 'utf-8',
-    }),) + 1;
+  let startBlockNumber = 52; 
+  // let startBlockNumber = Number(
+  //   fs.readFileSync(path.join(basePath, '/blockNumber'), {
+  //     encoding: 'utf-8',
+  //   }),) + 1;
 /*=======================================================*/
 
 const abiDecoder = require('abi-decoder'); // NodeJS
@@ -55,6 +55,7 @@ let COUNT = {
   "suggestion_buy" : 0,
   "suggestion_lend" : 0,
   "suggestion_rent" : 0,
+  "suggestion_join_approved" : 0,
 };
 
 //트랜잭션 가져오기
@@ -497,7 +498,7 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
           iSuggestionIdx = eventValue;
         } else if(eventName == '_target') {
           //join 시 해당 값은 참여자 지갑주소
-          iJoiner = eventValue;
+          iJoiner = Web3.utils.toChecksumAddress(eventValue);
         } else if(eventName == '_type') {
           iType = 'join';
         } else if(eventName == '_tokenId') {
@@ -539,6 +540,133 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
         console.log(`========== New suggestion(join) has been enrolled=======`);
         console.log(result[0].dataValues);
         COUNT.suggestion_join++;
+      }
+    }
+    // join
+    else if(tx.input_name === 'vote') {
+      tx.input_suggestion_idx = decodedData.params[0].value;
+      tx.input_vote = decodedData.params[1].value;
+      
+      let iAccept = 0, iReject = 0;
+      if(tx.input_vote == true) {
+        iAccept++;
+      } else {
+        iReject++;
+      }
+
+
+      //투표 이벤트 업데이트 (Vote_suggestions)
+      //totalAccept, totalAcceptRatio, totalReject, totalRejectRatio
+      let qSuggestion = await Vote_suggestions.findOne({
+        where:{
+          suggestion_idx: tx.input_suggestion_idx,
+          orgAddress: tx.to,
+        },
+      });
+      
+      let qMembers = await GGanbu_members.findAll({
+        where: {gganbuAddress: qSuggestion.orgAddress}
+      })
+      let numOfMembers = qMembers.length;
+      let totalAccept = qSuggestion.totalAccept + iAccept;
+      let totalReject = qSuggestion.totalReject + iReject;
+      let totalAcceptRatio = totalAccept / numOfMembers * 100;
+      totalAcceptRatio = Math.round(totalAcceptRatio * 100) / 100;
+      let totalRejectRatio = totalReject / numOfMembers * 100;
+      totalRejectRatio = Math.round(totalRejectRatio * 100) / 100;
+      
+      const suggestionData = {
+        totalAccept: totalAccept,
+        totalReject: totalReject,
+        totalAcceptRatio: totalAcceptRatio,
+        totalRejectRatio: totalRejectRatio,
+      };
+      
+      await Vote_suggestions.update(suggestionData,
+        {
+          where:{
+            id: qSuggestion.id
+          },
+      });
+
+      //투표 이벤트 (Vote_Submits) insert
+      //suggestion_id, memberAddress, vote
+      decodedLogs = abiDecoder.decodeLogs(txReceipt.logs);
+      
+      for(let i=0;i<decodedLogs.length;i++) {
+        if(decodedLogs[i].name == 'pass') {
+          console.log(`투표결과(찬성) : ${tx.from}`)
+          //찬성 결과 업데이트 (Vote_suggestions)
+          //status, isValid
+          await Vote_suggestions.update(
+            {
+              status: 'pass',
+              isValid: false
+            },
+            {
+              where:{
+                id: qSuggestion.id
+              },
+          });
+          console.log(`========== suggestion passed =======`);
+          
+        } else if(decodedLogs[i].name == 'reject') {
+          console.log(`거절자 : ${tx.from}`)
+          //반대 결과 업데이트 (Vote_suggestions)
+          await Vote_suggestions.update(
+            {
+              status: 'reject',
+              isValid: false
+            },
+            {
+              where:{
+                id: qSuggestion.id
+              },
+          });
+          console.log(`========== suggestion rejected =======`);
+            
+        } else if(decodedLogs[i].name == 'OwnershipAdd') {
+          console.log(`멤버추가: ${decodedLogs[i].events[0].value}`);
+          let newMember = Web3.utils.toChecksumAddress(decodedLogs[i].events[0].value);
+          
+          //사용자 지분 계산 (깐부인 경우에만)
+          let qGGanbu = await GGanbu_wallets.findOne({ 
+            where: {
+              gganbuAddress: tx.to
+            },
+          });
+
+          let qPrice = await Trades.findOne({ 
+            where: {
+              collectionAddress: qGGanbu.nft_collectionAddress,
+              token_ids: qGGanbu.nft_token_ids,
+            },
+          });
+          let ratio = qSuggestion.joiner_staking_value / Number(qPrice.price) * 100;
+          ratio = Math.round(ratio * 100) / 100;
+          
+          //멤버로 등록하고 금액 추가
+          const result = await GGanbu_members.findOrCreate({
+            where:{
+              memberAddress: newMember,
+              gganbuAddress: qSuggestion.orgAddress,
+            },
+            defaults: {
+              memberAddress: newMember,
+              gganbuAddress: qSuggestion.orgAddress,
+              staking_value: qSuggestion.joiner_staking_value,
+              staking_ratio: ratio,
+              my_rewards: 0,
+              status: 'active',
+            }
+          });
+
+          if(result[1] === true) {
+            console.log(`========== New joiner has been enrolled=======`);
+            console.log(result[0].dataValues);
+            COUNT.suggestion_join_approved++;
+          }
+        }
       }
     }
   }
@@ -643,6 +771,7 @@ const main = async (MyAbi, START_BLOCK) => {
     console.log(`# of suggestion_buy  : ${COUNT.suggestion_buy}`);
     console.log(`# of suggestion_lend : ${COUNT.suggestion_lend}`);
     console.log(`# of suggestion_rent : ${COUNT.suggestion_rent}`);
+    console.log(`# of suggestion_join_approved : ${COUNT.suggestion_join_approved}`);
 
     sequelize.close();
   }

@@ -393,7 +393,7 @@ contract coffer is Ownable {
 
     function vote(uint256 _idx, bool _vote) public payable onlyOwner {
         uint8 targetState = _suggestion[_idx].state;
-        require(targetState != 2, "Coffer: Already end"); //이미 종료된 suggestion이면 정지
+        require(targetState == 2, "Coffer: Already end"); //이미 종료된 suggestion이면 정지
 
         uint256 targetDate = _suggestion[_idx].date;
         uint8 targetType = _suggestion[_idx].types;
@@ -410,7 +410,7 @@ contract coffer is Ownable {
             uint256 _voteNum;
             (bool check, uint256 _base) = SafeMath.tryDiv(getTotal(), 3);
             require(check, "Coffer: Get base member fail");
-            if (getTotal() < 5) {
+            if (getTotal() < 10) {
                 _voteNum = 1;
             } else {
                 _voteNum = getVoteNum();
