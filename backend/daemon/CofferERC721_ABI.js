@@ -186,7 +186,7 @@ const abi = [
 				type: "uint8",
 			},
 			{
-				indexed: true,
+				indexed: false,
 				internalType: "address",
 				name: "_target",
 				type: "address",
@@ -277,19 +277,6 @@ const abi = [
 		type: "function",
 	},
 	{
-		inputs: [
-			{
-				internalType: "address",
-				name: "Owner",
-				type: "address",
-			},
-		],
-		name: "delOwnership",
-		outputs: [],
-		stateMutability: "nonpayable",
-		type: "function",
-	},
-	{
 		inputs: [],
 		name: "getTotal",
 		outputs: [
@@ -324,6 +311,25 @@ const abi = [
 	{
 		stateMutability: "payable",
 		type: "receive",
+	},
+	{
+		inputs: [
+			{
+				internalType: "uint256",
+				name: "_idx",
+				type: "uint256",
+			},
+		],
+		name: "getStateOfSuggestion",
+		outputs: [
+			{
+				internalType: "uint8",
+				name: "",
+				type: "uint8",
+			},
+		],
+		stateMutability: "view",
+		type: "function",
 	},
 	{
 		inputs: [
@@ -421,6 +427,24 @@ const abi = [
 	{
 		inputs: [
 			{
+				internalType: "address",
+				name: "_collection",
+				type: "address",
+			},
+			{
+				internalType: "uint256",
+				name: "_tokenId",
+				type: "uint256",
+			},
+		],
+		name: "allocate",
+		outputs: [],
+		stateMutability: "payable",
+		type: "function",
+	},
+	{
+		inputs: [
+			{
 				internalType: "uint256",
 				name: "_idx",
 				type: "uint256",
@@ -503,6 +527,19 @@ const abi = [
 	{
 		inputs: [
 			{
+				internalType: "address",
+				name: "targetAddr",
+				type: "address",
+			},
+		],
+		name: "staking",
+		outputs: [],
+		stateMutability: "payable",
+		type: "function",
+	},
+	{
+		inputs: [
+			{
 				internalType: "uint256",
 				name: "_idx",
 				type: "uint256",
@@ -541,6 +578,11 @@ const abi = [
 			{
 				internalType: "uint256",
 				name: "_tokenId",
+				type: "uint256",
+			},
+			{
+				internalType: "uint256",
+				name: "_price",
 				type: "uint256",
 			},
 		],
