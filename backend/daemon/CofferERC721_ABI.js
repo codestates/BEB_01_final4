@@ -1,6 +1,27 @@
 const abi = [
   {
-    inputs: [],
+    inputs: [
+      {
+        internalType: "address",
+        name: "_collection",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_price",
+        type: "uint256",
+      },
+      {
+        internalType: "uint8",
+        name: "_option",
+        type: "uint8",
+      },
+    ],
     stateMutability: "payable",
     type: "constructor",
   },
@@ -34,25 +55,25 @@ const abi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
-        internalType: "string",
-        name: "_option",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "_type",
-        type: "string",
+        indexed: true,
+        internalType: "uint256",
+        name: "_idx",
+        type: "uint256",
       },
       {
         indexed: false,
         internalType: "uint256",
-        name: "_suggestionIdx",
+        name: "price",
         type: "uint256",
       },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "_owner",
+        type: "address",
+      },
     ],
-    name: "_suggest",
+    name: "buyNftStake",
     type: "event",
   },
   {
@@ -60,18 +81,18 @@ const abi = [
     inputs: [
       {
         indexed: false,
-        internalType: "string",
+        internalType: "uint8",
         name: "_type",
-        type: "string",
+        type: "uint8",
       },
       {
         indexed: true,
-        internalType: "address",
-        name: "_target",
-        type: "address",
+        internalType: "uint256",
+        name: "_idx",
+        type: "uint256",
       },
     ],
-    name: "accept",
+    name: "pass",
     type: "event",
   },
   {
@@ -79,18 +100,49 @@ const abi = [
     inputs: [
       {
         indexed: true,
+        internalType: "address",
+        name: "_collection",
+        type: "address",
+      },
+      {
+        indexed: false,
         internalType: "uint256",
         name: "_tokenId",
         type: "uint256",
       },
       {
         indexed: false,
-        internalType: "string",
-        name: "_type",
-        type: "string",
+        internalType: "uint256",
+        name: "_price",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint8",
+        name: "_option",
+        type: "uint8",
       },
     ],
-    name: "delNft",
+    name: "payment",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint8",
+        name: "_type",
+        type: "uint8",
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "_idx",
+        type: "uint256",
+      },
+    ],
+    name: "reject",
     type: "event",
   },
   {
@@ -99,36 +151,116 @@ const abi = [
       {
         indexed: true,
         internalType: "uint256",
-        name: "idx",
+        name: "_idx",
         type: "uint256",
       },
       {
         indexed: false,
-        internalType: "string",
-        name: "reason",
-        type: "string",
+        internalType: "uint256",
+        name: "price",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "_owner",
+        type: "address",
       },
     ],
-    name: "endSuggest",
+    name: "sellNftStake",
     type: "event",
   },
   {
     anonymous: false,
     inputs: [
       {
-        indexed: false,
-        internalType: "string",
-        name: "_type",
-        type: "string",
+        indexed: true,
+        internalType: "uint256",
+        name: "_suggestionIdx",
+        type: "uint256",
       },
       {
-        indexed: true,
+        indexed: false,
+        internalType: "uint8",
+        name: "_type",
+        type: "uint8",
+      },
+      {
+        indexed: false,
         internalType: "address",
         name: "_target",
         type: "address",
       },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_tokenId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_price",
+        type: "uint256",
+      },
     ],
-    name: "reject",
+    name: "set_suggestion",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "_collection",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_tokenId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "_price",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint8",
+        name: "_option",
+        type: "uint8",
+      },
+    ],
+    name: "set_target",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "listIdx",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "price",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "option",
+        type: "uint256",
+      },
+    ],
+    name: "set_trade",
     type: "event",
   },
   {
@@ -181,6 +313,185 @@ const abi = [
     type: "receive",
   },
   {
+    inputs: [],
+    name: "getTargetBalance",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_id",
+        type: "address",
+      },
+    ],
+    name: "getTempStaking",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getTarget",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getIsReady",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getBalance",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_idx",
+        type: "uint256",
+      },
+    ],
+    name: "getStateOfSuggestion",
+    outputs: [
+      {
+        internalType: "uint8",
+        name: "",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_idx",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "_target",
+        type: "address",
+      },
+    ],
+    name: "getStakeFromNFT",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_idx",
+        type: "uint256",
+      },
+    ],
+    name: "getOwnersOfNFT",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_idx",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "_owner",
+        type: "address",
+      },
+    ],
+    name: "isOnSale",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "withdraw",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -193,9 +504,135 @@ const abi = [
         type: "uint256",
       },
     ],
-    name: "transferNft",
+    name: "allocate",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_idx",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_price",
+        type: "uint256",
+      },
+    ],
+    name: "sellStakeOFNFT",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_idx",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "_owner",
+        type: "address",
+      },
+    ],
+    name: "buyStakeOfNFT",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint8",
+        name: "_option",
+        type: "uint8",
+      },
+    ],
+    name: "requestJoin",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint8",
+        name: "_type",
+        type: "uint8",
+      },
+      {
+        internalType: "uint256",
+        name: "_idx",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "_collection",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_price",
+        type: "uint256",
+      },
+    ],
+    name: "requestTrade",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "targetAddr",
+        type: "address",
+      },
+    ],
+    name: "staking",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_idx",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "_vote",
+        type: "bool",
+      },
+    ],
+    name: "vote",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_price",
+        type: "uint256",
+      },
+    ],
+    name: "payback",
+    outputs: [],
+    stateMutability: "payable",
     type: "function",
   },
   {
@@ -216,47 +653,9 @@ const abi = [
         type: "uint256",
       },
     ],
-    name: "buyingRequest",
+    name: "transferNft",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "joinRequest",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_suggestionIdx",
-        type: "uint256",
-      },
-      {
-        internalType: "bool",
-        name: "_vote",
-        type: "bool",
-      },
-    ],
-    name: "vote",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "totalSupply",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
     type: "function",
   },
 ];
