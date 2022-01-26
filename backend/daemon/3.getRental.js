@@ -18,7 +18,7 @@ const privateKey = 'e532ab08fcccb7a5d4dfe60f5293eac3798eacbc6b674180701574a7be54
 const ca = '0x2b490d11346D18Ac4dADA349aB34c5E3B334533C';
 
 //tran
-const tran = '0x42f3035509ef1d19d01fa3ba4191d60ec999d2b6f52302e57d86ada4d52c1b3d';
+const tran = '0x4765a58bb2a55e1bac545a40a64aac04f472656623fb980affd238ac4cbcd5df';
 
 //NFT 토큰 정보
 const iToken_ids = 6;
@@ -58,16 +58,9 @@ async function test(tran) {
     
     //events
     for(let i=0;i<decodedData.length;i++) {
-      if(decodedData[i].name == 'pass') {
-        console.log(`찬성자 : ${tx.from}`)
-        console.log('찬성');
-      } else if(decodedData[i].name == 'reject') {
-        console.log(`거절자 : ${tx.from}`)
-        console.log('거절');
-      } else if(decodedData[i].name == 'OwnershipAdd') {
-        console.log(`멤버추가: ${decodedData[i].events[0].value}`);
-        console.log(decodedData[i].events);
-        console.log('금액도 추가');
+      console.log(`${decodedData[i].name}`);
+      for(let j=0;j<decodedData[i].events.length;j++) {
+        console.log(decodedData[i].events[j]);
       }
     }
 
@@ -81,11 +74,11 @@ async function test(tran) {
     console.log(`참여자수: ${total}`);
     
     //token  거래 상태 및 owner 확인
-    const contractNFT = new web3.eth.Contract(
-      abi, '0x07103309133Ed782884F5249C316287F1BD21380',
-    );
-    const owner = await contractNFT.methods.ownerOf(8).call();
-    console.log(`NFT 소유자: ${owner}`);
+    // const contractNFT = new web3.eth.Contract(
+    //   abi, '0x07103309133Ed782884F5249C316287F1BD21380',
+    // );
+    // const owner = await contractNFT.methods.ownerOf(8).call();
+    // console.log(`NFT 소유자: ${owner}`);
     //const getSuggestionState = await contractObj.methods.getSuggestionState(2).call();
     //console.log(getSuggestionState);
     

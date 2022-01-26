@@ -196,12 +196,34 @@ const utils = {
         },
       });
       gganbu.members = qMembers;
+      
       /*
       *suggestion 정보
       */
-      //gganbu.hasSuggestion = false;
-      //gganbu.suggestions = null;
-      //gganbu.suggestion_history = [];
+      gganbu.in_progress_suggestions = [];
+      gganbu.suggestion_history = [];
+      let qSuggestions = await Vote_suggestions.findAll({
+        where: {
+          orgAddress: gganbu.gganbuAddress
+        },
+      });
+      for(let i=0;i<qSuggestions.length;i++) {
+        let sug = qSuggestions[i].dataValues;
+        //각 제안 별 투표 상태
+        let qSubmits = await Vote_submits.findAll({
+          where: {
+            suggestion_id: qSuggestions[i].id
+          },
+        });
+        sug.vote_info = qSubmits;
+
+        if(sug.status == 'in progress') {
+          gganbu.in_progress_suggestions.push(sug);
+        } else {
+          gganbu.suggestion_history.push(sug);
+        }
+      }
+
 
       //NFT 정보 (NFT 의 collection, trade 정보 추가)
       const qNFT = await NFTs.findOne({

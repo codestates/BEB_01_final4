@@ -65,8 +65,7 @@ router.get('/', async (req, res, next) => {
       });
       result = qGGanbus.map(el => el.dataValues);
     }
-    console.log(result);   
-
+    
     for (let i = 0; i < result.length; i++) {
       result[i] = await utils.addGGanbuInfo(result[i]);
     }
@@ -161,5 +160,31 @@ router.post('/', async (req, res, next) => {
     });
   }
 });
+
+/*
+ *  /gganbu/<address>
+ *  특정 깐부 상세 페이지
+ */
+router.get('/:gganbuAddress', async (req, res, next) => {
+  try {
+    console.log(`======== [GET] /ggangbu/${req.params.gganbuAddress} ========`);
+    const iGGanbuAddress = req.params.gganbuAddress;
+    let result = {};
+
+    const qGGanbus = await GGanbu_wallets.findOne({
+      where: {gganbuAddress:iGGanbuAddress}
+    });
+
+    if(qGGanbus) {
+      result = await utils.addGGanbuInfo(qGGanbus.dataValues);
+    } else {
+      throw Error('깐부 지갑이 존재하지 않습니다');
+    }
+    res.json({ message: "ok", data: result });
+  } catch (err) {
+      console.error(err);
+  }
+});
+
 
 module.exports = router;
