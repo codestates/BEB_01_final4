@@ -139,13 +139,15 @@ const MyPage = () => {
 
   const getMyData = async () => {
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, { address: account });
+      // await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, { address: account });
 
-      const {
-        data: { data: myData },
-      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}`);
-      console.log(myData);
-      setMyData(myData);
+      if (account) {
+        const {
+          data: { data: myData },
+        } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/users/${account}`);
+        console.log(myData);
+        setMyData(myData);
+      }
     } catch (e) {
       console.log(e.response);
     }
@@ -470,7 +472,7 @@ const MyPage = () => {
             >
               <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="가입한 D A O">
                 <div style={{ padding: "0 40px" }}>
-                  <Joined />
+                  <Joined activeSubTab={activeSubTab} />
                 </div>
 
                 {/* <SimpleGrid
