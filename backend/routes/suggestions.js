@@ -35,34 +35,36 @@ router.get('/', async (req, res, next) => {
           ['createdAt', 'DESC']
         ],
       });
-
+      
       //내가 참여하고 있는 GGanbu 들
       for(let i=0;i<qMyMembers.length;i++) {
         const qMyGGanbus = await GGanbu_wallets.findOne({
           where: {isActive:true,gganbuAddress:qMyMembers[i].dataValues.gganbuAddress}
         });
 
-        whereOption.orgAddress = qMyGGanbus.gganbuAddress;
+        if(qMyGGanbus) {
+          whereOption.orgAddress = qMyGGanbus.gganbuAddress;
 
-        //내가 참여하는 각 깐부의 제안들
-        const qSuggestions = await Vote_suggestions.findAll({
-          where: whereOption,
-          order: [
-            ['createdAt', 'DESC']
-          ],
-        });
-        
-        for(let j=0;j<qSuggestions.length;j++) {
-          //만약 내가 이미 투표한 제안이라면 제외
-          let qMyVote = await Vote_submits.findOne({
-            where: {
-              suggestion_id: qSuggestions[j].id,
-              memberAddress: req.query.user
-            }
+          //내가 참여하는 각 깐부의 제안들
+          const qSuggestions = await Vote_suggestions.findAll({
+            where: whereOption,
+            order: [
+              ['createdAt', 'DESC']
+            ],
           });
+          
+          for(let j=0;j<qSuggestions.length;j++) {
+            //만약 내가 이미 투표한 제안이라면 제외
+            let qMyVote = await Vote_submits.findOne({
+              where: {
+                suggestion_id: qSuggestions[j].id,
+                memberAddress: req.query.user
+              }
+            });
 
-          if(!qMyVote) {
-            result.push(qSuggestions[j].dataValues);
+            if(!qMyVote) {
+              result.push(qSuggestions[j].dataValues);
+            }
           }
         }
       }

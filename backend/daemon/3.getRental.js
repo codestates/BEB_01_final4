@@ -10,15 +10,15 @@ const basePath = __dirname;
 //사용자1(account6) const ownerAddress = '0x7C103842366E592158569cFb732AD6c373714523';
 //사용자1(account6) const privateKey = 'e317944870dd3ce63ad08aac9f673d192e15782227c97a79e7121e31cba7108e';
 //사용자2(account7)
-const ownerAddress = '0xF042b493273dE38123Cb288730Db92304bB6541d';
-const privateKey = '4475b37738aaff7f44e541a577cf878a947a647378a9004e84dc0103abaab1d7';
+const ownerAddress = '0x3bc40DAD005c1E13199Af558656Fa06023c37af7';
+const privateKey = 'e532ab08fcccb7a5d4dfe60f5293eac3798eacbc6b674180701574a7be54b6a7';
 
 //NFT 의 컬랙션 정보
 //aether
-const ca = '0x51E34270f02C57a384c1c1C47Efc7eCC982C60Ab';
+const ca = '0x2b490d11346D18Ac4dADA349aB34c5E3B334533C';
 
 //tran
-const tran = '0xf812c034ef5a748891c2f540bda96e194bc75f7b4a07621c199973cf61abc5de';
+const tran = '0x5452c1317bf0476a50d3f59656746ba4380f21acd152a223d4fe971534cd0c27';
 
 //NFT 토큰 정보
 const iToken_ids = 6;
@@ -70,7 +70,22 @@ async function test(tran) {
       }
     }
 
+    console.log('===============================================');
+    
+    //token  거래 상태 및 owner 확인
+    const contractObj = new web3.eth.Contract(
+      coffer_abi, tx.to,
+    );
+    const total = await contractObj.methods.getTotal().call();
+    console.log(`참여자수: ${total}`);
+    //const getSuggestionState = await contractObj.methods.getSuggestionState(2).call();
+    //console.log(getSuggestionState);
+    
 
+    console.log('===============================================');
+    const balance = await web3.eth.getBalance(tx.to);
+    const iBalance = web3.utils.fromWei(balance, 'ether');
+    console.log(iBalance);
     let curBlkNum = await web3.eth.getBlockNumber();
     console.log(curBlkNum);
   } catch(e) {
@@ -78,6 +93,35 @@ async function test(tran) {
   }
 }
 
+//vote
+vote();
+async function vote() {
+  // 컨트랙트 객체 생성
+  const contractObj = new web3.eth.Contract(
+    coffer_abi, ca, 
+    {
+      from: ownerAddress,
+      gasPrice: "200000",
+    }
+  );
+
+  //보낼 트랜잭션 데이터 생성
+  const data = contractObj.methods.vote(2, 1).encodeABI();
+
+  //트랜잭션에 server 서명
+  signedTx = await web3.eth.accounts.signTransaction(
+      {
+          to: ca, //받는 사람이 아니라, 계약주소임. 받는 사람은 transfer 함수에 설정
+          gas: 6721975,
+          data: data,
+      }, privateKey);
+
+  //트랜잭션 발송
+  rtnTran = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+  
+  console.log(rtnTran);
+}
+//sell(abi, ca, ownerAddress, privateKey, iToken_ids, iPrice);
 
 
 
