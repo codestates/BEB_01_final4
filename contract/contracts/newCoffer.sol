@@ -54,6 +54,9 @@ contract coffer is Ownable {
     mapping(address => uint256) private _queue; //가입 요청하는 사용자 queue 관리
     mapping(uint256 => mapping(address => uint256)) private _sellNftStake; //지분판매 관리
     mapping(address => mapping(uint256 => uint256)) private _allocateNft; //판매 혹은 대여 등록된 nft collection => tokenid => _nfts id, 거래 완료후 해당 nft찾아서 분배하기 위함
+    
+    mapping(uint256 => mapping(address => bool)) private _isVoted;//중복투표 방지
+    
     //event start//
     event set_target(
         address indexed _collection,
@@ -165,8 +168,7 @@ contract coffer is Ownable {
 
     //탈퇴
     function withdraw() public onlyOwner {
-        require(_queue[msg.sender] == 0, "Coffer: Withdraw fail");
-        require(_totalBalance[msg.sender] == 0, "Coffer: Withdraw fail"); //wallet 안에 자산이 없는 경우에만
+        require(_queue[msg.sender] == 0 && _totalBalance[msg.sender] == 0, "Coffer: Withdraw fail");
         _delOwnership(msg.sender);
     }
 
@@ -398,8 +400,8 @@ contract coffer is Ownable {
 
     function vote(uint256 _idx, bool _vote) public payable onlyOwner {
         uint8 targetState = _suggestion[_idx].state;
-        require(targetState != 2, "Coffer: Already end"); //이미 종료된 suggestion이면 정지
-
+        require(targetState == 2 && !_isVoted[_idx][msg.sender], "Coffer: Already end"); //이미 종료된 suggestion이면 정지 && 중복투표 방지
+        _isVoted[_idx][msg.sender] = true;
         uint256 targetDate = _suggestion[_idx].date;
         uint8 targetType = _suggestion[_idx].types;
         uint256 targetAgree = _suggestion[_idx].agree;
@@ -415,7 +417,7 @@ contract coffer is Ownable {
             uint256 _voteNum;
             (bool check, uint256 _base) = SafeMath.tryDiv(getTotal(), 3);
             require(check, "Coffer: Get base member fail");
-            if (getTotal() < 5) {
+            if (getTotal() < 10) {
                 _voteNum = 1;
             } else {
                 _voteNum = getVoteNum();
