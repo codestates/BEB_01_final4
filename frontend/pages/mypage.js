@@ -427,7 +427,7 @@ const MyPage = () => {
               <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="투표 중인 깐부">
                 <div style={{ padding: "0 40px" }}>
                   {/* <Text style={{ fontSize: "36px", fontWeight: "bold" }}>투표 중인 깐부</Text> */}
-                  <GGanbuVote suggestions={suggestions} />
+                  <GGanbuVote suggestions={suggestions} setSuggestions={setSuggestions} />
                 </div>
 
                 {/* <SimpleGrid
