@@ -23,7 +23,7 @@ const ImageContainer = styled.div`
 `;
 
 const PreviewImage = styled.img`
-  width: 100%;
+  // width: 100%;
   height: 100%;
   border-radius: 10px;
   :hover {
@@ -70,7 +70,6 @@ function UploadFile({ imageURI, setImageURI }) {
         });
         console.log(addedImg);
         const url = `https://ipfs.infura.io/ipfs/${addedImg.path}`;
-        // const url = `https://ipfs.io/ipfs/${addedImg.path}`;
         console.log(url);
         setImageURI(url);
       } catch (e) {
