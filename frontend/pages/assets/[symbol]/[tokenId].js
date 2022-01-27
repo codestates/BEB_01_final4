@@ -549,7 +549,7 @@ const Asset = () => {
                           : null}
                       </>
                     ) : (
-                      <>Upadting...</>
+                      <>Updating...</>
                     )}
                   </Text>
                 </div>
@@ -585,7 +585,7 @@ const Asset = () => {
                         }
 
                         if (nft?.recruiting?.members.find((member) => member.memberAddress === account)) {
-                          alert("이미 깐부로 참여 중입니다.");
+                          alert("이미 해당 NFT 구매를 위한 깐부로 참여 중입니다.");
                           return;
                         }
 

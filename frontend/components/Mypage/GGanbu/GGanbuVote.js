@@ -53,14 +53,14 @@ const GGanbuVote = ({ suggestions, setSuggestions }) => {
         toBlock: txResult.blockNumber,
       });
 
-      console.log(event);
+      console.log(event.returnValues);
     } else {
       let event = await cofferContract.getPastEvents("reject", {
         fromBlock: txResult.blockNumber,
         toBlock: txResult.blockNumber,
       });
 
-      console.log(event);
+      console.log(event.returnValues);
     }
     setOpened(false);
     // refetchSuggestions();
@@ -68,30 +68,41 @@ const GGanbuVote = ({ suggestions, setSuggestions }) => {
 
   const rows = suggestions.map((suggestion, idx) => (
     <tr key={idx}>
-      <td>{suggestion.gganbu.asset.name}</td>
+      <td>{suggestion?.gganbu?.asset?.name}</td>
       <td>
-        <Image src={suggestion.gganbu.asset.imageURI} width={128} height={128} alt="" />
+        <Image src={suggestion?.gganbu?.asset?.imageURI} width={128} height={128} alt="" />
       </td>
       <td>
-        <div style={{ display: "flex" }}>
-          <Image src="/images/eth.svg" width={12} height={12} alt="" />
-          <span style={{ marginLeft: "5px" }}>{suggestion.gganbu.asset.price}</span>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          {suggestion?.gganbu?.asset?.price === null ? (
+            "-"
+          ) : (
+            <>
+              <Image src="/images/eth.svg" width={12} height={12} alt="" />
+              <span style={{ marginLeft: "5px" }}>{suggestion?.gganbu?.asset?.price}</span>
+            </>
+          )}
         </div>
       </td>
       <td>
         <div style={{ display: "flex" }}>
           <Image src="/images/eth.svg" width={12} height={12} alt="" />
-          <span style={{ marginLeft: "5px" }}>{suggestion.gganbu.asset.recruiting.balance}</span>
+          <span style={{ marginLeft: "5px" }}>{suggestion?.gganbu?.balance}</span>
         </div>
       </td>
-      <td>{suggestion.gganbu.asset.description}</td>
+      <td>{suggestion?.gganbu?.asset?.description}</td>
       <td>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           {/* 타입 종류 0:join , 1: sell, 2: rent, 3: pay */}
           <div>
-            {suggestion.type === "join" && (
+            {suggestion?.type === "join" && (
               <Badge style={{ fontSize: "14px" }} radius={4}>
                 깐부 참여 건
+              </Badge>
+            )}
+            {suggestion?.type === "sell" && (
+              <Badge color="orange" style={{ fontSize: "14px" }} radius={4}>
+                NFT 판매 건
               </Badge>
             )}
           </div>
@@ -124,6 +135,26 @@ const GGanbuVote = ({ suggestions, setSuggestions }) => {
           </div>
         )}
 
+        {selectedSuggestion?.type === "sell" && (
+          <div>
+            <Text style={{ fontSize: "18px" }} align="center">
+              NFT 판매 건
+            </Text>
+            <div style={{ margin: "30px 0", display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center" }}>
+                {console.log(selectedSuggestion?.gganbu?.asset?.imageURI)}
+                <Image src={selectedSuggestion?.gganbu?.asset?.imageURI} width={128} height={128} alt="" />
+              </div>
+
+              <div style={{ display: "flex", marginTop: "20px" }}>
+                <Text style={{ marginRight: "5px" }}>판매 제안 금액:</Text>
+                <Image src="/images/eth.svg" height={10} width={10} alt="" />
+                <Text style={{ marginLeft: "5px" }}>{selectedSuggestion?.targetPrice}</Text>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div style={{ display: "flex", justifyContent: "space-around" }}>
           <Button onClick={() => handleVote(true)}>찬성</Button>
           <Button onClick={() => handleVote(false)} color="red">
@@ -140,7 +171,7 @@ const GGanbuVote = ({ suggestions, setSuggestions }) => {
         <tr>
           <th>name</th>
           <th>item</th>
-          <th>판매금액</th>
+          <th style={{ textAlign: "center" }}>판매금액</th>
           <th>모금액</th>
           <th>설명</th>
           <th style={{ textAlign: "center" }}>안건</th>
