@@ -28,7 +28,7 @@ const basePath = __dirname;
   const coffer_abi = require("./CofferERC721_ABI");
 
   // 조회를 원하는 시작 블록 번호
-  //let startBlockNumber = 102; 
+  //let startBlockNumber = 110; 
   let startBlockNumber = Number(
     fs.readFileSync(path.join(basePath, '/blockNumber'), {
       encoding: 'utf-8',
@@ -731,13 +731,13 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
           }
         } else if(decodedLogs[i].name == 'payment') {
           //payment 컬랙션주소, 토큰ID, 가격, 옵션
-
           // 만약 payment(1), 즉 buy 트랜잭션이라면
-          if(decodedLogs[i].events[3].value == 1) {
-            tx.input_tokenId = Number(decodedLogs[i].events[1].value);
-            tx.input_price = Number(decodedLogs[i].events[2].value);
-            tx.input_collectionAddress = decodedLogs[i].events[0].value;
-
+          if(decodedLogs[i].events[4].value == 1) {
+            console.log(`이게 돌아야지1??????`);
+            tx.input_tokenId = Number(decodedLogs[i].events[2].value);
+            tx.input_price = Number(decodedLogs[i].events[3].value);
+            tx.input_collectionAddress = decodedLogs[i].events[1].value;
+            
             //payment 가 발생하면 구매를 한거기 때문에 gganbu_wallets 상태가 바뀐다
             await GGanbu_wallets.update(
               {
@@ -748,7 +748,7 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
                   gganbuAddress: qSuggestion.orgAddress
                 },
             });
-
+            
             //DB업데이트
             await NFTs.update(
               {
@@ -761,7 +761,6 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
                 }
               }
             );
-
             const result = await Trades.update(
               {
                 status: 'completed',
@@ -776,7 +775,6 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
                 },
               }
             );
-
             if(result > 0) {
               console.log(`========== GGanbu Trade has been dealed =======`);
               console.log(tx);
