@@ -18,7 +18,7 @@ const utils = require('./utils');
  *  ?tab=history        <= 종료된 내역
  */
 router.get('/', async (req, res, next) => {
-  let whereOption = {type:'gganbu'};
+  let whereOption = {type:'gganbu',isActive:true};
   if(req.query.tab) {
     if(req.query.tab == 'recruit') {
       whereOption.status = req.query.tab;
