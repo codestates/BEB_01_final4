@@ -36,9 +36,15 @@ const GGanbuBoard = ({ gganbuList }) => {
         <td>{gganbu?.asset?.imageURI && <Image src={gganbu?.asset?.imageURI} width={128} height={128} alt="" />}</td>
         <td style={{ textAlign: "center" }}>{gganbu?.num_of_members}</td>
         <td>
-          <div style={{ display: "flex" }}>
-            <Image src="/images/eth.svg" width={12} height={12} alt="" />
-            <span style={{ marginLeft: "5px" }}>{gganbu?.asset?.price}</span>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            {gganbu?.asset?.price === null ? (
+              "-"
+            ) : (
+              <>
+                <Image src="/images/eth.svg" width={12} height={12} alt="" />
+                <span style={{ marginLeft: "5px" }}>{gganbu?.asset?.price}</span>
+              </>
+            )}
           </div>
         </td>
         <td>
@@ -62,7 +68,7 @@ const GGanbuBoard = ({ gganbuList }) => {
           <th>name</th>
           <th>item</th>
           <th style={{ textAlign: "center" }}>가입자 수</th>
-          <th>판매금액</th>
+          <th style={{ display: "flex", justifyContent: "center" }}>판매금액</th>
           <th>모금액</th>
           <th style={{ textAlign: "center" }}>모금 비율</th>
           <th>설명</th>
