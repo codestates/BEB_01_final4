@@ -176,7 +176,7 @@ const Layout = ({ children }) => {
             </div>
 
             <div style={{ display: "flex", alignItems: "center" }}>
-              {account && <Badge style={{ fontSize: "17px" }}>{`${compressAddress(account)}`}</Badge>}
+              {account && <Badge radius={4} style={{ fontSize: "17px" }}>{`${compressAddress(account)}`}</Badge>}
               {account && <Profile />}
 
               {!account && (
