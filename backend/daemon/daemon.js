@@ -203,10 +203,14 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
               if(decodedLogs[i].events[j].name == 'from') { 
                 if(Web3.utils.toChecksumAddress(decodedLogs[i].events[j].value) == gganbus[gNum].gganbuAddress) {
                   //특정 깐부지갑의 NFT 를 구매했다면 깐부지갑 정보 업데이트
+                  const balance = await web3.eth.getBalance(gganbus[gNum].gganbuAddress);
+                  const iBalance = web3.utils.fromWei(balance, 'ether');
+                  console.log(iBalance);
                   await GGanbu_wallets.update(
                     {
                       status: 'closed',
-                      isActive: false
+                      isActive: false,
+                      balance: iBalance
                     },
                     {
                       where:{
@@ -221,28 +225,6 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
           }
         }
       }
-
-          // //데이터
-          // let iCollectionAddress;
-          // let iTokenId;
-          // let iPrice;
-
-          // for(let j=0;j<decodedLogs[i].events.length;j++) {
-          //   let eventName = decodedLogs[i].events[j].name;
-          //   let eventValue = decodedLogs[i].events[j].value;
-            
-          //   if(eventName == 'collection') {
-          //     iCollectionAddress = Web3.utils.toChecksumAddress(eventValue);
-          //   } else if(eventName == 'tokenId') {
-          //     iTokenId = eventValue;
-          //   } else if(eventName == 'price') {
-          //     iPrice = await web3.utils.fromWei(eventValue, "ether");
-          //   }
-          // }
-
-
-
-
 
       tx.input_tokenId = Number(decodedData.params[1].value);
       tx.input_price = Number(tx.value);
