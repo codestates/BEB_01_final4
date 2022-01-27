@@ -1,34 +1,45 @@
-import { Grid } from "@mantine/core";
+import { Grid, Button, Modal, Table, Text, TextInput } from "@mantine/core";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { CImage, CollectionWrapper, EllipsisDiv } from "./styles";
+import styled from "styled-components";
+
+const CTable = styled(Table)`
+  && td {
+    font-size: 16px;
+  }
+
+  && th {
+    font-size: 16px;
+  }
+`;
 
 const DaoCard = ({ dao }) => {
   const router = useRouter();
 
   return (
     <Grid.Col
-      span={4}
+      span={6}
       md={6}
-      lg={4}
+      lg={6}
       onClick={() => {
         router.push(`/dao/${dao.daoAddress}`);
       }}
     >
       <CollectionWrapper
         style={{
-          width: 380,
+          width: 600,
           margin: "20px auto",
           border: "1px solid rgb(229, 232, 235)",
           borderRadius: "10px",
         }}
       >
-        {/* <div>
+        <div>
           {dao.banner_url && (
             <CImage
               unoptimized={true}
               // src={collection.assets[0].tokenURI}
-              src={dao.banner_url}
+              src="/images/mypage-banner.png"
               width="380px"
               height="200px"
               layout="responsive"
@@ -36,7 +47,7 @@ const DaoCard = ({ dao }) => {
               alt=""
             />
           )}
-        </div> */}
+        </div>
         <div
           style={{
             width: "58px",
@@ -46,7 +57,7 @@ const DaoCard = ({ dao }) => {
             marginTop: "-30px",
             position: "relative",
             border: "1px solid grey",
-            backgroundColor: "white",
+            backgroundColor: "blue",
           }}
         >
           {/* <div
@@ -63,24 +74,21 @@ const DaoCard = ({ dao }) => {
             }}
           ></div> */}
         </div>
-        <div style={{ height: "180px", overflow: "hidden", padding: "0 10px" }}>
+        <div style={{ height: "300px", overflow: "hidden", padding: "0 10px" }}>
           <div
             style={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              height: "30%",
+              height: "20%",
               overflow: "hidden",
               fontWeight: "bold",
               fontSize: "20px",
             }}
           >
             {dao.name}
-            <div style={{ display: "flex", fontSize: "24px", margin: "0px 4px", cursor: "pointer" }}>
-              <Image src="/images/verified.png" width="36px" height="36px" alt="" />
-            </div>
           </div>
-          <EllipsisDiv>
+          <div>
             <p
               style={{
                 wordWrap: "break-word",
@@ -93,9 +101,41 @@ const DaoCard = ({ dao }) => {
             >
               {dao.description}
             </p>
-          </EllipsisDiv>
+          </div>
+          <CTable highlightOnHover>
+            <tbody>
+              <tr style={{ cursor: "pointer" }}>
+                <td style={{ width: "20%" }}>가입자#</td>
+                <td style={{ width: "30%" }}>{dao.num_of_members} 명</td>
+                <td style={{ width: "20%" }}>자금 Pool</td>
+                <td style={{ width: "30%" }}>
+                  <div style={{ display: "flex" }}>
+                    <Image src="/images/eth.svg" width={12} height={12} alt="" />
+                    <span style={{ marginLeft: "5px" }}>
+                      {Math.round(parseFloat(dao.members.reduce((acc, cur) => acc + cur.staking_value, 0)) * 100) / 100}
+                    </span>
+                  </div>
+                </td>
+              </tr>
+              <tr style={{ cursor: "pointer" }}>
+                <td style={{ width: "20%" }}>TBD</td>
+                <td style={{ width: "30%" }}>TBD</td>
+                <td style={{ width: "20%" }}>TBD</td>
+                <td style={{ width: "30%" }}>TBD</td>
+              </tr>
+              <tr style={{ cursor: "pointer" }}>
+                <td style={{ width: "20%" }}>TBD</td>
+                <td style={{ width: "30%" }}>TBD</td>
+                <td style={{ width: "20%" }}>TBD</td>
+                <td style={{ width: "30%" }}>TBD</td>
+              </tr>
+            </tbody>
+          </CTable>
+
         </div>
       </CollectionWrapper>
+
+
     </Grid.Col>
   );
 };

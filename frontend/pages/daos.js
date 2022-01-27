@@ -12,7 +12,6 @@ const DAOs = () => {
     const {
       data: { data: daos },
     } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/dao?tab=operate`);
-    console.log(daos);
     setDaos(daos);
   };
 
@@ -23,9 +22,22 @@ const DAOs = () => {
   return (
     <div>
       <Text align="center" style={{ fontSize: "32px", margin: "30px 0 80px 0" }}>
-        Explore D A O
+        Explore D A O (temp)
       </Text>
-      <DaoBoard daoList={daos} />
+      <SimpleGrid
+        style={{ padding: "0 0px" }}
+        cols={2}
+        spacing="lg"
+        breakpoints={[
+          { maxWidth: 1250, cols: 1, spacing: "md" },
+          { maxWidth: 850, cols: 1, spacing: "sm" },
+        ]}
+      >
+        {daos?.map((dao) => (
+          <DaoCard dao={dao} key={dao.id} />
+        ))}
+      </SimpleGrid>
+      {/* <DaoBoard daoList={daos} /> */}
     </div>
   );
 };

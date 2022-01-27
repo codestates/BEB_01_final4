@@ -255,7 +255,7 @@ const utils = {
     }
   },
   //dao instance 넣으면 정보 추가
-  addDaoInfo: async (dao) => {
+  addDAOInfo: async (dao) => {
     try {
       //members 정보
       let qMembers = await DAO_members.findAll({
