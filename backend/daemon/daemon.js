@@ -28,11 +28,11 @@ const basePath = __dirname;
   const coffer_abi = require("./CofferERC721_ABI");
 
   // 조회를 원하는 시작 블록 번호
-  let startBlockNumber = 99; 
-  // let startBlockNumber = Number(
-  //   fs.readFileSync(path.join(basePath, '/blockNumber'), {
-  //     encoding: 'utf-8',
-  //   }),) + 1;
+  //let startBlockNumber = 99; 
+  let startBlockNumber = Number(
+    fs.readFileSync(path.join(basePath, '/blockNumber'), {
+      encoding: 'utf-8',
+    }),) + 1;
 /*=======================================================*/
 
 const abiDecoder = require('abi-decoder'); // NodeJS
@@ -752,6 +752,65 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
             }
           }
         }
+        // 만약 sell 제안이 pass 되었다면
+        else if(decodedLogs[i].name == '_sell') {
+          //데이터
+          let iCollectionAddress;
+          let iTokenId;
+          let iPrice;
+
+          for(let j=0;j<decodedLogs[i].events.length;j++) {
+            let eventName = decodedLogs[i].events[j].name;
+            let eventValue = decodedLogs[i].events[j].value;
+            
+            if(eventName == 'collection') {
+              iCollectionAddress = Web3.utils.toChecksumAddress(eventValue);
+            } else if(eventName == 'tokenId') {
+              iTokenId = eventValue;
+            } else if(eventName == 'price') {
+              iPrice = await web3.utils.fromWei(eventValue, "ether");
+            }
+          }
+          
+          //판매 등록을 한거기 때문에 gganbu_wallets 상태가 바뀐다
+          // await GGanbu_wallets.update(
+          //   {
+          //     status: 'selling'
+          //   },
+          //   {
+          //     where:{
+          //       gganbuAddress: qSuggestion.orgAddress
+          //     },
+          // });
+
+          //Sell trade 요청
+          const inputData = {
+            token_ids: iTokenId,
+            collectionAddress: iCollectionAddress,
+            status: 'selling',
+            price: iPrice,
+            seller: tx.to,
+            buyer: null,
+            sellHash: tx.hash
+          };
+
+          let result = await Trades.findOrCreate({
+            where:{
+              collectionAddress: iCollectionAddress,
+              token_ids: iTokenId,
+              //status: 'selling',
+              sellHash: tx.hash
+            },
+            defaults:inputData
+          });
+
+          if(result[1] === true) {
+            console.log(`========== New trade has been enrolled=======`);
+            console.log(result[0].dataValues);
+            COUNT.sell++;
+          }
+        }
+
       }
     }
     // requestTrade
