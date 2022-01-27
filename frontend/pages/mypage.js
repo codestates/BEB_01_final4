@@ -8,6 +8,7 @@ import {
   MdOutlineFormatPaint,
   MdOutlineSell,
   MdOutlineHistory,
+  MdOutlineHowToVote,
 } from "react-icons/md";
 import CollectionCard from "../components/CollectionCard";
 import axios from "axios";
@@ -22,6 +23,12 @@ import GGanbuVote from "../components/Mypage/GGanbu/GGanbuVote";
 import MyGGanbu from "../components/Mypage/GGanbu/MyGGanbu";
 import GGanbuNFT from "../components/Mypage/GGanbu/GGanbuNFT";
 import DaoVote from "../components/Mypage/DAO/Vote";
+import { RiHandCoinLine } from "react-icons/ri";
+import { IoPeopleSharp } from "react-icons/io5";
+import { IoIosPeople } from "react-icons/io";
+import { AiOutlineWallet } from "react-icons/ai";
+import { VscSignIn } from "react-icons/vsc";
+import { FaRegHandshake } from "react-icons/fa";
 
 const Description = styled.div`
   max-width: 720px;
@@ -299,7 +306,7 @@ const MyPage = () => {
               </CTabs.Tab>
             </CTabs>
           </CTabs.Tab>
-          <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="Rent">
+          <CTabs.Tab icon={<RiHandCoinLine style={{ width: 18, height: 18 }} />} label="Rent">
             <CTabs
               style={{ fontSize: "20px" }}
               active={activeSubTab}
@@ -308,7 +315,7 @@ const MyPage = () => {
               tabPadding="md"
               position="center"
             >
-              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="대여 등록한 내 NFT">
+              <CTabs.Tab icon={<AiOutlineWallet style={{ width: 18, height: 18 }} />} label="대여 등록한 내 NFT">
                 <div style={{ padding: "0 40px" }}>
                   <Text style={{ fontSize: "36px", fontWeight: "bold" }}>대여 등록한 내 NFT</Text>
                   <Text style={{ fontSize: "20px", margin: "20px 0" }}>
@@ -333,7 +340,7 @@ const MyPage = () => {
                   })}
                 </SimpleGrid>
               </CTabs.Tab>
-              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="대여 중인">
+              <CTabs.Tab icon={<FaRegHandshake style={{ width: 18, height: 18 }} />} label="대여 중인">
                 <div style={{ padding: "0 40px" }}>
                   <Text style={{ fontSize: "36px", fontWeight: "bold" }}>대여 중인 NFT</Text>
                   <Text style={{ fontSize: "20px", margin: "20px 0" }}>
@@ -374,7 +381,7 @@ const MyPage = () => {
               </CTabs.Tab> */}
             </CTabs>
           </CTabs.Tab>
-          <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="GGanbu">
+          <CTabs.Tab icon={<IoPeopleSharp style={{ width: 18, height: 18 }} />} label="GGanbu">
             <CTabs
               style={{ fontSize: "20px" }}
               active={activeSubTab}
@@ -383,13 +390,13 @@ const MyPage = () => {
               tabPadding="md"
               position="center"
             >
-              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="참여 중인 깐부">
+              <CTabs.Tab icon={<VscSignIn style={{ width: 18, height: 18 }} />} label="참여 중인 깐부">
                 <MyGGanbu activeSubTab={activeSubTab} />
               </CTabs.Tab>
-              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="깐부 보유 NFT">
+              <CTabs.Tab icon={<AiOutlineWallet style={{ width: 18, height: 18 }} />} label="깐부 보유 NFT">
                 <GGanbuNFT activeSubTab={activeSubTab} />
               </CTabs.Tab>
-              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="투표 중인 깐부">
+              <CTabs.Tab icon={<MdOutlineHowToVote style={{ width: 18, height: 18 }} />} label="투표 중인 깐부">
                 <div style={{ padding: "0 40px" }}>
                   {/* <Text style={{ fontSize: "36px", fontWeight: "bold" }}>투표 중인 깐부</Text> */}
                   <GGanbuVote suggestions={suggestions} setSuggestions={setSuggestions} />
@@ -426,7 +433,7 @@ const MyPage = () => {
               </CTabs.Tab> */}
             </CTabs>
           </CTabs.Tab>
-          <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="D A O">
+          <CTabs.Tab icon={<IoIosPeople style={{ width: 18, height: 18 }} />} label="D A O">
             <CTabs
               style={{ fontSize: "20px" }}
               active={activeSubTab}
@@ -435,7 +442,7 @@ const MyPage = () => {
               tabPadding="md"
               position="center"
             >
-              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="가입한 D A O">
+              <CTabs.Tab icon={<VscSignIn style={{ width: 18, height: 18 }} />} label="가입한 D A O">
                 <div style={{ padding: "0 40px" }}>
                   <DaoJoined activeSubTab={activeSubTab} />
                 </div>
@@ -455,7 +462,7 @@ const MyPage = () => {
                   })}
                 </SimpleGrid> */}
               </CTabs.Tab>
-              <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="투표 중">
+              <CTabs.Tab icon={<MdOutlineHowToVote style={{ width: 18, height: 18 }} />} label="투표 중">
                 <DaoVote />
               </CTabs.Tab>
               <CTabs.Tab icon={<MdOutlineHistory style={{ width: 18, height: 18 }} />} label="D A O 내역">
