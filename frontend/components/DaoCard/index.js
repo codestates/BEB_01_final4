@@ -17,6 +17,30 @@ const CTable = styled(Table)`
 const DaoCard = ({ dao }) => {
   const router = useRouter();
 
+  //가짜 데이터
+  if(dao.name == 'codestates-dao') {
+    //없는 데이터만 등록
+    dao._pool_usage = 0;
+    dao._num_of_own_nft = 0;
+    dao._num_of_lend_nft = 0;
+  }
+  else if(dao.name == 'korean whales') {
+    //모든 정보 상세 페이지와 sync
+    dao.num_of_members = 13;
+    dao.balance = "2,342";
+    dao.rewards = "413";
+
+    dao._pool_usage = 62.69;
+    dao._num_of_own_nft = 13;
+    dao._num_of_lend_nft = 5;
+  } else {
+    // 모두 랜덤
+    dao._pool_usage = 0;
+    dao._num_of_own_nft = 0;
+    dao._num_of_lend_nft = 0;
+  }
+
+
   return (
     <Grid.Col
       span={6}
@@ -24,7 +48,7 @@ const DaoCard = ({ dao }) => {
       lg={6}
       onClick={() => {
         router.push(`/dao/${dao.daoAddress}`);
-      }}
+      }}      
     >
       <CollectionWrapper
         style={{
@@ -112,22 +136,30 @@ const DaoCard = ({ dao }) => {
                   <div style={{ display: "flex" }}>
                     <Image src="/images/eth.svg" width={12} height={12} alt="" />
                     <span style={{ marginLeft: "5px" }}>
-                      {Math.round(parseFloat(dao.members.reduce((acc, cur) => acc + cur.staking_value, 0)) * 100) / 100}
+                      {/* {Math.round(parseFloat(dao.members.reduce((acc, cur) => acc + cur.staking_value, 0)) * 100) / 100} */}
+                      {dao.balance}
                     </span>
                   </div>
                 </td>
               </tr>
               <tr style={{ cursor: "pointer" }}>
-                <td style={{ width: "20%" }}>TBD</td>
-                <td style={{ width: "30%" }}>TBD</td>
-                <td style={{ width: "20%" }}>TBD</td>
-                <td style={{ width: "30%" }}>TBD</td>
+                <td>보유 NFTs</td>
+                <td>{dao._num_of_own_nft} 개</td>
+                <td>Pool 사용률</td>
+                <td>{dao._pool_usage} %</td>
               </tr>
               <tr style={{ cursor: "pointer" }}>
-                <td style={{ width: "20%" }}>TBD</td>
-                <td style={{ width: "30%" }}>TBD</td>
-                <td style={{ width: "20%" }}>TBD</td>
-                <td style={{ width: "30%" }}>TBD</td>
+                <td>대여 NFTs</td>
+                <td>{dao._num_of_lend_nft} 개</td>
+                <td>총 수익</td>
+                <td>
+                  <div style={{ display: "flex" }}>
+                    <Image src="/images/eth.svg" width={12} height={12} alt="" />
+                    <span style={{ marginLeft: "5px" }}>
+                      {dao.rewards}
+                    </span>
+                  </div>
+                </td>
               </tr>
             </tbody>
           </CTable>

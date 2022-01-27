@@ -18,7 +18,7 @@ const privateKey = 'e532ab08fcccb7a5d4dfe60f5293eac3798eacbc6b674180701574a7be54
 const ca = '0x2b490d11346D18Ac4dADA349aB34c5E3B334533C';
 
 //tran
-const tran = '0xa58d70e3dd028ba918f559570f595817f1ba57a82ba16d55f31d4c8ca681c693';
+const tran = '0xabe20714e1be9b4383e22c526ccd2846e01d16f552907866c7d7b0f44b4cb13d';
 
 //NFT 토큰 정보
 const iToken_ids = 6;
