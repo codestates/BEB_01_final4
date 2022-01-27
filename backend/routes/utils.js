@@ -238,10 +238,12 @@ const utils = {
       NFT = await utils.addNftInfo(NFT);
       
       gganbu.asset = NFT;
-      gganbu.ratio_of_staking = gganbu.balance / gganbu.asset.trade_selling.price * 100;
-      gganbu.ratio_of_staking = Math.round(gganbu.ratio_of_staking * 100) / 100;  
-
-
+      if(gganbu.status == 'own') {
+        gganbu.ratio_of_staking = 100;
+      } else if(gganbu.status == 'recruit' && gganbu.asset.isSelling) {
+        gganbu.ratio_of_staking = gganbu.balance / gganbu.asset.trade_selling.price * 100;
+        gganbu.ratio_of_staking = Math.round(gganbu.ratio_of_staking * 100) / 100;  
+      }
       //참여자 수, xx% 모집 완료
       gganbu.num_of_members = qMembers.length;
 
