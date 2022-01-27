@@ -10,7 +10,7 @@ const utils = require('./utils');
 
 /*
  *  /dao
- *  모든 깐부 리스트
+ *  리스트
  *  optional:
  *  ?tab=operate        <= 운영 중인
  *  ?user=<address>     <= 내가 참여 중인

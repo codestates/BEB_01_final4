@@ -67,8 +67,6 @@ router.get('/', async (req, res, next) => {
     }
     
     for (let i = 0; i < result.length; i++) {
-      console.log('----에러 잡자')
-      console.log(result[i].gganbuAddress);
       result[i] = await utils.addGGanbuInfo(result[i]);
     }
 

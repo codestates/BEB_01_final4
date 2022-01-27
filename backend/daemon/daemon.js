@@ -28,11 +28,11 @@ const basePath = __dirname;
   const coffer_abi = require("./CofferERC721_ABI");
 
   // 조회를 원하는 시작 블록 번호
-  //let startBlockNumber = 96; 
-  let startBlockNumber = Number(
-    fs.readFileSync(path.join(basePath, '/blockNumber'), {
-      encoding: 'utf-8',
-    }),) + 1;
+  let startBlockNumber = 99; 
+  // let startBlockNumber = Number(
+  //   fs.readFileSync(path.join(basePath, '/blockNumber'), {
+  //     encoding: 'utf-8',
+  //   }),) + 1;
 /*=======================================================*/
 
 const abiDecoder = require('abi-decoder'); // NodeJS
@@ -752,6 +752,83 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
             }
           }
         }
+      }
+    }
+    // requestTrade
+    if(tx.input_name === 'requestTrade') {
+      decodedLogs = abiDecoder.decodeLogs(txReceipt.logs);
+      //console.log(decodedLogs[0].name); <= 'set_suggestion'
+
+      //데이터
+      let iSuggestionIdx;
+      let iType;  //1(판매제안), 2(대여등록 제안), 3(구매제안), 4(대여제안), 5(등록취소?), 6(타겟취소?)
+      let iCollectionAddress;
+      let iTokenId;
+      let iPrice;
+
+      //events
+      for(let i=0;i<decodedLogs[0].events.length;i++) {
+        let eventName = decodedLogs[0].events[i].name;
+        let eventValue = decodedLogs[0].events[i].value;
+
+        if(eventName == '_suggestionIdx') {
+          iSuggestionIdx = eventValue;
+        } else if(eventName == '_type') {
+          if(eventValue == 1) {
+            iType = 'sell';
+          } else if(eventValue == 2) {
+            iType = 'lend';
+          } else if(eventValue == 3) {
+            iType = 'buy';
+          } else if(eventValue == 4) {
+            iType = 'rent';
+          } else if(eventValue == 5) {
+            iType = 'cancel5';
+          } else if(eventValue == 6) {
+            iType = 'cancel6';
+          }
+        } else if(eventName == '_target') {
+          //NFT 컬랙션 주소
+          iCollectionAddress = Web3.utils.toChecksumAddress(eventValue);
+        } else if(eventName == '_tokenId') {
+          //NFT 토큰ID
+          iTokenId = eventValue;
+        } else if(eventName == '_price') {
+          iPrice = await web3.utils.fromWei(eventValue, "ether");
+        }
+      }
+
+      //insert data
+      const inputData = {
+        suggestion_idx: iSuggestionIdx,
+        orgAddress: tx.to,
+        option: 'gganbu',
+        type: iType,
+        targetAddress: iCollectionAddress,
+        targetTokenId: iTokenId,
+        targetPrice: iPrice,
+        totalAccept: 0,
+        totalReject: 0,
+        totalAcceptRatio: 0,
+        totalRejectRatio: 0,
+        suggestedAt: new Date(),
+        status: 'in progress',
+        isValid: true,
+        joiner: null,
+        joiner_staking_value: null
+      };
+
+      let result = await Vote_suggestions.findOrCreate({
+        where:{
+          suggestion_idx: iSuggestionIdx,
+          orgAddress: tx.to,
+        },
+        defaults:inputData
+      });
+
+      if(result[1] === true) {
+        console.log(`========== New suggestion(${iType}) has been enrolled=======`);
+        console.log(result[0].dataValues);
       }
     }
   }

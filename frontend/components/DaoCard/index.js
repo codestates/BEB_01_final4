@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { CImage, CollectionWrapper, EllipsisDiv } from "./styles";
 
-const DaoCard = ({ collection }) => {
+const DaoCard = ({ dao }) => {
   const router = useRouter();
 
   return (
@@ -12,7 +12,7 @@ const DaoCard = ({ collection }) => {
       md={6}
       lg={4}
       onClick={() => {
-        router.push(`/collections/${collection.symbol}`);
+        router.push(`/dao/${dao.daoAddress}`);
       }}
     >
       <CollectionWrapper
@@ -23,12 +23,12 @@ const DaoCard = ({ collection }) => {
           borderRadius: "10px",
         }}
       >
-        <div>
-          {collection.banner_url && (
+        {/* <div>
+          {dao.banner_url && (
             <CImage
               unoptimized={true}
               // src={collection.assets[0].tokenURI}
-              src={collection.banner_url}
+              src={dao.banner_url}
               width="380px"
               height="200px"
               layout="responsive"
@@ -36,7 +36,7 @@ const DaoCard = ({ collection }) => {
               alt=""
             />
           )}
-        </div>
+        </div> */}
         <div
           style={{
             width: "58px",
@@ -49,7 +49,7 @@ const DaoCard = ({ collection }) => {
             backgroundColor: "white",
           }}
         >
-          <div
+          {/* <div
             style={{
               width: "50px",
               height: "50px",
@@ -57,11 +57,11 @@ const DaoCard = ({ collection }) => {
               margin: "0 auto",
               marginTop: "3px",
               position: "relative",
-              backgroundImage: `url(${collection.image_url})`,
+              backgroundImage: `url(${dao.image_url})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
-          ></div>
+          ></div> */}
         </div>
         <div style={{ height: "180px", overflow: "hidden", padding: "0 10px" }}>
           <div
@@ -75,7 +75,7 @@ const DaoCard = ({ collection }) => {
               fontSize: "20px",
             }}
           >
-            {collection.name}
+            {dao.name}
             <div style={{ display: "flex", fontSize: "24px", margin: "0px 4px", cursor: "pointer" }}>
               <Image src="/images/verified.png" width="36px" height="36px" alt="" />
             </div>
@@ -91,7 +91,7 @@ const DaoCard = ({ collection }) => {
                 fontSize: "18px",
               }}
             >
-              {collection.description}
+              {dao.description}
             </p>
           </EllipsisDiv>
         </div>
