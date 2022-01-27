@@ -53,7 +53,20 @@ router.get('/', async (req, res, next) => {
           where: whereOption,
         });
         if(qMyGGanbus) {
-          result.push(qMyGGanbus.dataValues);
+          let qData = qMyGGanbus.dataValues;
+
+          //내 정보 추가
+          qData.my_first_staking_value = qMyMembers[i].dataValues.staking_value;
+          qData.my_first_staking_ratio = qMyMembers[i].dataValues.staking_ratio;
+          qData.my_profit = Math.round((qData.balance * qData.my_first_staking_ratio / 100 - qData.my_first_staking_value)*100) / 100;
+          
+          qData.my_current_staking_value = 0;
+          
+          if(qMyMembers[i].dataValues.status == 'active') {
+            qData.my_current_staking_value = qData.my_profit + qData.my_first_staking_value;
+          }
+
+          result.push(qData);
         }
       }
     } else {
