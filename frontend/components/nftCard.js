@@ -58,10 +58,10 @@ const NFTCard = ({ collectionSymbol, nft }) => {
         }}
       >
         <div>
-          {nft?.imageURI && (
+          {(nft?.imageURI || nft?.asset?.imageURI) && (
             <CImage
               unoptimized={true}
-              src={nft?.imageURI}
+              src={nft?.imageURI || nft?.asset?.imageURI}
               width="320px"
               height="320px"
               layout="responsive"
@@ -81,7 +81,7 @@ const NFTCard = ({ collectionSymbol, nft }) => {
               대여 가능
             </Badge>
           )}
-          {!nft?.is_minted && (
+          {!nft?.is_minted && !nft?.asset?.is_minted && (
             <Badge size="lg" color="blue" radius={4} variant="outline">
               민팅 중
             </Badge>
@@ -102,7 +102,7 @@ const NFTCard = ({ collectionSymbol, nft }) => {
             fontSize: "18px",
           }}
         >
-          <div style={{ width: "70%" }}>{nft?.name}</div>
+          <div style={{ width: "70%" }}>{nft?.name || nft?.asset?.name}</div>
           {nft?.isSelling && (
             <div style={{ display: "flex", width: "30%", flexDirection: "column", alignItems: "flex-end" }}>
               <span>Price</span>
