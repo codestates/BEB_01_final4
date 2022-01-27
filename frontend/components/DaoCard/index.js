@@ -19,27 +19,58 @@ const DaoCard = ({ dao }) => {
 
   //가짜 데이터
   if(dao.name == 'codestates-dao') {
-    //없는 데이터만 등록
+    //[시연 생성] 없는 데이터만 등록
+    dao.in_progress_suggestions = [];
+
     dao._pool_usage = 0;
     dao._num_of_own_nft = 0;
     dao._num_of_lend_nft = 0;
+    dao._user_staking = dao.balance;
+    dao._num_of_total_buy = 0;
+    dao._num_of_total_sell = 0;
+    dao._num_of_total_suggestions = 0;
+    dao._ratio_of_vote_pass = 0;
+    dao._num_of_pool_use = 0;
+    dao._num_of_pool_useble = dao.balance;
+    dao._my_ratio = 100;
+    dao._my_value = dao.balance;
+    dao._my_rewards = 0;
+    dao._my_staking = dao.balance;
+    dao._my_input = dao.balance;
+    dao._my_output = 0;
   }
   else if(dao.name == 'korean whales') {
-    //모든 정보 상세 페이지와 sync
+    //[시연 view] 모든 정보 상세 페이지와 sync
     dao.num_of_members = 13;
-    dao.balance = "2,342";
-    dao.rewards = "413";
+    dao.balance = 670.12;
+    dao.rewards = "340.55";
+    dao.createdAt = dao.createdAt;
+    dao.in_progress_suggestions = [1,2,3,4,5];
 
     dao._pool_usage = 62.69;
     dao._num_of_own_nft = 13;
     dao._num_of_lend_nft = 5;
+    dao._user_staking = 434;
+    dao._num_of_total_buy = 18;
+    dao._num_of_total_sell = 7;
+    dao._num_of_total_suggestions = 54;
+    dao._ratio_of_vote_pass = 84;
+    dao._num_of_pool_use = 420.12;
+    dao._num_of_pool_useble = 250;
+    dao._my_ratio = 4.84;
+    dao._my_value = 32.43;
+    dao._my_rewards = 12.43;
+    dao._my_staking = 20;
+    dao._my_input = 32;
+    dao._my_output = 12;
+
   } else {
     // 모두 랜덤
+    dao.in_progress_suggestions = [];
     dao._pool_usage = 0;
     dao._num_of_own_nft = 0;
     dao._num_of_lend_nft = 0;
   }
-
 
   return (
     <Grid.Col
@@ -165,6 +196,7 @@ const DaoCard = ({ dao }) => {
           </CTable>
 
         </div>
+
       </CollectionWrapper>
 
 
