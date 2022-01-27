@@ -6,7 +6,7 @@ import { Coffer } from "../../../../public/compiledContracts/Coffer";
 import { useStore } from "../../../../utils/store";
 import MyDaoTable from "./myDaoTable";
 
-const Joined = ({ activeSubTab }) => {
+const DoJoined = ({ activeSubTab }) => {
   const [web3, account] = useStore((state) => [state.web3, state.account]);
   const [opened, setOpened] = useState(false);
   const [name, setName] = useInputState("");
@@ -115,4 +115,4 @@ const Joined = ({ activeSubTab }) => {
   );
 };
 
-export default Joined;
+export default DoJoined;
