@@ -102,7 +102,7 @@ const Layout = ({ children }) => {
               </Link>
             </CButton>
             <CButton variant="white" onClick={() => setOpened(!opened)}>
-              <Link href="/dao" passHref>
+              <Link href="/daos" passHref>
                 <CText>D A O</CText>
               </Link>
             </CButton>
@@ -168,7 +168,7 @@ const Layout = ({ children }) => {
                   <Link href="/gganbu" passHref>
                     <CText>GGanbu</CText>
                   </Link>
-                  <Link href="/dao" passHref>
+                  <Link href="/daos" passHref>
                     <CText>D A O</CText>
                   </Link>
                 </CHeader>

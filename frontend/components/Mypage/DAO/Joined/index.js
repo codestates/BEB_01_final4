@@ -6,10 +6,11 @@ import { Coffer } from "../../../../public/compiledContracts/Coffer";
 import { useStore } from "../../../../utils/store";
 import MyDaoTable from "./myDaoTable";
 
-const Joined = ({ activeSubTab }) => {
+const DoJoined = ({ activeSubTab }) => {
   const [web3, account] = useStore((state) => [state.web3, state.account]);
   const [opened, setOpened] = useState(false);
   const [name, setName] = useInputState("");
+  const [amount, setAmount] = useInputState("");
   const [description, setDescription] = useInputState("");
   const [myDaos, setMyDao] = useState([]);
 
@@ -37,12 +38,13 @@ const Joined = ({ activeSubTab }) => {
         data: Coffer.bytecode,
         arguments: ["0x0000000000000000000000000000000000000000", 0, 0, 4],
       })
-      .send({ from: account });
+      .send({ from: account, value: web3.utils.toWei(amount, "ether") });
 
     // console.log(cofferContract);
     // console.log(cofferContract._address);
 
-    console.log({ daoAddress: cofferContract._address, name, description });
+    // console.log({ daoAddress: cofferContract._address, name, description });
+
     if (cofferContract._address) {
       await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/dao`,
@@ -59,6 +61,8 @@ const Joined = ({ activeSubTab }) => {
     setOpened(false);
     setName("");
     setDescription("");
+
+    getMyDaos();
   };
 
   return (
@@ -90,6 +94,17 @@ const Joined = ({ activeSubTab }) => {
           required
         />
         <Textarea value={description} onChange={setDescription} placeholder="DAO 설명" label="DAO 설명" required />
+
+        <TextInput
+          value={amount}
+          onChange={setAmount}
+          style={{ margin: "20px 0" }}
+          placeholder="ETH"
+          label="참여 금액"
+          required
+          type="number"
+        />
+
         <div style={{ textAlign: "center", marginTop: "20px" }}>
           <Button onClick={handleCreateDAO}>생성</Button>
         </div>
@@ -100,4 +115,4 @@ const Joined = ({ activeSubTab }) => {
   );
 };
 
-export default Joined;
+export default DoJoined;

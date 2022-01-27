@@ -17,10 +17,11 @@ import NFTCard from "../components/nftCard";
 import History from "../components/history";
 import RentHistory from "../components/rent_history";
 import { compressAddress } from "../utils";
-import Joined from "../components/Mypage/DAO/Joined";
+import DaoJoined from "../components/Mypage/DAO/Joined";
 import GGanbuVote from "../components/Mypage/GGanbu/GGanbuVote";
 import MyGGanbu from "../components/Mypage/GGanbu/MyGGanbu";
 import GGanbuNFT from "../components/Mypage/GGanbu/GGanbuNFT";
+import DaoVote from "../components/Mypage/DAO/Vote";
 
 const Description = styled.div`
   max-width: 720px;
@@ -436,7 +437,7 @@ const MyPage = () => {
             >
               <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="가입한 D A O">
                 <div style={{ padding: "0 40px" }}>
-                  <Joined activeSubTab={activeSubTab} />
+                  <DaoJoined activeSubTab={activeSubTab} />
                 </div>
 
                 {/* <SimpleGrid
@@ -455,25 +456,7 @@ const MyPage = () => {
                 </SimpleGrid> */}
               </CTabs.Tab>
               <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="투표 중">
-                <div style={{ padding: "0 40px" }}>
-                  <Text style={{ fontSize: "36px", fontWeight: "bold" }}>투표 중</Text>
-                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>TBD</Text>
-                </div>
-
-                {/* <SimpleGrid
-                  style={{ padding: "0 80px" }}
-                  cols={3}
-                  spacing="lg"
-                  breakpoints={[
-                    { maxWidth: 1160, cols: 2, spacing: "md" },
-                    { maxWidth: 840, cols: 1, spacing: "sm" },
-                  ]}
-                >
-                  {rentAssets.map((nft, i) => {
-                    // console.log(nft);
-                    return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
-                  })}
-                </SimpleGrid> */}
+                <DaoVote />
               </CTabs.Tab>
               <CTabs.Tab icon={<MdOutlineHistory style={{ width: 18, height: 18 }} />} label="D A O 내역">
                 <div style={{ padding: "0 40px" }}>
