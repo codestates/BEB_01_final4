@@ -65,7 +65,8 @@ contract coffer is Ownable {
         uint8 _option
     ); //거래하고자 하는 nft info set할때 발생하는 event
     event payment(
-        address indexed _collection,
+        uint256 indexed _idx,
+        address  _collection,
         uint256 _tokenId,
         uint256 _price,
         uint8 _option
@@ -83,7 +84,7 @@ contract coffer is Ownable {
     event sellNftStake(uint256 indexed _idx, uint256 price, address _owner);
     event buyNftStake(uint256 indexed _idx, uint256 price, address _owner);
    
-
+    event getNFTFromUser(uint256 indexed _idx);
     //event end//
     constructor(
         address _collection,
@@ -119,6 +120,8 @@ contract coffer is Ownable {
     }
 
     //public getter function
+
+  
     function getTargetBalance() public view returns(uint256){
         return _targetBalance;
     }
@@ -588,6 +591,7 @@ contract coffer is Ownable {
         }
 
         emit payment(
+            _idx,
             _nfts[_idx].info.collection,
             _nfts[_idx].info.tokenId,
             _nfts[_idx].price,
@@ -627,6 +631,8 @@ contract coffer is Ownable {
         _nfts[idx].stake[msg.sender] = _price;
         _nfts[idx].price = _price;
         _nfts[idx].joinAddr.push(msg.sender);
+
+        emit getNFTFromUser(idx);
     }
 
     //거래 등록
