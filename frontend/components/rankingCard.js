@@ -36,26 +36,25 @@ const BadgeWrapper = styled.div`
 
 const RankingCard = ({ rankInfo, index, category }) => {
   const router = useRouter();
-  console.log(category)
+
   const [imageURI, setImageURI] = useState(null);
   const [name, setName] = useState(null);
+  console.log(name, imageURI);
 
   const getInfo = () => {
     if (category === "nft") {
       setImageURI(rankInfo.asset.imageURI);
       setName(rankInfo.asset.name);
-    }
-    else if (category === "user") {
-      console.log(rankInfo.name)
+    } else if (category === "user") {
+      console.log(rankInfo.name);
       setImageURI(rankInfo.imageURI);
       if (rankInfo.name === null) {
-        setName(`익명의 부자 ${rankInfo.id}`)
-      }
-      else {
+        setName(`익명의 부자 ${rankInfo.id}`);
+      } else {
         setName(rankInfo.name);
       }
     }
-  }
+  };
 
   useEffect(() => {
     getInfo();
@@ -68,9 +67,7 @@ const RankingCard = ({ rankInfo, index, category }) => {
       lg={4}
       onClick={() => {
         if (category === "user") {
-
-        }
-        else if (rankInfo.token_ids) {
+        } else if (rankInfo.token_ids) {
           router.push(`/assets/${rankInfo.collection.symbol}/${rankInfo.token_ids}`);
         } else {
           alert(

@@ -37,7 +37,7 @@ const Description = styled.div`
 
 const Container = styled.div`
   max-width: 100%;
-  padding: 20px 0;
+  padding: 20px 0 150px 0;
 `;
 
 const CTabs = styled(Tabs)`
