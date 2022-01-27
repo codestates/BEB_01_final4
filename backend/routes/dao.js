@@ -64,7 +64,7 @@ router.get('/', async (req, res, next) => {
     console.log(result);   
 
     for (let i = 0; i < result.length; i++) {
-      result[i] = await utils.addDaoInfo(result[i]);
+      result[i] = await utils.addDAOInfo(result[i]);
     }
 
     res.json({ message: "ok", data: result });
@@ -154,5 +154,32 @@ router.post('/', async (req, res, next) => {
     });
   }
 });
+
+
+/*
+ *  /dao/<address>
+ *  DAO 상세 페이지
+ */
+router.get('/:daoAddress', async (req, res, next) => {
+  try {
+    console.log(`======== [GET] /dao/${req.params.daoAddress} ========`);
+    const iDAOAddress = req.params.daoAddress;
+    let result = {};
+
+    const qDAOs = await DAO_wallets.findOne({
+      where: {daoAddress:iDAOAddress}
+    });
+
+    if(qDAOs) {
+      result = await utils.addDAOInfo(qDAOs.dataValues);
+    } else {
+      throw Error('DAO 지갑이 존재하지 않습니다');
+    }
+    res.json({ message: "ok", data: result });
+  } catch (err) {
+      console.error(err);
+  }
+});
+
 
 module.exports = router;
