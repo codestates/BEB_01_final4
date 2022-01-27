@@ -41,7 +41,7 @@ router.get('/', async (req, res, next) => {
         const qMyGGanbus = await GGanbu_wallets.findOne({
           where: {isActive:true,gganbuAddress:qMyMembers[i].dataValues.gganbuAddress}
         });
-
+        
         if(qMyGGanbus) {
           whereOption.orgAddress = qMyGGanbus.gganbuAddress;
 
@@ -77,10 +77,12 @@ router.get('/', async (req, res, next) => {
       });
       result = qSuggestions.map(el => el.dataValues);
     }
-    
+
     for (let i=0; i<result.length; i++) {
       //joiner 정보
-      result[i].joiner_info = await utils.addUserInfo(result[i].joiner);
+      if(result[i].joiner != null && result[i].joiner != 0) {
+        result[i].joiner_info = await utils.addUserInfo(result[i].joiner);
+      }
 
       //투표 정보
       let qMembers = await GGanbu_members.findAll({

@@ -19,7 +19,7 @@ const DAOs = () => {
     } else {
       const {
         data: { data: collections },
-      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/collections`);
+      } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/dao`);
       setCollections(collections);
     }
   };
