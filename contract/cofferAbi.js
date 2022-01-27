@@ -80,6 +80,19 @@ export default [
 		"anonymous": false,
 		"inputs": [
 			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "_idx",
+				"type": "uint256"
+			}
+		],
+		"name": "getNFTFromUser",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
 				"indexed": false,
 				"internalType": "uint8",
 				"name": "_type",
@@ -100,6 +113,12 @@ export default [
 		"inputs": [
 			{
 				"indexed": true,
+				"internalType": "uint256",
+				"name": "_idx",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
 				"internalType": "address",
 				"name": "_collection",
 				"type": "address"
