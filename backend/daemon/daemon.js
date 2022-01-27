@@ -28,7 +28,7 @@ const basePath = __dirname;
   const coffer_abi = require("./CofferERC721_ABI");
 
   // 조회를 원하는 시작 블록 번호
-  //let startBlockNumber = 99; 
+  //let startBlockNumber = 102; 
   let startBlockNumber = Number(
     fs.readFileSync(path.join(basePath, '/blockNumber'), {
       encoding: 'utf-8',
@@ -98,7 +98,7 @@ const getTokenID = async(MyAbi, MyCA, targetTokenURI) => {
 }
 
 //트랜잭션 정보 받아서, NFT 검증(token_ids확인) 후 update
-const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
+const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
   try {
     const decodedData = abiDecoder.decodeMethod(tx.input);
     tx.input_name = decodedData.name;
@@ -187,14 +187,66 @@ const updateNFTtoDB = async (tx, MyCA, MyAbi) => {
     }
     // 만약 payment(1), 즉 buy 트랜잭션이라면
     else if(tx.input_name === 'payment' && Number(decodedData.params[0].value) == 1) {
+      //만약 깐부지갑 소유의 NFT 를 구매한 것이라면
+      //event에 Transfer 라는 이벤트의 from 이 깐부지갑인 것을 찾는다
+      let txReceipt = await web3.eth.getTransactionReceipt(txID);
+      decodedLogs = abiDecoder.decodeLogs(txReceipt.logs);
+
+      for(let i=0;i<decodedLogs.length;i++) {
+        if(decodedLogs[i].name == 'Transfer') {
+          for(let j=0;j<decodedLogs[i].events.length;j++) {
+            //깐부 리스트
+            const gganbus = await GGanbu_wallets.findAll({where:{}});
+            
+            //깐부지갑을 뒤져서 from 주소값과 같은 깐부지갑이 있는지 확인
+            for(let gNum=0;gNum<gganbus.length;gNum++) {
+              if(decodedLogs[i].events[j].name == 'from') { 
+                if(Web3.utils.toChecksumAddress(decodedLogs[i].events[j].value) == gganbus[gNum].gganbuAddress) {
+                  //특정 깐부지갑의 NFT 를 구매했다면 깐부지갑 정보 업데이트
+                  await GGanbu_wallets.update(
+                    {
+                      status: 'closed',
+                      isActive: false
+                    },
+                    {
+                      where:{
+                        gganbuAddress: gganbus[gNum].gganbuAddress
+                      },
+                  });
+                  console.log(`========== GGanbu NFT has been transferred to other person =======`);
+                }
+              }
+            }
+            
+          }
+        }
+      }
+
+          // //데이터
+          // let iCollectionAddress;
+          // let iTokenId;
+          // let iPrice;
+
+          // for(let j=0;j<decodedLogs[i].events.length;j++) {
+          //   let eventName = decodedLogs[i].events[j].name;
+          //   let eventValue = decodedLogs[i].events[j].value;
+            
+          //   if(eventName == 'collection') {
+          //     iCollectionAddress = Web3.utils.toChecksumAddress(eventValue);
+          //   } else if(eventName == 'tokenId') {
+          //     iTokenId = eventValue;
+          //   } else if(eventName == 'price') {
+          //     iPrice = await web3.utils.fromWei(eventValue, "ether");
+          //   }
+          // }
+
+
+
+
 
       tx.input_tokenId = Number(decodedData.params[1].value);
       tx.input_price = Number(tx.value);
       
-      const contractObj = new web3.eth.Contract(
-        MyAbi, MyCA,
-      );
-
       //현재는 payment 가 늘 성공했다고 가정하고 있다.
       //블록의 현재 상태와 과아아아거 트랜의 비교가 불가능하다면 최소한 price는 검증할 필요가 있다
 
@@ -814,7 +866,7 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
       }
     }
     // requestTrade
-    if(tx.input_name === 'requestTrade') {
+    else if(tx.input_name === 'requestTrade') {
       decodedLogs = abiDecoder.decodeLogs(txReceipt.logs);
       //console.log(decodedLogs[0].name); <= 'set_suggestion'
 
@@ -933,7 +985,7 @@ const main = async (MyAbi, START_BLOCK) => {
             where:{hash:tx.hash},
             defaults:tx
           });
-          await updateNFTtoDB(tx, MyCA, MyAbi);
+          await updateNFTtoDB(tx, arrTranIDs[i], MyCA, MyAbi);
         }
       }
 
