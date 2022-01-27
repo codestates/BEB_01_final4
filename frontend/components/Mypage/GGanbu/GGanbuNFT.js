@@ -116,8 +116,7 @@ const GGanbuNFT = ({ activeSubTab }) => {
               value={sellPrice}
               onChange={setSellPrice}
               style={{ margin: "20px 0" }}
-              placeholder="참여 금액"
-              label="참여 금액"
+              placeholder="판매 제안 금액"
               required
               type="number"
             />
