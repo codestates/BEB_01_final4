@@ -20,6 +20,7 @@ import { compressAddress } from "../utils";
 import Joined from "../components/Mypage/DAO/Joined";
 import GGanbuVote from "../components/Mypage/GGanbu/GGanbuVote";
 import MyGGanbu from "../components/Mypage/GGanbu/MyGGanbu";
+import GGanbuNFT from "../components/Mypage/GGanbu/GGanbuNFT";
 
 const Description = styled.div`
   max-width: 720px;
@@ -385,25 +386,7 @@ const MyPage = () => {
                 <MyGGanbu activeSubTab={activeSubTab} />
               </CTabs.Tab>
               <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="깐부 보유 NFT">
-                <div style={{ padding: "0 40px" }}>
-                  <Text style={{ fontSize: "36px", fontWeight: "bold" }}>깐부 보유 NFT</Text>
-                  <Text style={{ fontSize: "20px", margin: "20px 0" }}>TBD</Text>
-                </div>
-
-                {/* <SimpleGrid
-                  style={{ padding: "0 80px" }}
-                  cols={3}
-                  spacing="lg"
-                  breakpoints={[
-                    { maxWidth: 1160, cols: 2, spacing: "md" },
-                    { maxWidth: 840, cols: 1, spacing: "sm" },
-                  ]}
-                >
-                  {lendAssets.map((nft, i) => {
-                    // console.log(nft);
-                    return nft.imageURI === null ? null : <NFTCard key={i} collectionSymbol={nft?.collection?.symbol} nft={nft} idx={i} />;
-                  })}
-                </SimpleGrid> */}
+                <GGanbuNFT activeSubTab={activeSubTab} />
               </CTabs.Tab>
               <CTabs.Tab icon={<MdOutlineSell style={{ width: 18, height: 18 }} />} label="투표 중인 깐부">
                 <div style={{ padding: "0 40px" }}>
