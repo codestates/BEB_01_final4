@@ -1,5 +1,9 @@
+const config = require('../config/config');
+const hostURI = config.development.host_metadata;
+const web3URI = config.development.web3_uri;
 const Web3 = require('web3');
-const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
+//const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:7545'));
+const web3 = new Web3(new Web3.providers.HttpProvider(web3URI));
 const { Transactions, Collections, NFTs, Trades, Rents, GGanbu_wallets, GGanbu_members, Vote_suggestions, Vote_submits, sequelize } = require(".././models");
 const { Op, ConnectionTimedOutError } = require("sequelize");
 const fs = require('fs');
@@ -938,6 +942,7 @@ const main = async (MyAbi, START_BLOCK) => {
       console.log(`==== 최신 블록까지 이미 조회 완료 : ${curBlkNum} ====`);
       return;
     }
+    console.log(`==== 최신 블록  번호 : ${curBlkNum} ====`);
 
     //collection 리스트
     const collections = await Collections.findAll({where:{is_created:true}});
@@ -950,7 +955,8 @@ const main = async (MyAbi, START_BLOCK) => {
     
     //블록 범위 내 트랜 IDs 추출
     const arrTranIDs = await fetchTranIDs(START_BLOCK, curBlkNum);
-   
+    console.log(`==== 검색할 트랜잭션 갯수: ${arrTranIDs.length} ====`);
+
     //모든 트랜잭션에 대하여 검사
     for(let i=0;i<arrTranIDs.length;i++) {
       let tx = await web3.eth.getTransaction(arrTranIDs[i]);

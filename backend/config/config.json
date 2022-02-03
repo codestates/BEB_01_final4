@@ -7,6 +7,7 @@
       "dialect": "mysql",
       "timezone": "+09:00",
       "logging": false,
+      "web3_uri": "https://ropsten.infura.io/v3/eda85829450044e6b2e8d35ef885ce47",
       "host_metadata": "http://localhost:4000"
   },
   "test": {
@@ -17,6 +18,7 @@
       "dialect": "mysql",
       "timezone": "+09:00",
       "logging": false,
+      "web3_uri": "https://ropsten.infura.io/v3/eda85829450044e6b2e8d35ef885ce47",
       "host_metadata": "http://localhost:4000"
   },
   "production": {
@@ -26,7 +28,7 @@
       "host": "127.0.0.1",
       "dialect": "mysql",
       "timezone": "+09:00",
-      "logging": false,
+      "web3_uri": "https://ropsten.infura.io/v3/eda85829450044e6b2e8d35ef885ce47",
       "host_metadata": "http://localhost:4000"
   }
 }
