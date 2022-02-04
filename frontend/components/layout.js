@@ -1,5 +1,17 @@
 import { useState } from "react";
-import { AppShell, Badge, Burger, Button, Header, MediaQuery, Navbar, Text, useMantineTheme } from "@mantine/core";
+import {
+  ActionIcon,
+  AppShell,
+  Badge,
+  Burger,
+  Button,
+  Header,
+  MediaQuery,
+  Menu,
+  Navbar,
+  Text,
+  useMantineTheme,
+} from "@mantine/core";
 import Image from "next/image";
 import { Input } from "@mantine/core";
 import Link from "next/link";
@@ -11,6 +23,7 @@ import Web3 from "web3";
 import { useInputState } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import { compressAddress } from "../utils";
+import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 
 const CText = styled(Text)`
   && {
@@ -35,6 +48,7 @@ export const connectWallet = async ({ setAccount, setUser }) => {
   });
 
   setAccount(Web3.utils.toChecksumAddress(accounts[0]));
+  console.log(accounts[0]);
 
   try {
     const {
@@ -48,6 +62,28 @@ export const connectWallet = async ({ setAccount, setUser }) => {
     }
   } catch (e) {
     console.log(e.response);
+  }
+};
+
+export const connectKaikas = async ({ setAccount, setUser }) => {
+  const { klaytn } = window;
+
+  if (klaytn) {
+    try {
+      await klaytn.enable();
+      klaytn.on("accountsChanged", () => console.log(klaytn));
+
+      console.log(klaytn.selectedAddress);
+      const account = klaytn.selectedAddress;
+
+      setAccount(account);
+
+      console.log(account);
+    } catch (error) {
+      console.log("User denied account access");
+    }
+  } else {
+    console.log("Non-Kaikas browser detected. You should consider trying Kaikas!");
   }
 };
 
@@ -179,7 +215,7 @@ const Layout = ({ children }) => {
               {account && <Badge radius={4} style={{ fontSize: "17px" }}>{`${compressAddress(account)}`}</Badge>}
               {account && <Profile />}
 
-              {!account && (
+              {/* {!account && (
                 <Button
                   style={{ marginLeft: "20px" }}
                   onClick={() => connectWallet({ setAccount, setUser })}
@@ -189,6 +225,43 @@ const Layout = ({ children }) => {
                   <Image width={28} height={28} src="https://docs.metamask.io/metamask-fox.svg" alt="" />
                   <span style={{ marginLeft: "10px", fontSize: "20px" }}>Connect</span>
                 </Button>
+              )} */}
+
+              {!account && (
+                <Menu
+                  controlRefProp="ref"
+                  control={
+                    <ActionIcon>
+                      <MdOutlineAccountBalanceWallet style={{ width: 45, height: 45 }} />
+                    </ActionIcon>
+                  }
+                  trigger="hover"
+                  delay={200}
+                >
+                  <Menu.Item style={{ fontSize: "18px" }}>
+                    <div
+                      style={{ display: "flex", alignItems: "center" }}
+                      onClick={() => connectWallet({ setAccount, setUser })}
+                    >
+                      <Image width={28} height={28} src="https://docs.metamask.io/metamask-fox.svg" alt="" />
+                      <span style={{ marginLeft: "10px", fontSize: "20px" }}>Metamask</span>
+                    </div>
+                  </Menu.Item>
+                  <Menu.Item style={{ fontSize: "18px" }}>
+                    <div
+                      style={{ display: "flex", alignItems: "center" }}
+                      onClick={() => connectKaikas({ setAccount, setUser })}
+                    >
+                      <Image
+                        width={28}
+                        height={28}
+                        src="https://aws1.discourse-cdn.com/standard17/uploads/klaytn/original/1X/be6ab5b8b6246393c2c19d32ee75fab8e75f1157.jpeg"
+                        alt=""
+                      />
+                      <span style={{ marginLeft: "10px", fontSize: "20px" }}>Kaikas</span>
+                    </div>
+                  </Menu.Item>
+                </Menu>
               )}
             </div>
           </div>

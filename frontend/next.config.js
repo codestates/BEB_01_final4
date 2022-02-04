@@ -10,6 +10,7 @@ module.exports = {
       "api.sandbox.game",
       "lh3.googleusercontent.com",
       "ipfs.infura.io",
+      "aws1.discourse-cdn.com",
     ],
   },
   webpack: (config) => {
