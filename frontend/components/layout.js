@@ -65,6 +65,28 @@ export const connectWallet = async ({ setAccount, setUser }) => {
   }
 };
 
+export const connectKaikas = async ({ setAccount, setUser }) => {
+  const { klaytn } = window;
+
+  if (klaytn) {
+    try {
+      await klaytn.enable();
+      klaytn.on("accountsChanged", () => console.log(klaytn));
+
+      console.log(klaytn.selectedAddress);
+      const account = klaytn.selectedAddress;
+
+      setAccount(account);
+
+      console.log(account);
+    } catch (error) {
+      console.log("User denied account access");
+    }
+  } else {
+    console.log("Non-Kaikas browser detected. You should consider trying Kaikas!");
+  }
+};
+
 const Layout = ({ children }) => {
   const [opened, setOpened] = useState(false);
   const [account, setAccount] = useStore((state) => [state.account, state.setAccount]);
@@ -226,7 +248,10 @@ const Layout = ({ children }) => {
                     </div>
                   </Menu.Item>
                   <Menu.Item style={{ fontSize: "18px" }}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    <div
+                      style={{ display: "flex", alignItems: "center" }}
+                      onClick={() => connectKaikas({ setAccount, setUser })}
+                    >
                       <Image
                         width={28}
                         height={28}
