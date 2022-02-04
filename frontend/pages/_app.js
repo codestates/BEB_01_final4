@@ -17,11 +17,11 @@ export default function App(props) {
       try {
         const web = new Web3(window.ethereum); // 새로운 web3 객체를 만든다
         setWeb3(web);
-        connectWallet({ setAccount, setUser });
 
         window.ethereum.on("accountsChanged", () => {
           connectWallet({ setAccount, setUser });
         });
+        return window.ethereum.removeListener("accountsChanged", () => {});
       } catch (err) {
         console.log(err);
       }
