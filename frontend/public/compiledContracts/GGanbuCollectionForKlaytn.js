@@ -1,4 +1,4 @@
-export const GGanbuCollection = {
+export const GGanbuCollectionForKlaytn = {
   contractName: "GGanbuCollection",
   abi: [
     {
