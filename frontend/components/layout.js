@@ -71,14 +71,27 @@ export const connectKaikas = async ({ setAccount, setUser }) => {
   if (klaytn) {
     try {
       await klaytn.enable();
-      klaytn.on("accountsChanged", () => console.log(klaytn));
+      // klaytn.on("accountsChanged", () => console.log(klaytn));
 
       console.log(klaytn.selectedAddress);
       const account = klaytn.selectedAddress;
 
       setAccount(account);
-
       console.log(account);
+
+      try {
+        const {
+          data: { data: newUser },
+        } = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
+          address: account,
+        });
+        // console.log(newUser);
+        if (Object.keys(newUser).length !== 0) {
+          setUser(newUser);
+        }
+      } catch (e) {
+        console.log(e.response);
+      }
     } catch (error) {
       console.log("User denied account access");
     }
@@ -94,6 +107,15 @@ const Layout = ({ children }) => {
   const [search, setSearch] = useInputState("");
   const router = useRouter();
   const theme = useMantineTheme();
+
+  // kaikas - caver test 코드
+  // const caver = useStore((state) => state.caver);
+
+  // const getBalance = async () => {
+  //   let balance = await caver.rpc.klay.getBalance(account);
+  //   balance = caver.utils.convertFromPeb(caver.utils.hexToNumberString(balance), "KLAY");
+  //   console.log(balance);
+  // };
 
   return (
     <AppShell
@@ -207,6 +229,11 @@ const Layout = ({ children }) => {
                   <Link href="/daos" passHref>
                     <CText>D A O</CText>
                   </Link>
+                  {/* 
+                  <CButton variant="white" onClick={getBalance}>
+                    <CText>get balance</CText>
+                  </CButton>
+                  */}
                 </CHeader>
               </MediaQuery>
             </div>

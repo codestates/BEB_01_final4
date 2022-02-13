@@ -4,6 +4,9 @@ export const useStore = create((set) => ({
   web3: null,
   setWeb3: (web3) => set({ web3 }),
 
+  caver: null,
+  setCaver: (caver) => set({ caver }),
+
   account: null,
   setAccount: (account) => set({ account }),
 

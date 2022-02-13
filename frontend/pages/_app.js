@@ -1,14 +1,15 @@
 import { useEffect } from "react";
 import Head from "next/head";
 import { MantineProvider } from "@mantine/core";
-import Layout, { connectWallet } from "../components/layout";
+import Layout, { connectKaikas, connectWallet } from "../components/layout";
 import Web3 from "web3";
 import { useStore } from "../utils/store";
-import styles from "../styles/global.css";
+import Caver from "caver-js";
 
 export default function App(props) {
   const { Component, pageProps } = props;
   const setWeb3 = useStore((state) => state.setWeb3);
+  const setCaver = useStore((state) => state.setCaver);
   const [setAccount, setUser] = useStore((state) => [state.setAccount, state.setUser]);
 
   useEffect(() => {
@@ -22,6 +23,25 @@ export default function App(props) {
           connectWallet({ setAccount, setUser });
         });
         return window.ethereum.removeListener("accountsChanged", () => {});
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window.klaytn !== "undefined") {
+      // window.klaytn이 있다면
+      try {
+        // const web = new Web3(window.ethereum); // 새로운 web3 객체를 만든다
+        // setWeb3(web);
+        const caver = new Caver(window.klaytn);
+        setCaver(caver);
+
+        window.klaytn.on("accountsChanged", () => {
+          connectKaikas({ setAccount, setUser });
+        });
+        return window.klaytn.removeListener("accountsChanged", () => {});
       } catch (err) {
         console.log(err);
       }
