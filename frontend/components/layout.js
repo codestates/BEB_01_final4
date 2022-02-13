@@ -46,6 +46,8 @@ export const connectWallet = async ({ setAccount, setUser }) => {
   let accounts = await window.ethereum.request({
     method: "eth_requestAccounts",
   });
+  // let networks = await window.ethereum.request({ method: "eth_chainId" });
+  // console.log(networks);
 
   setAccount(Web3.utils.toChecksumAddress(accounts[0]));
   console.log(accounts[0]);
@@ -65,20 +67,35 @@ export const connectWallet = async ({ setAccount, setUser }) => {
   }
 };
 
-export const connectKaikas = async ({ setAccount, setUser }) => {
+export const connectKaikas = async ({ setAccount, setUser, setNetworkId }) => {
   const { klaytn } = window;
 
   if (klaytn) {
     try {
       await klaytn.enable();
-      klaytn.on("accountsChanged", () => console.log(klaytn));
+      // klaytn.on("accountsChanged", () => console.log(klaytn));
 
       console.log(klaytn.selectedAddress);
+      console.log(klaytn.networkVersion);
       const account = klaytn.selectedAddress;
 
       setAccount(account);
-
       console.log(account);
+      setNetworkId(klaytn.networkVersion);
+
+      try {
+        const {
+          data: { data: newUser },
+        } = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
+          address: account,
+        });
+        // console.log(newUser);
+        if (Object.keys(newUser).length !== 0) {
+          setUser(newUser);
+        }
+      } catch (e) {
+        console.log(e.response);
+      }
     } catch (error) {
       console.log("User denied account access");
     }
@@ -94,6 +111,16 @@ const Layout = ({ children }) => {
   const [search, setSearch] = useInputState("");
   const router = useRouter();
   const theme = useMantineTheme();
+  const setNetworkId = useStore((state) => state.setNetworkId);
+
+  // kaikas - caver test 코드
+  // const caver = useStore((state) => state.caver);
+
+  // const getBalance = async () => {
+  //   let balance = await caver.rpc.klay.getBalance(account);
+  //   balance = caver.utils.convertFromPeb(caver.utils.hexToNumberString(balance), "KLAY");
+  //   console.log(balance);
+  // };
 
   return (
     <AppShell
@@ -207,6 +234,11 @@ const Layout = ({ children }) => {
                   <Link href="/daos" passHref>
                     <CText>D A O</CText>
                   </Link>
+                  {/* 
+                  <CButton variant="white" onClick={getBalance}>
+                    <CText>get balance</CText>
+                  </CButton>
+                  */}
                 </CHeader>
               </MediaQuery>
             </div>
@@ -250,7 +282,7 @@ const Layout = ({ children }) => {
                   <Menu.Item style={{ fontSize: "18px" }}>
                     <div
                       style={{ display: "flex", alignItems: "center" }}
-                      onClick={() => connectKaikas({ setAccount, setUser })}
+                      onClick={() => connectKaikas({ setAccount, setUser, setNetworkId })}
                     >
                       <Image
                         width={28}
