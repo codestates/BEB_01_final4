@@ -46,6 +46,8 @@ export const connectWallet = async ({ setAccount, setUser }) => {
   let accounts = await window.ethereum.request({
     method: "eth_requestAccounts",
   });
+  // let networks = await window.ethereum.request({ method: "eth_chainId" });
+  // console.log(networks);
 
   setAccount(Web3.utils.toChecksumAddress(accounts[0]));
   console.log(accounts[0]);
@@ -65,7 +67,7 @@ export const connectWallet = async ({ setAccount, setUser }) => {
   }
 };
 
-export const connectKaikas = async ({ setAccount, setUser }) => {
+export const connectKaikas = async ({ setAccount, setUser, setNetworkId }) => {
   const { klaytn } = window;
 
   if (klaytn) {
@@ -74,10 +76,12 @@ export const connectKaikas = async ({ setAccount, setUser }) => {
       // klaytn.on("accountsChanged", () => console.log(klaytn));
 
       console.log(klaytn.selectedAddress);
+      console.log(klaytn.networkVersion);
       const account = klaytn.selectedAddress;
 
       setAccount(account);
       console.log(account);
+      setNetworkId(klaytn.networkVersion);
 
       try {
         const {
@@ -107,6 +111,7 @@ const Layout = ({ children }) => {
   const [search, setSearch] = useInputState("");
   const router = useRouter();
   const theme = useMantineTheme();
+  const setNetworkId = useStore((state) => state.setNetworkId);
 
   // kaikas - caver test 코드
   // const caver = useStore((state) => state.caver);
@@ -277,7 +282,7 @@ const Layout = ({ children }) => {
                   <Menu.Item style={{ fontSize: "18px" }}>
                     <div
                       style={{ display: "flex", alignItems: "center" }}
-                      onClick={() => connectKaikas({ setAccount, setUser })}
+                      onClick={() => connectKaikas({ setAccount, setUser, setNetworkId })}
                     >
                       <Image
                         width={28}

@@ -1,17 +1,21 @@
 import { ActionIcon, Menu } from "@mantine/core";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { BiUserCircle } from "react-icons/bi";
 import { useStore } from "../utils/store";
 
-export const disconnectWallet = async ({ setAccount, setUser }) => {
+export const disconnectWallet = async ({ setAccount, setUser, setNetworkId }) => {
   setAccount(null);
   setUser(null);
+  setNetworkId(null);
 };
 
 const Profile = () => {
   const router = useRouter();
-  const [setAccount, setUser] = useStore((state) => [state.setAccount, state.setUser]);
+  const [setAccount, setUser, setNetworkId] = useStore((state) => [
+    state.setAccount,
+    state.setUser,
+    state.setNetworkId,
+  ]);
 
   return (
     <Menu
@@ -24,7 +28,7 @@ const Profile = () => {
       trigger="hover"
       delay={200}
     >
-      <Menu.Item style={{ fontSize: "18px" }} onClick={() => disconnectWallet({ setAccount, setUser })}>
+      <Menu.Item style={{ fontSize: "18px" }} onClick={() => disconnectWallet({ setAccount, setUser, setNetworkId })}>
         Disconnect
       </Menu.Item>
       <Menu.Item style={{ fontSize: "18px" }} onClick={() => router.push("/mypage")}>

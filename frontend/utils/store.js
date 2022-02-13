@@ -7,6 +7,9 @@ export const useStore = create((set) => ({
   caver: null,
   setCaver: (caver) => set({ caver }),
 
+  networkId: null,
+  setNetworkId: (networkId) => set({ networkId }),
+
   account: null,
   setAccount: (account) => set({ account }),
 
