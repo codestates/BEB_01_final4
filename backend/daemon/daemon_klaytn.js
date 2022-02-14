@@ -1,22 +1,3 @@
-const config = require('../config/config');
-const hostURI = config.development.host_metadata;
-const { Transactions, Transactions_klaytn, Collections, NFTs, Trades, Rents, GGanbu_wallets, GGanbu_members, Vote_suggestions, Vote_submits, sequelize } = require(".././models");
-const { Op, ConnectionTimedOutError } = require("sequelize");
-const fs = require('fs');
-const path = require("path");
-const basePath = __dirname;
-
-/*======= klaytn ======================*/
-const CaverExtKAS = require('caver-js-ext-kas');
-
-const chainId         = config.development.klaytn_chainId;
-const accessKeyId     = config.development.klaytn_accessKeyId;
-const secretAccessKey = config.development.klaytn_secretAccessKey;
-
-const caver = new CaverExtKAS(chainId, accessKeyId, secretAccessKey);
-/*======= klaytn ======================*/
-
-
 /*
  *  블록 처음부터 검색하려면 "./blockNumber" 파일 수정 필요 to 0 
  *  [한번 실행] node daemon.js
@@ -30,28 +11,41 @@ const caver = new CaverExtKAS(chainId, accessKeyId, secretAccessKey);
  *  [DB생성] npx sequelize-cli db:create
  *  [table생성] npx sequelize-cli db:migrate
  */
+const { Transactions, Transactions_klaytn, Collections, NFTs, Trades, Rents, GGanbu_wallets, GGanbu_members, Vote_suggestions, Vote_submits, sequelize } = require(".././models");
+const { Op } = require("sequelize");
+const fs = require('fs');
+const path = require("path");
+const basePath = __dirname;
+
+const config = require('../config/config');
+const hostURI = config.development.host_metadata;
+
+/*======= klaytn ======================*/
+const CaverExtKAS = require('caver-js-ext-kas');
+
+const chainId         = config.development.klaytn_chainId;
+const accessKeyId     = config.development.klaytn_accessKeyId;
+const secretAccessKey = config.development.klaytn_secretAccessKey;
+
+const caver = new CaverExtKAS(chainId, accessKeyId, secretAccessKey);
+/*=======================================================*/
 
 /*
  *==================== 필요한 정보 입력 =======================
  */
-  // ABI
-  const abi = require("./MyERC721_ABI_klaytn");
-  const coffer_abi = require("./CofferERC721_ABI");
+const abi = require("./MyERC721_ABI_klaytn");
+const coffer_abi = require("./CofferERC721_ABI");
 
-  // 조회를 원하는 시작 블록 번호
-  //let startBlockNumber = 110; 
-  let startBlockNumber = Number(
-    fs.readFileSync(path.join(basePath, '/blockNumber_klaytn'), {
-      encoding: 'utf-8',
-    }),) + 1;
+// 조회를 원하는 시작 블록 번호
+let startBlockNumber = Number(
+  fs.readFileSync(path.join(basePath, '/blockNumber_klaytn'), {
+    encoding: 'utf-8',
+  }),) + 1;
 /*=======================================================*/
 
 const abiDecoder = require('abi-decoder'); // NodeJS
-//const { mainModule } = require('process');
-//const { default: cluster } = require('cluster');
 abiDecoder.addABI(abi);
 abiDecoder.addABI(coffer_abi);
-let curBlkNum = 0;
 
 let COUNT = {
   "minted" : 0,
@@ -74,6 +68,7 @@ const fetchTranIDs = async (startBlkNum, curBlkNum) => {
   try {
     //조회하고자 하는 블록들 조회하여 모든 트랜ID 추출
     let arrTranIDs = [];
+    
     for(let j=startBlkNum;j<(curBlkNum+1);j++) {
       let block = await caver.rpc.klay.getBlock(j);
       let tranIDs = block.transactions;
@@ -94,8 +89,8 @@ const fetchTranIDs = async (startBlkNum, curBlkNum) => {
 const getTokenID = async(MyAbi, MyCA, targetTokenURI) => {
   try {
     const tokenContract = await new caver.klay.Contract(MyAbi, MyCA);
-    
     const totalSupply = await tokenContract.methods.totalSupply().call();
+
     for(let i=1;i<=Number(totalSupply);i++) {
       let tokenURI = await tokenContract.methods.tokenURI(i).call();
       if(tokenURI === targetTokenURI) {
@@ -128,7 +123,7 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
       }
 
       //해당 tokenURI 를 가진 데이터를 DB에서 확인 후 업데이트
-      let targetId = inputData.tokenURI.replace('http://localhost:4000/metadata/nft/','');    
+      let targetId = inputData.tokenURI.replace(`${hostURI}/metadata/nft/`,'');    
       
       let result = await NFTs.update(inputData,
         {
@@ -137,7 +132,6 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
             is_minted: {
               [Op.not]: true
             }
-            //is_minted: null
           }
         }
       );
@@ -152,19 +146,14 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
       tx.input_price = decodedData.params[1].value;
 
       //trade contractAddress 조회
-      const contractObj = new caver.klay.Contract(
-        MyAbi, MyCA,
-      );
+      const contractObj = new caver.klay.Contract(MyAbi, MyCA);
       
-      //wei -> ether
       tx.input_price = await caver.utils.convertFromPeb(tx.input_price, "KLAY");
       
-      //토큰ID 조회
       const inputData = {
         token_ids: tx.input_tokenId,
         collectionAddress: MyCA,
         status: 'selling',
-        //trade_ca: getApproved,
         price: tx.input_price,
         seller: tx.from,
         buyer: null,
@@ -175,20 +164,10 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
         where:{
           collectionAddress: MyCA,
           token_ids: tx.input_tokenId,
-          //status: 'selling',
           sellHash: tx.hash
         },
         defaults:inputData
       });
-
-      //검증 작업: 해당 func은 블록의 현재 상태를 보여줄 뿐이다. 따라서 블록을 0부터 조회하면 과거 트랜정보 검증은 불가능함
-      //const getApproved = await contractObj.methods.getApproved(tx.input_tokenId).call();
-      //const getIsSelling = await contractObj.methods.getIsSelling(tx.input_tokenId).call();
-      // if(getIsSelling == true) {
-      //   //판매 중
-      // } else {
-      //   //throw new Error('[sell 등록 중] 판매 중이 아님');
-      // }
 
       if(result[1] === true) {
         console.log(`========== New trade has been enrolled=======`);
@@ -201,13 +180,11 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
       //만약 깐부지갑 소유의 NFT 를 구매한 것이라면
       //event에 Transfer 라는 이벤트의 from 이 깐부지갑인 것을 찾는다
       let txReceipt = await caver.kas.wallet.getTransaction(txID);
-      
       decodedLogs = abiDecoder.decodeLogs(txReceipt.logs);
 
       for(let i=0;i<decodedLogs.length;i++) {
         if(decodedLogs[i].name == 'Transfer') {
           for(let j=0;j<decodedLogs[i].events.length;j++) {
-            //깐부 리스트
             const gganbus = await GGanbu_wallets.findAll({where:{}});
             
             //깐부지갑을 뒤져서 from 주소값과 같은 깐부지갑이 있는지 확인
@@ -233,22 +210,15 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
                 }
               }
             }
-            
           }
         }
       }
 
       tx.input_tokenId = Number(decodedData.params[1].value);
       tx.input_price = Number(tx.value);
-      
-      //현재는 payment 가 늘 성공했다고 가정하고 있다.
-      //블록의 현재 상태와 과아아아거 트랜의 비교가 불가능하다면 최소한 price는 검증할 필요가 있다
-
-      //DB업데이트
+        
       await NFTs.update(
-        {
-          ownerAddress: tx.from
-        },
+        { ownerAddress: tx.from },
         {
           where: {
             contractAddress: tx.to,
@@ -272,42 +242,18 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
         }
       );
 
-      //검증 작업: 해당 func은 블록의 현재 상태를 보여줄 뿐이다. 따라서 블록을 0부터 조회하면 과거 트랜정보 검증은 불가능함
-      // const getIsSelling = await contractObj.methods.getIsSelling(tx.input_tokenId).call();
-      // const ownerOf = await contractObj.methods.ownerOf(tx.input_tokenId).call();
-      
-      // //현재 owner 가 buy 요청한 사람과 동일한지 확인
-      // if(ownerOf != tx.from) {
-      //   throw new Error('[payment option 1 트랜잭션 검증 중] NFT 소유자 불일치');
-      // }
-
-      // //판매가 완료된 건인지 블록 검증
-      // if(getIsSelling == true) {
-      //   throw new Error('[payment option 1 트랜잭션 검증 중] getIsSelling 이 여전히 true');
-      // }
-
       if(result > 0) {
         console.log(`========== Trade has been dealed =======`);
         console.log(tx);
         COUNT.buy++;
-      } else {
-        //console.log('buy 업데이트 안됨');
       }
     }
     // 만약 rent, 즉 대여 등록(isLend) 트랜잭션이라면
     else if(tx.input_name === 'rent') {
       tx.input_tokenId = decodedData.params[0].value;
       tx.input_price = decodedData.params[1].value;
-
-      //trade contractAddress 조회
-      const contractObj = new caver.klay.Contract(
-        MyAbi, MyCA,
-      );
-      
-      //wei -> ether
       tx.input_price = await caver.utils.convertFromPeb(tx.input_price, "KLAY");
       
-      //insert data
       const inputData = {
         token_ids: tx.input_tokenId,
         collectionAddress: tx.to,
@@ -339,14 +285,6 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
       tx.input_tokenId = Number(decodedData.params[1].value);
       tx.input_price = Number(tx.value);
       
-      const contractObj = new caver.klay.Contract(
-        MyAbi, MyCA,
-      );
-
-      //현재는 payment 가 늘 성공했다고 가정하고 있다.
-      //블록의 현재 상태와 과아아아거 트랜의 비교가 불가능하다면 최소한 price는 검증할 필요가 있다
-
-      //DB업데이트
       await NFTs.update(
         {
           //ownerAddress: tx.from
@@ -375,43 +313,18 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
         }
       );
 
-      //검증 작업: 해당 func은 블록의 현재 상태를 보여줄 뿐이다. 따라서 블록을 0부터 조회하면 과거 트랜정보 검증은 불가능함
-      // const getIsSelling = await contractObj.methods.getIsSelling(tx.input_tokenId).call();
-      // const ownerOf = await contractObj.methods.ownerOf(tx.input_tokenId).call();
-      
-      // //현재 owner 가 buy 요청한 사람과 동일한지 확인
-      // if(ownerOf != tx.from) {
-      //   throw new Error('[payment option 1 트랜잭션 검증 중] NFT 소유자 불일치');
-      // }
-
-      // //판매가 완료된 건인지 블록 검증
-      // if(getIsSelling == true) {
-      //   throw new Error('[payment option 1 트랜잭션 검증 중] getIsSelling 이 여전히 true');
-      // }
-
       if(result > 0) {
         console.log(`========== Rent has been dealed =======`);
         console.log(tx);
         COUNT.rent++;
-      } else {
-        //console.log('buy 업데이트 안됨');
       }
     }
     // 만약 returnNFT, 즉 대여 반납 트랜잭션이라면
     else if(tx.input_name === 'returnNFT') {
       tx.input_tokenId = Number(decodedData.params[0].value);
       
-      const contractObj = new caver.klay.Contract(
-        MyAbi, MyCA,
-      );
-
-      //현재는 payment 가 늘 성공했다고 가정하고 있다.
-      //블록의 현재 상태와 과아아아거 트랜의 비교가 불가능하다면 최소한 price는 검증할 필요가 있다
-
-      //DB업데이트
       await NFTs.update(
         {
-          //ownerAddress: tx.from
           renterAddress: null
         },
         {
@@ -425,8 +338,6 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
       const result = await Rents.update(
         {
           status: 'completed',
-          //renter: tx.from,
-          //rentHash: tx.hash
         },
         {
           where: {
@@ -441,8 +352,6 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
         console.log(`========== Rent NFT has been returned =======`);
         console.log(tx);
         COUNT.returnNFT++;
-      } else {
-        //console.log('buy 업데이트 안됨');
       }
     }
   }
@@ -451,72 +360,8 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
   }
 };
 
-//selling 중인 Trades CA 를 모니터링
-/*
-* 해당 트레이드 ca에 동일 가격이 보내졌다면 buy 가 요청된 것이다
-*/
-const updateTrade = async (tx, MyCA, MyAbi, tradeCA, trade) => {
-  try {
-    console.log(tx);
-
-    //가격 정보 확인
-    tx.input_price = await caver.utils.convertFromPeb(tx.value, "KLAY");
-    console.log(`가격 : ${tx.input_price} eth`);
-
-    //DB의 가격정보와 같은지 확인필요
-    if(trade.price != tx.input_price) {
-      throw new Error('가격 불일치');
-    }
-
-    const contractObj = new caver.klay.Contract(
-      MyAbi, MyCA,
-    );
-    const ownerOf = await contractObj.methods.ownerOf(trade.token_ids).call();
-    const getIsSelling = await contractObj.methods.getIsSelling(trade.token_ids).call();
-    
-    // //현재 owner 가 buy 요청한 사람과 동일한지 확인
-    // if(ownerOf != tx.from) {
-    //   throw new Error('NFT 소유자 불일치');
-    // }
-
-    // //현재 selling 이 false 인지 확인
-    // if(getIsSelling != false) {
-    //   //사자마자 다시 판매등록 할수는 있지만, 앱에서는 불가능하다(이 로직이 완료되어야 판매가능하다)
-    //   console.log('판매 중임. 즉 거래가 완료되지 않았음');
-    //   throw new Error('판매 중임. 즉 거래가 완료되지 않았음');
-    // }
-
-    //DB업데이트
-    await NFTs.update(
-      {
-        ownerAddress: tx.from
-      },
-      {
-        where: {contractAddress: trade.collectionAddress}
-      }
-    );
-
-    await Trades.update(
-      {
-        status: 'completed',
-        buyer: tx.from
-      },
-      {
-        where: {id: trade.id, status: 'selling'},
-      }
-    );
-
-    console.log(`========== Trade has been dealed =======`);
-    console.log(tx);
-    COUNT.buy++;
-  }
-  catch(e) {
-    console.log(`에러 : ${e.message}`);
-  }  
-}
-
 //트랜잭션 정보 받아서, 깐부 관련 정보는 DB에 적재
-const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
+const updateGGanbuActivity = async (tx, txID) => {
   try {
     const decodedData = abiDecoder.decodeMethod(tx.input);
     tx.input_name = decodedData.name;
@@ -526,8 +371,7 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
     // join
     if(tx.input_name === 'requestJoin') {
       decodedLogs = abiDecoder.decodeLogs(txReceipt.logs);
-      //console.log(decodedLogs[0].name); <= 'set_suggestion'
-
+    
       //데이터
       let iSuggestionIdx;
       let iType;
@@ -542,18 +386,14 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
         if(eventName == '_suggestionIdx') {
           iSuggestionIdx = eventValue;
         } else if(eventName == '_target') {
-          //join 시 해당 값은 참여자 지갑주소
-          iJoiner = caver.utils.toChecksumAddress(eventValue);
+          iJoiner = caver.utils.toChecksumAddress(eventValue);  //join 시 해당 값은 참여자 지갑주소
         } else if(eventName == '_type') {
           iType = 'join';
-        } else if(eventName == '_tokenId') {
-          //join 시 해당 값은 의미없음
         } else if(eventName == '_price') {
           iPrice = await caver.utils.convertFromPeb(eventValue, "KLAY");
         }
       }
 
-      //insert data
       const inputData = {
         suggestion_idx: iSuggestionIdx,
         orgAddress: tx.to,
@@ -589,9 +429,6 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
     }
     // vote
     else if(tx.input_name === 'vote') {
-      let targetCollectionAddress;
-      let targetTokenId;
-      
       tx.input_suggestion_idx = decodedData.params[0].value;
       tx.input_vote = decodedData.params[1].value;
       
@@ -602,9 +439,7 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
         iReject++;
       }
 
-
       //투표 이벤트 업데이트 (Vote_suggestions)
-      //totalAccept, totalAcceptRatio, totalReject, totalRejectRatio
       let qSuggestion = await Vote_suggestions.findOne({
         where:{
           suggestion_idx: tx.input_suggestion_idx,
@@ -627,7 +462,8 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
           vote: tx.input_vote
         }
       });
-      if(qVote[1] == true) {
+
+      if(qVote[1]) {
         let numOfMembers = qMembers.length;
         let totalAccept = qSuggestion.totalAccept + iAccept;
         let totalReject = qSuggestion.totalReject + iReject;
@@ -652,7 +488,6 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
       }
 
       //투표 이벤트 (Vote_Submits) insert
-      //suggestion_id, memberAddress, vote
       decodedLogs = abiDecoder.decodeLogs(txReceipt.logs);
       
       for(let i=0;i<decodedLogs.length;i++) {
@@ -661,15 +496,9 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
           //찬성 결과 업데이트 (Vote_suggestions)
           //status, isValid
           await Vote_suggestions.update(
-            {
-              status: 'pass',
-              isValid: false
-            },
-            {
-              where:{
-                id: qSuggestion.id
-              },
-          });
+            { status: 'pass', isValid: false },
+            { where: { id: qSuggestion.id }}
+          );
           console.log(`========== suggestion passed =======`);
           
         } else if(decodedLogs[i].name == 'reject') {
@@ -752,22 +581,13 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
             
             //payment 가 발생하면 구매를 한거기 때문에 gganbu_wallets 상태가 바뀐다
             await GGanbu_wallets.update(
-              {
-                status: 'own'
-              },
-              {
-                where:{
-                  gganbuAddress: qSuggestion.orgAddress
-                },
+              { status: 'own' },
+              { where:{ gganbuAddress: qSuggestion.orgAddress },
             });
             
-            //DB업데이트
             await NFTs.update(
-              {
-                ownerAddress: tx.to
-              },
-              {
-                where: {
+              { ownerAddress: tx.to },
+              { where: {
                   contractAddress: tx.input_collectionAddress,
                   token_ids: tx.input_tokenId
                 }
@@ -791,8 +611,6 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
               console.log(`========== GGanbu Trade has been dealed =======`);
               console.log(tx);
               COUNT.buy++;
-            } else {
-              //console.log('buy 업데이트 안됨');
             }
           }
         }
@@ -815,17 +633,6 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
               iPrice = await caver.utils.convertFromPeb(eventValue, "KLAY");
             }
           }
-          
-          //판매 등록을 한거기 때문에 gganbu_wallets 상태가 바뀐다
-          // await GGanbu_wallets.update(
-          //   {
-          //     status: 'selling'
-          //   },
-          //   {
-          //     where:{
-          //       gganbuAddress: qSuggestion.orgAddress
-          //     },
-          // });
 
           //Sell trade 요청
           const inputData = {
@@ -842,26 +649,23 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
             where:{
               collectionAddress: iCollectionAddress,
               token_ids: iTokenId,
-              //status: 'selling',
               sellHash: tx.hash
             },
             defaults:inputData
           });
 
-          if(result[1] === true) {
+          if(result[1]) {
             console.log(`========== New trade has been enrolled=======`);
             console.log(result[0].dataValues);
             COUNT.sell++;
           }
         }
-
       }
     }
     // requestTrade
     else if(tx.input_name === 'requestTrade') {
       decodedLogs = abiDecoder.decodeLogs(txReceipt.logs);
-      //console.log(decodedLogs[0].name); <= 'set_suggestion'
-
+      
       //데이터
       let iSuggestionIdx;
       let iType;  //1(판매제안), 2(대여등록 제안), 3(구매제안), 4(대여제안), 5(등록취소?), 6(타겟취소?)
@@ -891,17 +695,14 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
             iType = 'cancel6';
           }
         } else if(eventName == '_target') {
-          //NFT 컬랙션 주소
-          iCollectionAddress = caver.utils.toChecksumAddress(eventValue);
+          iCollectionAddress = caver.utils.toChecksumAddress(eventValue); //NFT 컬랙션 주소
         } else if(eventName == '_tokenId') {
-          //NFT 토큰ID
-          iTokenId = eventValue;
+          iTokenId = eventValue; //NFT 토큰ID
         } else if(eventName == '_price') {
           iPrice = await caver.utils.convertFromPeb(eventValue, "KLAY");
         }
       }
 
-      //insert data
       const inputData = {
         suggestion_idx: iSuggestionIdx,
         orgAddress: tx.to,
@@ -957,17 +758,10 @@ const main = async (MyAbi, START_BLOCK) => {
       console.log(`==== 블록번호가 ${START_BLOCK} 이므로 최신블록부터 조회시작 ====`);
       START_BLOCK = curBlkNum;
     }
-
     console.log(`==== 최신 블록  번호 : ${curBlkNum} ====`);
 
-    //collection 리스트
-    const collections = await Collections.findAll({where:{is_created:true}});
-    
-    //깐부 리스트
-    const gganbus = await GGanbu_wallets.findAll({where:{}});
-    
-    //selling trade 리스트
-    const trades = await Trades.findAll({where:{status:'selling'}});
+    const collections = await Collections.findAll({where:{is_created:true}}); //collection 리스트
+    const gganbus = await GGanbu_wallets.findAll({where:{}}); //깐부 리스트
     
     //블록 범위 내 트랜 IDs 추출
     const arrTranIDs = await fetchTranIDs(START_BLOCK, curBlkNum);
@@ -982,8 +776,6 @@ const main = async (MyAbi, START_BLOCK) => {
         let MyCA = collections[j].contractAddress;
 
         if (caver.utils.toChecksumAddress(tx.from) === MyCA || caver.utils.toChecksumAddress(tx.to) === MyCA) {
-          console.log(tx);
-          //DB 업데이트
           await Transactions.findOrCreate({
             where:{hash:tx.hash},
             defaults:tx
@@ -997,34 +789,13 @@ const main = async (MyAbi, START_BLOCK) => {
         let MyCA = gganbus[j].gganbuAddress;
 
         if (caver.utils.toChecksumAddress(tx.to) === MyCA) {
-          //DB 업데이트
           await Transactions.findOrCreate({
             where:{hash:tx.hash},
             defaults:tx
           });
-          await updateGGanbuActivity(tx, arrTranIDs[i], MyCA, MyAbi);
+          await updateGGanbuActivity(tx, arrTranIDs[i]);
         }
       }
-
-      //트레이드CA 별로 buy, cancel 관련 TX 인지 검사
-      // for(let j=0;j<trades.length;j++) {
-      //   let tradeCA = trades[j].trade_ca;
-
-      //   if (tx.to === tradeCA) {
-      //     //DB 업데이트
-      //     await Transactions.findOrCreate({
-      //       where:{hash:tx.hash},
-      //       defaults:tx
-      //     });
-
-      //     await updateTrade(
-      //       tx,
-      //       trades[j].collectionAddress,
-      //       MyAbi, 
-      //       tradeCA,
-      //       trades[j]);
-      //   }
-      // }
     }    
 
     // 가장 마지막에 확인한 블록번호 저장
@@ -1058,19 +829,11 @@ const main = async (MyAbi, START_BLOCK) => {
 
 //main(abi, startBlockNumber);
 
-//트랜 정보를 업데이트한다
+//트랜 정보 업데이트 by [POST] /transaction
 const updateTx = async (iTransaction) => {
-  const MyAbi = abi;
-
   try {
-    //collection 리스트
-    const collections = await Collections.findAll({where:{is_created:true}});
-    
-    //깐부 리스트
-    const gganbus = await GGanbu_wallets.findAll({where:{}});
-    
-    //selling trade 리스트
-    const trades = await Trades.findAll({where:{status:'selling'}});
+    const collections = await Collections.findAll({where:{is_created:true}}); //collection 리스트
+    const gganbus = await GGanbu_wallets.findAll({where:{}}); //깐부 리스트
     
     //블록 범위 내 트랜 IDs 추출
     const arrTranIDs = [iTransaction];
@@ -1094,7 +857,7 @@ const updateTx = async (iTransaction) => {
             where:{hash:tx.hash},
             defaults:tx
           });
-          await updateNFTtoDB(tx, arrTranIDs[i], MyCA, MyAbi);
+          await updateNFTtoDB(tx, arrTranIDs[i], MyCA, abi);
         }
       }
 
@@ -1103,14 +866,13 @@ const updateTx = async (iTransaction) => {
         let MyCA = gganbus[j].gganbuAddress;
 
         if (caver.utils.toChecksumAddress(tx.to) === MyCA) {
-          //DB 업데이트
           tx.logs = null;
           tx.signatures = null;
           await Transactions_klaytn.findOrCreate({
             where:{hash:tx.hash},
             defaults:tx
           });
-          await updateGGanbuActivity(tx, arrTranIDs[i], MyCA, MyAbi);
+          await updateGGanbuActivity(tx, arrTranIDs[i]);
         }
       }
     }    
