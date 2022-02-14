@@ -7,6 +7,7 @@ import NFTCard from "../../components/nftCard";
 import { useStore } from "../../utils/store";
 import Link from "next/link";
 import axios from "axios";
+import caver from "caver-js";
 
 const StatBox = styled.div`
   flex: 1;
@@ -115,7 +116,7 @@ const NFTS = () => {
         </NameBox>
 
         <div style={{ position: "absolute", right: "30px", top: "330px" }}>
-          {account && collection?.ownerAddress === account ? (
+          {account && caver.utils.toChecksumAddress(collection?.ownerAddress) === account ? (
             <Link href={`/assets/${collection?.symbol}/create`} passHref>
               <Button size="lg">Add Item</Button>
             </Link>

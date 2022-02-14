@@ -529,8 +529,6 @@ const Asset = () => {
           {/* 판매 X, 대여 등록 X 상태 */}
           {!isSelling && !isLending && (
             <TradeBox>
-              {console.log(account, nftOwner, isSelling)}
-
               <Text style={{ fontSize: "20px" }}>판매 중이거나 대여 등록된 NFT가 아닙니다.</Text>
               {account && account === nftOwner && !isSelling && (
                 <Button

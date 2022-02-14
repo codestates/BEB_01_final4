@@ -6,6 +6,7 @@ import Image from "next/image";
 import { IoIosArrowDown } from "react-icons/io";
 import axios from "axios";
 import { GGanbuCollection } from "../../../../public/compiledContracts/GGanbuCollection";
+import { GGanbuCollectionForKlaytn } from "../../../../public/compiledContracts/GGanbuCollectionForKlaytn";
 import { useStore } from "../../../../utils/store";
 import { useRouter } from "next/router";
 import { useEffect } from "react/cjs/react.development";
@@ -62,6 +63,7 @@ const Sell = () => {
   const [contract, setContract] = useState(null);
   const router = useRouter();
   const { symbol, tokenId } = router.query;
+  const [caver, networkId] = useStore((state) => [state.caver, state.networkId]);
 
   const checkCanSell = async () => {
     if (symbol && tokenId && account) {
@@ -71,13 +73,25 @@ const Sell = () => {
       } = await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/assets/${symbol}/${tokenId}`, {
         withCredentials: true,
       });
-
-      if (web3) {
-        const contract = await new web3.eth.Contract(GGanbuCollection.abi, nftData?.contractAddress, {
-          from: account,
-        });
-        setContract(contract);
-        const nftOwner = await contract.methods.ownerOf(tokenId).call();
+      let nftOwner;
+      if (web3 || caver) {
+        if (networkId === 1001 || networkId === 8217) {
+          console.log("first");
+          console.log(nftData?.contractAddress);
+          console.log(account);
+          const contract = await new caver.klay.Contract(GGanbuCollectionForKlaytn.abi, nftData?.contractAddress, {
+            from: account,
+          });
+          setContract(contract);
+          nftOwner = await contract.methods.ownerOf(tokenId).call();
+        } else {
+          console.log("second");
+          const contract = await new web3.eth.Contract(GGanbuCollection.abi, nftData?.contractAddress, {
+            from: account,
+          });
+          setContract(contract);
+          nftOwner = await contract.methods.ownerOf(tokenId).call();
+        }
         if (nftOwner === account) {
           return;
         }
@@ -98,10 +112,26 @@ const Sell = () => {
 
   const handleClickSell = async () => {
     try {
-      console.log(contract.methods);
-      const unitPrice = web3.utils.toWei(sellPrice, "ether");
-      const txResult = await contract.methods.sell(tokenId, unitPrice).send();
+      let txResult;
+      if (networkId === 1001 || networkId === 8217) {
+        const unitPrice = caver.utils.toPeb(sellPrice, "KLAY");
+        txResult = await contract.methods.sell(tokenId, unitPrice).send({ from: account, gas: 9000000 });
+      } else {
+        const unitPrice = web3.utils.toWei(sellPrice, "ether");
+        txResult = await contract.methods.sell(tokenId, unitPrice).send();
+      }
       console.log(txResult);
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
+        {
+          transaction: txResult.transactionHash,
+          networkType: "klaytn",
+        },
+        {
+          withCredentials: true,
+        },
+      );
+      console.log(data);
       router.push(`/assets/${symbol}/${tokenId}`);
     } catch (e) {
       console.dir(e);

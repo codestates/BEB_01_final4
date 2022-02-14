@@ -120,6 +120,7 @@ const Layout = ({ children }) => {
   // const getBalance = async () => {
   //   let balance = await caver.rpc.klay.getBalance(account);
   //   balance = caver.utils.convertFromPeb(caver.utils.hexToNumberString(balance), "KLAY");
+  //   balance = caver.utils.convertFromPeb(balance, "KLAY");
   //   console.log(balance);
   // };
 
