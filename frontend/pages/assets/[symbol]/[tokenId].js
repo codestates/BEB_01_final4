@@ -250,7 +250,8 @@ const Asset = () => {
     try {
       if (sellPrice) {
         let txResult;
-        if (networkId === 1001 || networkId === 8217) {
+        let isKlaytn = networkId === 1001 || networkId === 8217;
+        if (isKlaytn) {
           txResult = await collectionContract.methods
             .payment(1, tokenId)
             .send({ value: caver.utils.toPeb(sellPrice, "KLAY"), from: account, gas: 9000000 });
@@ -264,7 +265,7 @@ const Asset = () => {
           toBlock: txResult.blockNumber,
         });
 
-        console.log(txResult);
+        // console.log(txResult);
         let log = event.find((log) => log.transactionHash == txResult.transactionHash);
         console.log(log.returnValues);
 
@@ -272,7 +273,7 @@ const Asset = () => {
           `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
           {
             transaction: txResult.transactionHash,
-            networkType: "klaytn",
+            networkType: isKlaytn ? "klaytn" : "ethereum",
           },
           {
             withCredentials: true,
@@ -303,9 +304,17 @@ const Asset = () => {
 
     try {
       if (lendPrice) {
-        const txResult = await collectionContract.methods
-          .payment(2, tokenId)
-          .send({ value: web3.utils.toWei(lendPrice, "ether") });
+        let txResult;
+        let isKlaytn = networkId === 1001 || networkId === 8217;
+        if (isKlaytn) {
+          txResult = await collectionContract.methods
+            .payment(2, tokenId)
+            .send({ value: caver.utils.toPeb(lendPrice, "KLAY"), from: account, gas: 9000000 });
+        } else {
+          txResult = await collectionContract.methods
+            .payment(2, tokenId)
+            .send({ value: web3.utils.toWei(lendPrice, "ether") });
+        }
 
         let event = await collectionContract.getPastEvents("_rented", {
           fromBlock: txResult.blockNumber,
@@ -314,6 +323,17 @@ const Asset = () => {
 
         let log = event.find((log) => log.transactionHash == txResult.transactionHash);
         console.log(log.returnValues);
+
+        const { data } = await axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
+          {
+            transaction: txResult.transactionHash,
+            networkType: isKlaytn ? "klaytn" : "ethereum",
+          },
+          {
+            withCredentials: true,
+          },
+        );
 
         setLendPrice(null);
 

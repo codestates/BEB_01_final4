@@ -109,7 +109,8 @@ const Sell = () => {
   const handleClickSell = async () => {
     try {
       let txResult;
-      if (networkId === 1001 || networkId === 8217) {
+      let isKlaytn = networkId === 1001 || networkId === 8217;
+      if (isKlaytn) {
         const unitPrice = caver.utils.toPeb(sellPrice, "KLAY");
         txResult = await contract.methods.sell(tokenId, unitPrice).send({ from: account, gas: 9000000 });
       } else {
@@ -121,7 +122,7 @@ const Sell = () => {
         `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
         {
           transaction: txResult.transactionHash,
-          networkType: "klaytn",
+          networkType: isKlaytn ? "klaytn" : "ethereum",
         },
         {
           withCredentials: true,

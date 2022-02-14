@@ -110,7 +110,8 @@ const Lend = () => {
   const handleClickRent = async () => {
     try {
       let txResult;
-      if (networkId === 1001 || networkId === 8217) {
+      let isKlaytn = networkId === 1001 || networkId === 8217;
+      if (isKlaytn) {
         const unitPrice = caver.utils.toPeb(lendPrice, "KLAY");
         txResult = await contract.methods.rent(tokenId, unitPrice).send({ from: account, gas: 9000000 });
       } else {
@@ -123,7 +124,7 @@ const Lend = () => {
         `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
         {
           transaction: txResult.transactionHash,
-          networkType: "klaytn",
+          networkType: isKlaytn ? "klaytn" : "ethereum",
         },
         {
           withCredentials: true,
