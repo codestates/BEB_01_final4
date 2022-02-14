@@ -10,6 +10,16 @@ const { Op, QueryTypes } = require("sequelize");
 const router = express.Router();
 const utils = require('./utils');
 
+/*======= klaytn ======================*/
+const CaverExtKAS = require('caver-js-ext-kas');
+
+const chainId         = config.development.klaytn_chainId;
+const accessKeyId     = config.development.klaytn_accessKeyId;
+const secretAccessKey = config.development.klaytn_secretAccessKey;
+
+const caver = new CaverExtKAS(chainId, accessKeyId, secretAccessKey);
+/*=======================================================*/
+
 /*
  *  /dao
  *  리스트
@@ -92,8 +102,13 @@ router.post('/', async (req, res, next) => {
     //[required] nft_collectionAddress, nft_token_ids
 
     //[required] balance
-    const balance = await web3.eth.getBalance(req.body.daoAddress);
-    const iBalance = web3.utils.fromWei(balance, 'ether');
+    //이더리움
+    //const balance = await web3.eth.getBalance(req.body.daoAddress);
+    //const iBalance = web3.utils.fromWei(balance, 'ether');
+    //클레이튼
+    const balance = await caver.rpc.klay.getBalance(req.body.gganbuAddress);
+    const iBalance = caver.utils.convertFromPeb(balance, 'KLAY');
+
     let iRatio = 0;
     if(iBalance != 0) {
       iRatio = 100;
