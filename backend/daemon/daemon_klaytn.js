@@ -1124,8 +1124,6 @@ const updateTx = async (iTransaction) => {
     console.log(`# of suggestion_lend : ${COUNT.suggestion_lend}`);
     console.log(`# of suggestion_rent : ${COUNT.suggestion_rent}`);
     console.log(`# of suggestion_join_approved : ${COUNT.suggestion_join_approved}`);
-
-    sequelize.close();
   }
   catch(e) {
     console.log(`에러 : ${e.message}`);
