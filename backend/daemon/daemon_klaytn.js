@@ -157,7 +157,7 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
       );
       
       //wei -> ether
-      tx.input_price = await web3.utils.fromWei(tx.input_price, "ether");
+      tx.input_price = await caver.utils.convertFromPeb(tx.input_price, "KLAY");
       
       //토큰ID 조회
       const inputData = {
@@ -200,7 +200,6 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
     else if(tx.input_name === 'payment' && Number(decodedData.params[0].value) == 1) {
       //만약 깐부지갑 소유의 NFT 를 구매한 것이라면
       //event에 Transfer 라는 이벤트의 from 이 깐부지갑인 것을 찾는다
-      //let txReceipt = await web3.eth.getTransactionReceipt(txID);
       let txReceipt = await caver.kas.wallet.getTransaction(txID);
       
       decodedLogs = abiDecoder.decodeLogs(txReceipt.logs);
@@ -214,11 +213,11 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
             //깐부지갑을 뒤져서 from 주소값과 같은 깐부지갑이 있는지 확인
             for(let gNum=0;gNum<gganbus.length;gNum++) {
               if(decodedLogs[i].events[j].name == 'from') { 
-                if(Web3.utils.toChecksumAddress(decodedLogs[i].events[j].value) == gganbus[gNum].gganbuAddress) {
+                if(caver.utils.toChecksumAddress(decodedLogs[i].events[j].value) == gganbus[gNum].gganbuAddress) {
                   //특정 깐부지갑의 NFT 를 구매했다면 깐부지갑 정보 업데이트
-                  const balance = await web3.eth.getBalance(gganbus[gNum].gganbuAddress);
-                  const iBalance = web3.utils.fromWei(balance, 'ether');
-                  console.log(iBalance);
+                  const balance = await caver.rpc.klay.getBalance(gganbus[gNum].gganbuAddress);
+                  const iBalance = caver.utils.convertFromPeb(balance, "KLAY");
+                  
                   await GGanbu_wallets.update(
                     {
                       status: 'closed',
@@ -301,12 +300,12 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
       tx.input_price = decodedData.params[1].value;
 
       //trade contractAddress 조회
-      const contractObj = new web3.eth.Contract(
+      const contractObj = new caver.klay.Contract(
         MyAbi, MyCA,
       );
       
       //wei -> ether
-      tx.input_price = await web3.utils.fromWei(tx.input_price, "ether");
+      tx.input_price = await caver.utils.convertFromPeb(tx.input_price, "KLAY");
       
       //insert data
       const inputData = {
@@ -340,7 +339,7 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
       tx.input_tokenId = Number(decodedData.params[1].value);
       tx.input_price = Number(tx.value);
       
-      const contractObj = new web3.eth.Contract(
+      const contractObj = new caver.klay.Contract(
         MyAbi, MyCA,
       );
 
@@ -402,7 +401,7 @@ const updateNFTtoDB = async (tx, txID, MyCA, MyAbi) => {
     else if(tx.input_name === 'returnNFT') {
       tx.input_tokenId = Number(decodedData.params[0].value);
       
-      const contractObj = new web3.eth.Contract(
+      const contractObj = new caver.klay.Contract(
         MyAbi, MyCA,
       );
 
@@ -461,7 +460,7 @@ const updateTrade = async (tx, MyCA, MyAbi, tradeCA, trade) => {
     console.log(tx);
 
     //가격 정보 확인
-    tx.input_price = await web3.utils.fromWei(tx.value, "ether");
+    tx.input_price = await caver.utils.convertFromPeb(tx.value, "KLAY");
     console.log(`가격 : ${tx.input_price} eth`);
 
     //DB의 가격정보와 같은지 확인필요
@@ -469,7 +468,7 @@ const updateTrade = async (tx, MyCA, MyAbi, tradeCA, trade) => {
       throw new Error('가격 불일치');
     }
 
-    const contractObj = new web3.eth.Contract(
+    const contractObj = new caver.klay.Contract(
       MyAbi, MyCA,
     );
     const ownerOf = await contractObj.methods.ownerOf(trade.token_ids).call();
@@ -522,7 +521,7 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
     const decodedData = abiDecoder.decodeMethod(tx.input);
     tx.input_name = decodedData.name;
 
-    let txReceipt = await web3.eth.getTransactionReceipt(txID);
+    let txReceipt = await caver.kas.wallet.getTransaction(txID);
     
     // join
     if(tx.input_name === 'requestJoin') {
@@ -544,13 +543,13 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
           iSuggestionIdx = eventValue;
         } else if(eventName == '_target') {
           //join 시 해당 값은 참여자 지갑주소
-          iJoiner = Web3.utils.toChecksumAddress(eventValue);
+          iJoiner = caver.utils.toChecksumAddress(eventValue);
         } else if(eventName == '_type') {
           iType = 'join';
         } else if(eventName == '_tokenId') {
           //join 시 해당 값은 의미없음
         } else if(eventName == '_price') {
-          iPrice = await web3.utils.fromWei(eventValue, "ether");
+          iPrice = await caver.utils.convertFromPeb(eventValue, "KLAY");
         }
       }
 
@@ -690,7 +689,7 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
             
         } else if(decodedLogs[i].name == 'OwnershipAdd') {
           console.log(`멤버추가: ${decodedLogs[i].events[0].value}`);
-          let newMember = Web3.utils.toChecksumAddress(decodedLogs[i].events[0].value);
+          let newMember = caver.utils.toChecksumAddress(decodedLogs[i].events[0].value);
           
           //사용자 지분 계산 (깐부인 경우에만)
           let qGGanbu = await GGanbu_wallets.findOne({ 
@@ -725,8 +724,8 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
           });
 
           //깐부 지갑 balance 정보 수정
-          const balance = await web3.eth.getBalance(qSuggestion.orgAddress);
-          const iBalance = web3.utils.fromWei(balance, 'ether');
+          const balance = await caver.rpc.klay.getBalance(qSuggestion.orgAddress);
+          const iBalance = caver.utils.convertFromPeb(balance, 'KLAY');
           await GGanbu_wallets.update(
             {
               balance: iBalance
@@ -809,11 +808,11 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
             let eventValue = decodedLogs[i].events[j].value;
             
             if(eventName == 'collection') {
-              iCollectionAddress = Web3.utils.toChecksumAddress(eventValue);
+              iCollectionAddress = caver.utils.toChecksumAddress(eventValue);
             } else if(eventName == 'tokenId') {
               iTokenId = eventValue;
             } else if(eventName == 'price') {
-              iPrice = await web3.utils.fromWei(eventValue, "ether");
+              iPrice = await caver.utils.convertFromPeb(eventValue, "KLAY");
             }
           }
           
@@ -893,12 +892,12 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
           }
         } else if(eventName == '_target') {
           //NFT 컬랙션 주소
-          iCollectionAddress = Web3.utils.toChecksumAddress(eventValue);
+          iCollectionAddress = caver.utils.toChecksumAddress(eventValue);
         } else if(eventName == '_tokenId') {
           //NFT 토큰ID
           iTokenId = eventValue;
         } else if(eventName == '_price') {
-          iPrice = await web3.utils.fromWei(eventValue, "ether");
+          iPrice = await caver.utils.convertFromPeb(eventValue, "KLAY");
         }
       }
 
@@ -946,7 +945,6 @@ const updateGGanbuActivity = async (tx, txID, MyCA, MyAbi) => {
 const main = async (MyAbi, START_BLOCK) => {
   try {
     //블록체인 상의 마지막 블록 번호 조회
-    //let curBlkNum = await web3.eth.getBlockNumber();
     let curBlkNum = await caver.rpc.klay.getBlockNumber();
     curBlkNum = parseInt(curBlkNum, 16);
     
@@ -977,7 +975,6 @@ const main = async (MyAbi, START_BLOCK) => {
 
     //모든 트랜잭션에 대하여 검사
     for(let i=0;i<arrTranIDs.length;i++) {
-      //let tx = await web3.eth.getTransaction(arrTranIDs[i]);
       let tx = await caver.kas.wallet.getTransaction(arrTranIDs[i]);
 
       //컬랙션 별로 mintNFT, selling, buy 관련 TX 인지 검사
@@ -1059,8 +1056,83 @@ const main = async (MyAbi, START_BLOCK) => {
   }
 }
 
-main(abi, startBlockNumber);
+//main(abi, startBlockNumber);
 
+//트랜 정보를 업데이트한다
+const updateTx = async (iTransaction) => {
+  const MyAbi = abi;
+
+  try {
+    //collection 리스트
+    const collections = await Collections.findAll({where:{is_created:true}});
+    
+    //깐부 리스트
+    const gganbus = await GGanbu_wallets.findAll({where:{}});
+    
+    //selling trade 리스트
+    const trades = await Trades.findAll({where:{status:'selling'}});
+    
+    //블록 범위 내 트랜 IDs 추출
+    const arrTranIDs = [iTransaction];
+    console.log(`==== 검색할 트랜잭션 갯수: ${arrTranIDs.length} ====`);
+    console.log(iTransaction);
+
+    //모든 트랜잭션에 대하여 검사
+    for(let i=0;i<arrTranIDs.length;i++) {
+      let tx = await caver.kas.wallet.getTransaction(arrTranIDs[i]);
+
+      //컬랙션 별로 mintNFT, selling, buy 관련 TX 인지 검사
+      for(let j=0;j<collections.length;j++) {
+        let MyCA = collections[j].contractAddress;
+
+        if (tx.from === MyCA || tx.to === MyCA) {
+          console.log(`컬랙션(NFT) 관련 트랜잭션 발견`);
+          //DB 업데이트
+          await Transactions.findOrCreate({
+            where:{hash:tx.hash},
+            defaults:tx
+          });
+          await updateNFTtoDB(tx, arrTranIDs[i], MyCA, MyAbi);
+        }
+      }
+
+      //깐부 지갑 별로 관련 tx 인지 검사
+      for(let j=0;j<gganbus.length;j++) {
+        let MyCA = gganbus[j].gganbuAddress;
+
+        if (tx.to === MyCA) {
+          //DB 업데이트
+          await Transactions.findOrCreate({
+            where:{hash:tx.hash},
+            defaults:tx
+          });
+          await updateGGanbuActivity(tx, arrTranIDs[i], MyCA, MyAbi);
+        }
+      }
+    }    
+
+    console.log(`# of minted          : ${COUNT.minted}`);
+    console.log(`# of sell enrollment : ${COUNT.sell}`);
+    console.log(`# of traded          : ${COUNT.buy}`);
+    console.log(`# of sell cancelled  : ${COUNT.cancel}`);
+    console.log(`# of lend enrollment : ${COUNT.lend}`);
+    console.log(`# of rent            : ${COUNT.rent}`);
+    console.log(`# of returnNFT       : ${COUNT.returnNFT}`);
+    console.log(`# of suggestion_join : ${COUNT.suggestion_join}`);
+    console.log(`# of suggestion_sell : ${COUNT.suggestion_sell}`);
+    console.log(`# of suggestion_buy  : ${COUNT.suggestion_buy}`);
+    console.log(`# of suggestion_lend : ${COUNT.suggestion_lend}`);
+    console.log(`# of suggestion_rent : ${COUNT.suggestion_rent}`);
+    console.log(`# of suggestion_join_approved : ${COUNT.suggestion_join_approved}`);
+
+    sequelize.close();
+  }
+  catch(e) {
+    console.log(`에러 : ${e.message}`);
+  }
+}
+
+module.exports = updateTx;
 
 
 
