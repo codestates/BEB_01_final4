@@ -1,6 +1,6 @@
 const config = require('../config/config');
 const hostURI = config.development.host_metadata;
-const { Transactions, Collections, NFTs, Trades, Rents, GGanbu_wallets, GGanbu_members, Vote_suggestions, Vote_submits, sequelize } = require(".././models");
+const { Transactions, Transactions_klaytn, Collections, NFTs, Trades, Rents, GGanbu_wallets, GGanbu_members, Vote_suggestions, Vote_submits, sequelize } = require(".././models");
 const { Op, ConnectionTimedOutError } = require("sequelize");
 const fs = require('fs');
 const path = require("path");
@@ -981,7 +981,7 @@ const main = async (MyAbi, START_BLOCK) => {
       for(let j=0;j<collections.length;j++) {
         let MyCA = collections[j].contractAddress;
 
-        if (tx.from === MyCA || tx.to === MyCA) {
+        if (caver.utils.toChecksumAddress(tx.from) === MyCA || caver.utils.toChecksumAddress(tx.to) === MyCA) {
           console.log(tx);
           //DB 업데이트
           await Transactions.findOrCreate({
@@ -996,7 +996,7 @@ const main = async (MyAbi, START_BLOCK) => {
       for(let j=0;j<gganbus.length;j++) {
         let MyCA = gganbus[j].gganbuAddress;
 
-        if (tx.to === MyCA) {
+        if (caver.utils.toChecksumAddress(tx.to) === MyCA) {
           //DB 업데이트
           await Transactions.findOrCreate({
             where:{hash:tx.hash},
@@ -1080,15 +1080,17 @@ const updateTx = async (iTransaction) => {
     //모든 트랜잭션에 대하여 검사
     for(let i=0;i<arrTranIDs.length;i++) {
       let tx = await caver.kas.wallet.getTransaction(arrTranIDs[i]);
-
+      
       //컬랙션 별로 mintNFT, selling, buy 관련 TX 인지 검사
       for(let j=0;j<collections.length;j++) {
         let MyCA = collections[j].contractAddress;
 
-        if (tx.from === MyCA || tx.to === MyCA) {
+        if (caver.utils.toChecksumAddress(tx.from) === MyCA || caver.utils.toChecksumAddress(tx.to) === MyCA) {
           console.log(`컬랙션(NFT) 관련 트랜잭션 발견`);
           //DB 업데이트
-          await Transactions.findOrCreate({
+          tx.logs = String(tx.logs);
+          tx.signatures = String(tx.signatures);
+          await Transactions_klaytn.findOrCreate({
             where:{hash:tx.hash},
             defaults:tx
           });
@@ -1100,9 +1102,11 @@ const updateTx = async (iTransaction) => {
       for(let j=0;j<gganbus.length;j++) {
         let MyCA = gganbus[j].gganbuAddress;
 
-        if (tx.to === MyCA) {
+        if (caver.utils.toChecksumAddress(tx.to) === MyCA) {
           //DB 업데이트
-          await Transactions.findOrCreate({
+          tx.logs = null;
+          tx.signatures = null;
+          await Transactions_klaytn.findOrCreate({
             where:{hash:tx.hash},
             defaults:tx
           });
