@@ -358,13 +358,31 @@ const Asset = () => {
     }
 
     try {
+      let txResult;
+      let isKlaytn = networkId === 1001 || networkId === 8217;
+
       if (isRenting && nftRenter === account) {
-        const txResult = await collectionContract.methods.returnNFT(tokenId).send();
+        if (isKlaytn) {
+          txResult = await collectionContract.methods.returnNFT(tokenId).send({ from: account, gas: 9000000 });
+        } else {
+          txResult = await collectionContract.methods.returnNFT(tokenId).send();
+        }
 
         let event = await collectionContract.getPastEvents("_return", {
           fromBlock: txResult.blockNumber,
           toBlock: txResult.blockNumber,
         });
+
+        const { data } = await axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
+          {
+            transaction: txResult.transactionHash,
+            networkType: isKlaytn ? "klaytn" : "ethereum",
+          },
+          {
+            withCredentials: true,
+          },
+        );
 
         let log = event.find((log) => log.transactionHash == txResult.transactionHash);
         console.log(log.returnValues);
