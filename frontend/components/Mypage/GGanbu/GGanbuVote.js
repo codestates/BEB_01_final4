@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Coffer } from "../../../public/compiledContracts/Coffer";
+import { CofferForKlaytn } from "../../../public/compiledContracts/CofferForKlaytn";
 import { useStore } from "../../../utils/store";
 
 const CTable = styled(Table)`
@@ -21,6 +22,7 @@ const GGanbuVote = ({ suggestions, setSuggestions }) => {
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const account = useStore((state) => state.account);
   const web3 = useStore((state) => state.web3);
+  const [caver, networkId] = useStore((state) => [state.caver, state.networkId]);
 
   const getCoffer = async () => {
     // const cofferContract = await new web3.eth.Contract(Coffer.abi, selectedSuggestion?.orgAddress);
@@ -40,12 +42,32 @@ const GGanbuVote = ({ suggestions, setSuggestions }) => {
   }, [account]);
 
   const handleVote = async (vote) => {
-    const cofferContract = await new web3.eth.Contract(Coffer.abi, selectedSuggestion?.orgAddress);
-    const txResult = await cofferContract.methods
-      .vote(selectedSuggestion?.suggestion_idx, vote)
-      .send({ from: account });
+    let txResult;
+    let isKlaytn = networkId === 1001 || networkId === 8217;
+    let cofferContract;
+
+    if (isKlaytn) {
+      cofferContract = await new caver.klay.Contract(CofferForKlaytn.abi, selectedSuggestion?.orgAddress);
+      txResult = await cofferContract.methods
+        .vote(selectedSuggestion?.suggestion_idx, vote)
+        .send({ from: account, gas: 9000000 });
+    } else {
+      cofferContract = await new web3.eth.Contract(Coffer.abi, selectedSuggestion?.orgAddress);
+      txResult = await cofferContract.methods.vote(selectedSuggestion?.suggestion_idx, vote).send({ from: account });
+    }
 
     console.log(txResult);
+
+    const { data } = await axios.post(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
+      {
+        transaction: txResult.transactionHash,
+        networkType: isKlaytn ? "klaytn" : "ethereum",
+      },
+      {
+        withCredentials: true,
+      },
+    );
 
     if (vote) {
       let event = await cofferContract.getPastEvents("pass", {
