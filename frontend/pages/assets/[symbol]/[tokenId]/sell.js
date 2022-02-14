@@ -76,16 +76,12 @@ const Sell = () => {
       let nftOwner;
       if (web3 || caver) {
         if (networkId === 1001 || networkId === 8217) {
-          console.log("first");
-          console.log(nftData?.contractAddress);
-          console.log(account);
           const contract = await new caver.klay.Contract(GGanbuCollectionForKlaytn.abi, nftData?.contractAddress, {
             from: account,
           });
           setContract(contract);
           nftOwner = await contract.methods.ownerOf(tokenId).call();
         } else {
-          console.log("second");
           const contract = await new web3.eth.Contract(GGanbuCollection.abi, nftData?.contractAddress, {
             from: account,
           });
