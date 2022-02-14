@@ -44,7 +44,7 @@ const MintNFT = () => {
       traits: JSON.stringify([]),
       imageURI,
     };
-    console.log(newNFT);
+    // console.log(newNFT);
 
     // console.log(newNFT);
 
@@ -71,6 +71,18 @@ const MintNFT = () => {
 
           console.log(result);
           if (result) {
+            const { data } = await axios.post(
+              `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
+              {
+                transaction: result.transactionHash,
+                networkType: "klaytn",
+              },
+              {
+                withCredentials: true,
+              },
+            );
+            console.log(data);
+
             let event = await contract.getPastEvents("Transfer", {
               fromBlock: result.blockNumber,
               toBlock: result.blockNumber,
