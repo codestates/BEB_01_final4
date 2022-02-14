@@ -21,6 +21,7 @@ import NFTCard from "../../../components/nftCard";
 import axios from "axios";
 import { useStore } from "../../../utils/store";
 import { GGanbuCollection } from "../../../public/compiledContracts/GGanbuCollection";
+import { GGanbuCollectionForKlaytn } from "../../../public/compiledContracts/GGanbuCollectionForKlaytn";
 import { Coffer } from "../../../public/compiledContracts/Coffer";
 import Listings from "../../../components/listings";
 import PriceHistory from "../../../components/priceHistory";
@@ -92,6 +93,7 @@ const Asset = () => {
   const [gganbuPrice, setGGanbuPrice] = useInputState("");
   const [gganbuDesc, setGGanbuDesc] = useInputState("");
   const [joinableGGanbuPrice, setJoinableGGanbuPrice] = useState(sellPrice);
+  const [caver, networkId] = useStore((state) => [state.caver, state.networkId]);
 
   // db에서 nft 정보 조회: 해당 nft의 컬렉션 정보를 얻기 위해서
   const getNft = async () => {
@@ -141,8 +143,11 @@ const Asset = () => {
 
   // 컨트랙트에서 nft 정보 조회: 소유자, 빌린사람, 판매, 대여 상태 등을 온체인에서 확인
   const getNftFromContract = async () => {
+    let isKlaytn = networkId === 1001 || networkId === 8217;
     try {
-      if (web3 && nft?.contractAddress && nft?.ownerAddress) {
+      if (!isKlaytn && nft?.contractAddress && nft?.ownerAddress) {
+        console.log(networkId);
+        console.log(isKlaytn);
         const collectionContract = await new web3.eth.Contract(GGanbuCollection.abi, nft?.contractAddress, {
           from: account,
         });
@@ -161,6 +166,31 @@ const Asset = () => {
         const emptyAddress = "0x0000000000000000000000000000000000000000";
         // console.log(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
         setIsRenting(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
+
+        const owner = await collectionContract.methods.ownerOf(tokenId).call();
+        // console.log(owner);
+        setNftOwner(owner);
+      } else if (isKlaytn && nft?.contractAddress && nft?.ownerAddress) {
+        // kalytn 로직
+        console.log("kalytn");
+        const collectionContract = await new caver.klay.Contract(GGanbuCollectionForKlaytn.abi, nft?.contractAddress, {
+          from: account,
+        });
+        setCollectionContract(collectionContract);
+
+        const isSelling = await collectionContract.methods.getIsSelling(tokenId).call();
+        setIsSelling(isSelling);
+
+        const isLending = await collectionContract.methods.getIsRental(tokenId).call();
+        setIsLending(isLending);
+
+        // 대여자 주소
+        const rentAddress = await collectionContract.methods.getRentalAddress(tokenId).call();
+        // console.log(rentAddress);
+        setNftRenter(caver.utils.toChecksumAddress(rentAddress));
+        const emptyAddress = "0x0000000000000000000000000000000000000000";
+        // console.log(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
+        setIsRenting(caver.utils.toChecksumAddress(rentAddress) !== emptyAddress);
 
         const owner = await collectionContract.methods.ownerOf(tokenId).call();
         // console.log(owner);
@@ -499,6 +529,8 @@ const Asset = () => {
           {/* 판매 X, 대여 등록 X 상태 */}
           {!isSelling && !isLending && (
             <TradeBox>
+              {console.log(account, nftOwner, isSelling)}
+
               <Text style={{ fontSize: "20px" }}>판매 중이거나 대여 등록된 NFT가 아닙니다.</Text>
               {account && account === nftOwner && !isSelling && (
                 <Button
