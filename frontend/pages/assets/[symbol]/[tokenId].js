@@ -492,16 +492,38 @@ const Asset = () => {
   const handleJoinGGanbu = async () => {
     // console.log("handleJoinGGanbu Clicked");
     // console.log(gganbuPrice);
-    console.log(nft?.recruiting?.gganbuAddress);
-    const cofferContract = await new web3.eth.Contract(Coffer.abi, nft?.recruiting?.gganbuAddress);
-    const txResult = await cofferContract.methods
-      .requestJoin(0)
-      .send({ from: account, value: web3.utils.toWei(gganbuPrice, "ether") });
+    // console.log(nft?.recruiting?.gganbuAddress);
+    let txResult;
+    let isKlaytn = networkId === 1001 || networkId === 8217;
+    let cofferContract;
+
+    if (isKlaytn) {
+      cofferContract = await new caver.klay.Contract(CofferForKlaytn.abi, nft?.recruiting?.gganbuAddress);
+      txResult = await cofferContract.methods
+        .requestJoin(0)
+        .send({ from: account, gas: 9000000, value: caver.utils.toPeb(gganbuPrice, "KLAY") });
+    } else {
+      cofferContract = await new web3.eth.Contract(Coffer.abi, nft?.recruiting?.gganbuAddress);
+      txResult = await cofferContract.methods
+        .requestJoin(0)
+        .send({ from: account, value: web3.utils.toWei(gganbuPrice, "ether") });
+    }
 
     let event = await cofferContract.getPastEvents("set_suggestion", {
       fromBlock: txResult.blockNumber,
       toBlock: txResult.blockNumber,
     });
+
+    const { data } = await axios.post(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
+      {
+        transaction: txResult.transactionHash,
+        networkType: isKlaytn ? "klaytn" : "ethereum",
+      },
+      {
+        withCredentials: true,
+      },
+    );
 
     let log = event.find((log) => log.transactionHash == txResult.transactionHash);
     console.log(log.returnValues);
