@@ -40,6 +40,7 @@ export default function App(props) {
         setCaver(caver);
 
         window.klaytn.on("accountsChanged", () => {
+          console.log("accountsChanged");
           connectKaikas({ setAccount, setUser });
         });
         return window.klaytn.removeListener("accountsChanged", () => {});

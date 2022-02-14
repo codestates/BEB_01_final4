@@ -249,17 +249,35 @@ const Asset = () => {
 
     try {
       if (sellPrice) {
-        const txResult = await collectionContract.methods
-          .payment(1, tokenId)
-          .send({ value: web3.utils.toWei(sellPrice, "ether") });
-
+        let txResult;
+        if (networkId === 1001 || networkId === 8217) {
+          txResult = await collectionContract.methods
+            .payment(1, tokenId)
+            .send({ value: caver.utils.toPeb(sellPrice, "KLAY"), from: account, gas: 9000000 });
+        } else {
+          txResult = await collectionContract.methods
+            .payment(1, tokenId)
+            .send({ value: web3.utils.toWei(sellPrice, "ether") });
+        }
         let event = await collectionContract.getPastEvents("_trade", {
           fromBlock: txResult.blockNumber,
           toBlock: txResult.blockNumber,
         });
 
+        console.log(txResult);
         let log = event.find((log) => log.transactionHash == txResult.transactionHash);
         console.log(log.returnValues);
+
+        const { data } = await axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
+          {
+            transaction: txResult.transactionHash,
+            networkType: "klaytn",
+          },
+          {
+            withCredentials: true,
+          },
+        );
 
         setSellPrice(null);
 
