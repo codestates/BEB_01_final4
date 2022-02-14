@@ -21,7 +21,9 @@ import NFTCard from "../../../components/nftCard";
 import axios from "axios";
 import { useStore } from "../../../utils/store";
 import { GGanbuCollection } from "../../../public/compiledContracts/GGanbuCollection";
+import { GGanbuCollectionForKlaytn } from "../../../public/compiledContracts/GGanbuCollectionForKlaytn";
 import { Coffer } from "../../../public/compiledContracts/Coffer";
+import { CofferForKlaytn } from "../../../public/compiledContracts/CofferForKlaytn";
 import Listings from "../../../components/listings";
 import PriceHistory from "../../../components/priceHistory";
 import Web3 from "web3";
@@ -92,6 +94,7 @@ const Asset = () => {
   const [gganbuPrice, setGGanbuPrice] = useInputState("");
   const [gganbuDesc, setGGanbuDesc] = useInputState("");
   const [joinableGGanbuPrice, setJoinableGGanbuPrice] = useState(sellPrice);
+  const [caver, networkId] = useStore((state) => [state.caver, state.networkId]);
 
   // db에서 nft 정보 조회: 해당 nft의 컬렉션 정보를 얻기 위해서
   const getNft = async () => {
@@ -141,8 +144,11 @@ const Asset = () => {
 
   // 컨트랙트에서 nft 정보 조회: 소유자, 빌린사람, 판매, 대여 상태 등을 온체인에서 확인
   const getNftFromContract = async () => {
+    let isKlaytn = networkId === 1001 || networkId === 8217;
     try {
-      if (web3 && nft?.contractAddress && nft?.ownerAddress) {
+      if (!caver && nft?.contractAddress && nft?.ownerAddress) {
+        console.log(networkId);
+        console.log(isKlaytn);
         const collectionContract = await new web3.eth.Contract(GGanbuCollection.abi, nft?.contractAddress, {
           from: account,
         });
@@ -161,6 +167,31 @@ const Asset = () => {
         const emptyAddress = "0x0000000000000000000000000000000000000000";
         // console.log(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
         setIsRenting(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
+
+        const owner = await collectionContract.methods.ownerOf(tokenId).call();
+        // console.log(owner);
+        setNftOwner(owner);
+      } else if (caver && nft?.contractAddress && nft?.ownerAddress) {
+        // kalytn 로직
+        console.log("kalytn");
+        const collectionContract = await new caver.klay.Contract(GGanbuCollectionForKlaytn.abi, nft?.contractAddress, {
+          from: account,
+        });
+        setCollectionContract(collectionContract);
+
+        const isSelling = await collectionContract.methods.getIsSelling(tokenId).call();
+        setIsSelling(isSelling);
+
+        const isLending = await collectionContract.methods.getIsRental(tokenId).call();
+        setIsLending(isLending);
+
+        // 대여자 주소
+        const rentAddress = await collectionContract.methods.getRentalAddress(tokenId).call();
+        // console.log(rentAddress);
+        setNftRenter(caver.utils.toChecksumAddress(rentAddress));
+        const emptyAddress = "0x0000000000000000000000000000000000000000";
+        // console.log(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
+        setIsRenting(caver.utils.toChecksumAddress(rentAddress) !== emptyAddress);
 
         const owner = await collectionContract.methods.ownerOf(tokenId).call();
         // console.log(owner);
@@ -219,17 +250,36 @@ const Asset = () => {
 
     try {
       if (sellPrice) {
-        const txResult = await collectionContract.methods
-          .payment(1, tokenId)
-          .send({ value: web3.utils.toWei(sellPrice, "ether") });
-
+        let txResult;
+        let isKlaytn = networkId === 1001 || networkId === 8217;
+        if (isKlaytn) {
+          txResult = await collectionContract.methods
+            .payment(1, tokenId)
+            .send({ value: caver.utils.toPeb(sellPrice, "KLAY"), from: account, gas: 9000000 });
+        } else {
+          txResult = await collectionContract.methods
+            .payment(1, tokenId)
+            .send({ value: web3.utils.toWei(sellPrice, "ether") });
+        }
         let event = await collectionContract.getPastEvents("_trade", {
           fromBlock: txResult.blockNumber,
           toBlock: txResult.blockNumber,
         });
 
+        // console.log(txResult);
         let log = event.find((log) => log.transactionHash == txResult.transactionHash);
         console.log(log.returnValues);
+
+        const { data } = await axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
+          {
+            transaction: txResult.transactionHash,
+            networkType: isKlaytn ? "klaytn" : "ethereum",
+          },
+          {
+            withCredentials: true,
+          },
+        );
 
         setSellPrice(null);
 
@@ -255,9 +305,17 @@ const Asset = () => {
 
     try {
       if (lendPrice) {
-        const txResult = await collectionContract.methods
-          .payment(2, tokenId)
-          .send({ value: web3.utils.toWei(lendPrice, "ether") });
+        let txResult;
+        let isKlaytn = networkId === 1001 || networkId === 8217;
+        if (isKlaytn) {
+          txResult = await collectionContract.methods
+            .payment(2, tokenId)
+            .send({ value: caver.utils.toPeb(lendPrice, "KLAY"), from: account, gas: 9000000 });
+        } else {
+          txResult = await collectionContract.methods
+            .payment(2, tokenId)
+            .send({ value: web3.utils.toWei(lendPrice, "ether") });
+        }
 
         let event = await collectionContract.getPastEvents("_rented", {
           fromBlock: txResult.blockNumber,
@@ -266,6 +324,17 @@ const Asset = () => {
 
         let log = event.find((log) => log.transactionHash == txResult.transactionHash);
         console.log(log.returnValues);
+
+        const { data } = await axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
+          {
+            transaction: txResult.transactionHash,
+            networkType: isKlaytn ? "klaytn" : "ethereum",
+          },
+          {
+            withCredentials: true,
+          },
+        );
 
         setLendPrice(null);
 
@@ -290,13 +359,31 @@ const Asset = () => {
     }
 
     try {
+      let txResult;
+      let isKlaytn = networkId === 1001 || networkId === 8217;
+
       if (isRenting && nftRenter === account) {
-        const txResult = await collectionContract.methods.returnNFT(tokenId).send();
+        if (isKlaytn) {
+          txResult = await collectionContract.methods.returnNFT(tokenId).send({ from: account, gas: 9000000 });
+        } else {
+          txResult = await collectionContract.methods.returnNFT(tokenId).send();
+        }
 
         let event = await collectionContract.getPastEvents("_return", {
           fromBlock: txResult.blockNumber,
           toBlock: txResult.blockNumber,
         });
+
+        const { data } = await axios.post(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
+          {
+            transaction: txResult.transactionHash,
+            networkType: isKlaytn ? "klaytn" : "ethereum",
+          },
+          {
+            withCredentials: true,
+          },
+        );
 
         let log = event.find((log) => log.transactionHash == txResult.transactionHash);
         console.log(log.returnValues);
@@ -326,12 +413,12 @@ const Asset = () => {
   };
 
   const handleCreateGGanbu = async () => {
-    console.log(gganbuPrice, gganbuDesc);
+    // console.log(gganbuPrice, gganbuDesc);
     if (!gganbuPrice || !gganbuDesc) {
       alert("참여 금액과 깐부 설명을 입력해주세요.");
       return;
     }
-    console.log(gganbuPrice);
+    // console.log(gganbuPrice);
 
     // 깐부 월렛 생성
     if (nft) {
@@ -339,12 +426,23 @@ const Asset = () => {
       // console.log(parseInt(web3.utils.toWei(sellPrice, "ether")));
       // return;
 
-      const cofferContract = await new web3.eth.Contract(Coffer.abi)
-        .deploy({
-          data: Coffer.bytecode,
-          arguments: [nft.contractAddress, nft.token_ids, web3.utils.toWei(sellPrice, "ether"), 1], // Writing you arguments in the array
-        })
-        .send({ from: account, value: web3.utils.toWei(gganbuPrice, "ether") });
+      let isKlaytn = networkId === 1001 || networkId === 8217;
+      let cofferContract;
+      if (isKlaytn) {
+        cofferContract = await new caver.klay.Contract(CofferForKlaytn.abi)
+          .deploy({
+            data: CofferForKlaytn.bytecode,
+            arguments: [nft.contractAddress, nft.token_ids, caver.utils.toPeb(sellPrice, "KLAY"), 1], // Writing you arguments in the array
+          })
+          .send({ from: account, gas: 9000000, value: caver.utils.toPeb(gganbuPrice, "KLAY") });
+      } else {
+        cofferContract = await new web3.eth.Contract(Coffer.abi)
+          .deploy({
+            data: Coffer.bytecode,
+            arguments: [nft.contractAddress, nft.token_ids, web3.utils.toWei(sellPrice, "ether"), 1], // Writing you arguments in the array
+          })
+          .send({ from: account, value: web3.utils.toWei(gganbuPrice, "ether") });
+      }
 
       if (cofferContract._address) {
         console.log({
@@ -358,17 +456,29 @@ const Asset = () => {
 
       // TODO: 공동월렛 생성 후 백엔드에 정보 전달, 현재 post api로 전달하는 인자 중 일부는 빠질 예정(컨트랙트에서 get method 추가되면)
       if (cofferContract._address) {
-        await axios.post(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/gganbu`,
-          {
-            userAddress: account,
-            gganbuAddress: cofferContract._address,
-            description: gganbuDesc,
-            collectionAddress: nft.contractAddress,
-            token_ids: nft.token_ids,
-          },
-          { withCredentials: true },
-        );
+        console.log("first");
+        console.log({
+          userAddress: account,
+          gganbuAddress: cofferContract._address,
+          description: gganbuDesc,
+          collectionAddress: nft.contractAddress,
+          token_ids: nft.token_ids,
+        });
+        try {
+          await axios.post(
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/gganbu`,
+            {
+              userAddress: account,
+              gganbuAddress: cofferContract._address,
+              description: gganbuDesc,
+              collectionAddress: nft.contractAddress,
+              token_ids: nft.token_ids,
+            },
+            { withCredentials: true },
+          );
+        } catch (e) {
+          console.dir(e);
+        }
 
         // 깐부 정보를 DB에서 새로 가져옴
         getNft();
@@ -789,7 +899,7 @@ const Asset = () => {
           placeholder="참여 금액"
           label="참여 금액"
           required
-          type="number"
+          // type="number"
         />
         {nft?.isRecruiting ? null : (
           <TextInput

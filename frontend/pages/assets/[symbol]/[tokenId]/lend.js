@@ -6,6 +6,7 @@ import Image from "next/image";
 import { IoIosArrowDown } from "react-icons/io";
 import axios from "axios";
 import { GGanbuCollection } from "../../../../public/compiledContracts/GGanbuCollection";
+import { GGanbuCollectionForKlaytn } from "../../../../public/compiledContracts/GGanbuCollectionForKlaytn";
 import { useStore } from "../../../../utils/store";
 import { useRouter } from "next/router";
 import { useEffect } from "react/cjs/react.development";
@@ -59,9 +60,10 @@ const Lend = () => {
   const [web3, account] = useStore((state) => [state.web3, state.account]);
   const [lendPrice, setLendPrice] = useInputState("");
   // const [nft, setNft] = useState(null);
-  const [collectionContract, setCollectionContract] = useState(null);
   const router = useRouter();
   const { symbol, tokenId } = router.query;
+  const [contract, setContract] = useState(null);
+  const [caver, networkId] = useStore((state) => [state.caver, state.networkId]);
 
   const checkIsMyNft = async () => {
     if (symbol && tokenId && account) {
@@ -72,12 +74,21 @@ const Lend = () => {
         withCredentials: true,
       });
 
-      if (web3) {
-        const collectionContract = await new web3.eth.Contract(GGanbuCollection.abi, nftData?.contractAddress, {
-          from: account,
-        });
-        setCollectionContract(collectionContract);
-        const nftOwner = await collectionContract.methods.ownerOf(tokenId).call();
+      let nftOwner;
+      if (web3 || caver) {
+        if (networkId === 1001 || networkId === 8217) {
+          const contract = await new caver.klay.Contract(GGanbuCollectionForKlaytn.abi, nftData?.contractAddress, {
+            from: account,
+          });
+          setContract(contract);
+          nftOwner = await contract.methods.ownerOf(tokenId).call();
+        } else {
+          const contract = await new web3.eth.Contract(GGanbuCollection.abi, nftData?.contractAddress, {
+            from: account,
+          });
+          setContract(contract);
+          nftOwner = await contract.methods.ownerOf(tokenId).call();
+        }
         if (nftOwner === account) {
           return;
         }
@@ -96,19 +107,38 @@ const Lend = () => {
     checkIsMyNft();
   }, [account]);
 
-  const handleClickSell = async () => {
+  const handleClickRent = async () => {
     try {
-      console.log(collectionContract.methods);
-      const unitPrice = web3.utils.toWei(lendPrice, "ether");
-      const txResult = await collectionContract.methods.rent(tokenId, unitPrice).send();
-      console.log(txResult);
+      let txResult;
+      let isKlaytn = networkId === 1001 || networkId === 8217;
+      if (isKlaytn) {
+        const unitPrice = caver.utils.toPeb(lendPrice, "KLAY");
+        txResult = await contract.methods.rent(tokenId, unitPrice).send({ from: account, gas: 9000000 });
+      } else {
+        const unitPrice = web3.utils.toWei(lendPrice, "ether");
+        txResult = await contract.methods.rent(tokenId, unitPrice).send();
+      }
 
-      let event = await collectionContract.getPastEvents("_rental", {
+      console.log(txResult);
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
+        {
+          transaction: txResult.transactionHash,
+          networkType: isKlaytn ? "klaytn" : "ethereum",
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      let event = await contract.getPastEvents("_rental", {
         fromBlock: txResult.blockNumber,
         toBlock: txResult.blockNumber,
       });
+      // console.log(event);
 
       let log = event.find((log) => log.transactionHash == txResult.transactionHash);
+      // console.log(log);
       console.log(log.returnValues);
 
       router.push(`/assets/${symbol}/${tokenId}`);
@@ -174,7 +204,7 @@ const Lend = () => {
               <Text style={{ fontWeight: "bold", color: "rgb(112, 122, 131)" }}>10%</Text>
             </div>
           </div>
-          <Button onClick={handleClickSell} size="lg" style={{ marginTop: "30px" }} color="teal">
+          <Button onClick={handleClickRent} size="lg" style={{ marginTop: "30px" }} color="teal">
             Complete Listing
           </Button>
         </div>

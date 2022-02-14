@@ -61,7 +61,8 @@ const MintNFT = () => {
       let contract;
 
       if (tokenURI) {
-        if (networkId === 1001 || networkId === 8217) {
+        let isKlaytn = networkId === 1001 || networkId === 8217;
+        if (isKlaytn) {
           // klaytn 로직
           contract = await new caver.klay.Contract(GGanbuCollectionForKlaytn.abi, contractAddress, {
             from: account,
@@ -75,7 +76,7 @@ const MintNFT = () => {
               `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
               {
                 transaction: result.transactionHash,
-                networkType: "klaytn",
+                networkType: isKlaytn ? "klaytn" : "ethereum",
               },
               {
                 withCredentials: true,

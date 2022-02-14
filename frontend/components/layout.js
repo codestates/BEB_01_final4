@@ -24,6 +24,7 @@ import { useInputState } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import { compressAddress } from "../utils";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
+import caver from "caver-js";
 
 const CText = styled(Text)`
   && {
@@ -79,7 +80,7 @@ export const connectKaikas = async ({ setAccount, setUser, setNetworkId }) => {
       console.log(klaytn.networkVersion);
       const account = klaytn.selectedAddress;
 
-      setAccount(account);
+      setAccount(caver.utils.toChecksumAddress(account));
       console.log(account);
       setNetworkId(klaytn.networkVersion);
 
@@ -119,6 +120,7 @@ const Layout = ({ children }) => {
   // const getBalance = async () => {
   //   let balance = await caver.rpc.klay.getBalance(account);
   //   balance = caver.utils.convertFromPeb(caver.utils.hexToNumberString(balance), "KLAY");
+  //   balance = caver.utils.convertFromPeb(balance, "KLAY");
   //   console.log(balance);
   // };
 
