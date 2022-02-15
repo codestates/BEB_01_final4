@@ -281,8 +281,8 @@ const NFTS = () => {
                       <div style={{ display: "flex" }}>
                         <Image
                           src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                          width={12}
-                          height={12}
+                          width={25}
+                          height={25}
                           alt=""
                         />
                         <span style={{ marginLeft: "5px" }}>
@@ -299,8 +299,8 @@ const NFTS = () => {
                       <div style={{ display: "flex" }}>
                         <Image
                           src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                          width={12}
-                          height={12}
+                          width={25}
+                          height={25}
                           alt=""
                         />
                         <span style={{ marginLeft: "5px" }}>{dao?._user_staking}</span>
@@ -371,8 +371,8 @@ const NFTS = () => {
                     <div style={{ display: "flex" }}>
                       <Image
                         src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                        width={12}
-                        height={12}
+                        width={25}
+                        height={25}
                         alt=""
                       />
                       <span style={{ marginLeft: "5px" }}>{dao?.balance}</span>
@@ -385,8 +385,8 @@ const NFTS = () => {
                     <div style={{ display: "flex" }}>
                       <Image
                         src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                        width={12}
-                        height={12}
+                        width={25}
+                        height={25}
                         alt=""
                       />
                       <span style={{ marginLeft: "5px" }}>{dao?._num_of_pool_use}</span>
@@ -407,8 +407,8 @@ const NFTS = () => {
                     <div style={{ display: "flex" }}>
                       <Image
                         src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                        width={12}
-                        height={12}
+                        width={25}
+                        height={25}
                         alt=""
                       />
                       <span style={{ marginLeft: "5px" }}>

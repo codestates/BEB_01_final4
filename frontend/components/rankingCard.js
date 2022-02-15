@@ -64,7 +64,7 @@ const RankingCard = ({ rankInfo, index, category }) => {
 
   return (
     <Grid.Col
-      span={12}
+      span={25}
       md={6}
       lg={4}
       onClick={() => {

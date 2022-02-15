@@ -3,6 +3,7 @@ import { useInputState } from "@mantine/hooks";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Coffer } from "../../../../public/compiledContracts/Coffer";
+import { CofferForKlaytn } from "../../../../public/compiledContracts/CofferForKlaytn";
 import { useStore } from "../../../../utils/store";
 import MyDaoTable from "./myDaoTable";
 
@@ -13,6 +14,7 @@ const DoJoined = ({ activeSubTab }) => {
   const [amount, setAmount] = useInputState("");
   const [description, setDescription] = useInputState("");
   const [myDaos, setMyDao] = useState([]);
+  const caver = useStore((state) => state.caver);
 
   const getMyDaos = async () => {
     if (account) {
@@ -32,15 +34,26 @@ const DoJoined = ({ activeSubTab }) => {
   const handleCreateDAO = async () => {
     // console.log(name);
     // console.log(description);
+    let isKlaytn = networkId === 1001 || networkId === 8217;
+    let cofferContract;
 
-    const cofferContract = await new web3.eth.Contract(Coffer.abi)
-      .deploy({
-        data: Coffer.bytecode,
-        arguments: ["0x0000000000000000000000000000000000000000", 0, 0, 4],
-      })
-      .send({ from: account, value: web3.utils.toWei(amount, "ether") });
+    if (isKlaytn) {
+      cofferContract = await new caver.klay.Contract(CofferForKlaytn.abi)
+        .deploy({
+          data: CofferForKlaytn.bytecode,
+          arguments: ["0x0000000000000000000000000000000000000000", 0, 0, 4],
+        })
+        .send({ from: account, gas: 9000000, value: caver.utils.toPeb(amount, "KLAY") });
+    } else {
+      cofferContract = await new web3.eth.Contract(Coffer.abi)
+        .deploy({
+          data: Coffer.bytecode,
+          arguments: ["0x0000000000000000000000000000000000000000", 0, 0, 4],
+        })
+        .send({ from: account, value: web3.utils.toWei(amount, "ether") });
+    }
 
-    // console.log(cofferContract);
+    console.log(cofferContract);
     // console.log(cofferContract._address);
 
     // console.log({ daoAddress: cofferContract._address, name, description });

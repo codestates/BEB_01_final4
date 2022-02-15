@@ -38,7 +38,7 @@ const NFTCard = ({ collectionSymbol, nft }) => {
   const networkId = useStore((state) => state.networkId);
   return (
     <Grid.Col
-      span={12}
+      span={25}
       md={6}
       lg={4}
       onClick={() => {
