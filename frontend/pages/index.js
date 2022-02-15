@@ -46,6 +46,10 @@ const Main = () => {
         >
           <div>
             {/* <Image layout="fill" src="/images/carousel1.jpeg" alt="" /> */}
+            <img src="/images/klaycity.jpeg" alt="" />
+          </div>
+          <div>
+            {/* <Image layout="fill" src="/images/carousel1.jpeg" alt="" /> */}
             <img src="/images/carousel1 (1).jpeg" alt="" />
           </div>
           <div>
@@ -55,10 +59,6 @@ const Main = () => {
           <div>
             {/* <Image layout="fill" src="/images/carousel3.jpeg" alt="" /> */}
             <img src="/images/carousel3 (1).jpeg" alt="" />
-          </div>
-          <div>
-            {/* <Image layout="fill" src="/images/carousel4.jpeg" alt="" /> */}
-            <img src="/images/carousel4 (1).png" alt="" />
           </div>
         </Carousel>
       </div>
