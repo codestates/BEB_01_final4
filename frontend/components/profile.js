@@ -3,10 +3,12 @@ import { useRouter } from "next/router";
 import { BiUserCircle } from "react-icons/bi";
 import { useStore } from "../utils/store";
 
-export const disconnectWallet = async ({ setAccount, setUser, setNetworkId }) => {
+export const disconnectWallet = async ({ setAccount, setUser, setNetworkId, setCaver, setWeb3 }) => {
   setAccount(null);
   setUser(null);
   setNetworkId(null);
+  // setCaver(null);
+  // setWeb3(null);
 };
 
 const Profile = () => {
@@ -16,6 +18,7 @@ const Profile = () => {
     state.setUser,
     state.setNetworkId,
   ]);
+  const [setCaver, setWeb3] = useStore((state) => [state.setCaver, state.setWeb3]);
 
   return (
     <Menu
@@ -28,7 +31,10 @@ const Profile = () => {
       trigger="hover"
       delay={200}
     >
-      <Menu.Item style={{ fontSize: "18px" }} onClick={() => disconnectWallet({ setAccount, setUser, setNetworkId })}>
+      <Menu.Item
+        style={{ fontSize: "18px" }}
+        onClick={() => disconnectWallet({ setAccount, setUser, setNetworkId, setCaver, setWeb3 })}
+      >
         Disconnect
       </Menu.Item>
       <Menu.Item style={{ fontSize: "18px" }} onClick={() => router.push("/mypage")}>

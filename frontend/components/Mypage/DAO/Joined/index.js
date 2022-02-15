@@ -7,7 +7,7 @@ import { useStore } from "../../../../utils/store";
 import MyDaoTable from "./myDaoTable";
 
 const DoJoined = ({ activeSubTab }) => {
-  const [web3, account] = useStore((state) => [state.web3, state.account]);
+  const [web3, account, networkId] = useStore((state) => [state.web3, state.account, state.networkId]);
   const [opened, setOpened] = useState(false);
   const [name, setName] = useInputState("");
   const [amount, setAmount] = useInputState("");
@@ -99,7 +99,7 @@ const DoJoined = ({ activeSubTab }) => {
           value={amount}
           onChange={setAmount}
           style={{ margin: "20px 0" }}
-          placeholder="ETH"
+          placeholder={`${networkId === 1001 || networkId === 8217 ? "KLAY" : "ETH"}`}
           label="참여 금액"
           required
           type="number"

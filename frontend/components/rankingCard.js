@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getFontDefinitionFromManifest } from "next/dist/server/font-utils";
+import { useStore } from "../utils/store";
 
 const NftWrapper = styled.div`
   &:hover {
@@ -36,6 +37,7 @@ const BadgeWrapper = styled.div`
 
 const RankingCard = ({ rankInfo, index, category }) => {
   const router = useRouter();
+  const networkId = useStore((state) => state.networkId);
 
   const [imageURI, setImageURI] = useState(null);
   const [name, setName] = useState(null);
@@ -115,7 +117,14 @@ const RankingCard = ({ rankInfo, index, category }) => {
           <div style={{ width: "70%" }}>{name}</div>
           <div style={{ display: "flex", width: "30%", flexDirection: "column", alignItems: "flex-end" }}>
             <div style={{ display: "flex", alignItems: "center", marginTop: "3px" }}>
-              {category === "nft" ? <Image width={30} height={30} src="/images/eth.svg" alt="" /> : null}
+              {category === "nft" ? (
+                <Image
+                  width={30}
+                  height={30}
+                  src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+                  alt=""
+                />
+              ) : null}
               <span style={{ marginLeft: "3px", fontWeight: "bold", fontSize: "25px" }}>
                 {category === "nft" ? rankInfo?.price : null}
               </span>

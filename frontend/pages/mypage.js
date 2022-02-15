@@ -68,7 +68,6 @@ const MyPage = () => {
   const [rentAssets, setRentAssets] = useState([]);
   const [rentHistoryAssets, setRentHistoryAssets] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
-  const web3 = useStore((state) => state.web3);
 
   const getDataOnTabChange = async () => {
     if (activeTab === 0) {

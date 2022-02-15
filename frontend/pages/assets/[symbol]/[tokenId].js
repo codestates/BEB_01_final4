@@ -270,7 +270,7 @@ const Asset = () => {
         let log = event.find((log) => log.transactionHash == txResult.transactionHash);
         console.log(log.returnValues);
 
-        const { data } = await axios.post(
+        await axios.post(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
           {
             transaction: txResult.transactionHash,
@@ -325,7 +325,7 @@ const Asset = () => {
         let log = event.find((log) => log.transactionHash == txResult.transactionHash);
         console.log(log.returnValues);
 
-        const { data } = await axios.post(
+        await axios.post(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
           {
             transaction: txResult.transactionHash,
@@ -374,7 +374,7 @@ const Asset = () => {
           toBlock: txResult.blockNumber,
         });
 
-        const { data } = await axios.post(
+        await axios.post(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
           {
             transaction: txResult.transactionHash,
@@ -492,16 +492,38 @@ const Asset = () => {
   const handleJoinGGanbu = async () => {
     // console.log("handleJoinGGanbu Clicked");
     // console.log(gganbuPrice);
-    console.log(nft?.recruiting?.gganbuAddress);
-    const cofferContract = await new web3.eth.Contract(Coffer.abi, nft?.recruiting?.gganbuAddress);
-    const txResult = await cofferContract.methods
-      .requestJoin(0)
-      .send({ from: account, value: web3.utils.toWei(gganbuPrice, "ether") });
+    // console.log(nft?.recruiting?.gganbuAddress);
+    let txResult;
+    let isKlaytn = networkId === 1001 || networkId === 8217;
+    let cofferContract;
+
+    if (isKlaytn) {
+      cofferContract = await new caver.klay.Contract(CofferForKlaytn.abi, nft?.recruiting?.gganbuAddress);
+      txResult = await cofferContract.methods
+        .requestJoin(0)
+        .send({ from: account, gas: 9000000, value: caver.utils.toPeb(gganbuPrice, "KLAY") });
+    } else {
+      cofferContract = await new web3.eth.Contract(Coffer.abi, nft?.recruiting?.gganbuAddress);
+      txResult = await cofferContract.methods
+        .requestJoin(0)
+        .send({ from: account, value: web3.utils.toWei(gganbuPrice, "ether") });
+    }
 
     let event = await cofferContract.getPastEvents("set_suggestion", {
       fromBlock: txResult.blockNumber,
       toBlock: txResult.blockNumber,
     });
+
+    await axios.post(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
+      {
+        transaction: txResult.transactionHash,
+        networkType: isKlaytn ? "klaytn" : "ethereum",
+      },
+      {
+        withCredentials: true,
+      },
+    );
 
     let log = event.find((log) => log.transactionHash == txResult.transactionHash);
     console.log(log.returnValues);
@@ -673,7 +695,12 @@ const Asset = () => {
                   <>
                     <Text style={{ fontSize: "18px" }}>Current price</Text>
                     <div style={{ display: "flex", margin: "12px 0" }}>
-                      <Image src="/images/eth.svg" width={16} height={16} alt="" />
+                      <Image
+                        src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+                        width={32}
+                        height={32}
+                        alt=""
+                      />
                       <Text style={{ fontSize: "28px", fontWeight: "bold", marginLeft: "10px" }}>
                         {sellPrice === null ? lendPrice : sellPrice}
                       </Text>
@@ -882,12 +909,22 @@ const Asset = () => {
         </Text>
         <div style={{ display: "flex", margin: "30px 0", justifyContent: "space-between" }}>
           <div style={{ display: "flex" }}>
-            <Image src="/images/eth.svg" width={12} height={12} alt="" />
+            <Image
+              src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+              width={24}
+              height={24}
+              alt=""
+            />
             <Text style={{ fontSize: "16px", marginLeft: "10px" }}>판매금액: {sellPrice}</Text>
           </div>
 
           <div style={{ display: "flex" }}>
-            <Image src="/images/eth.svg" width={12} height={12} alt="" />
+            <Image
+              src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+              width={24}
+              height={24}
+              alt=""
+            />
             <Text style={{ fontSize: "16px", marginLeft: "10px" }}>참여 가능 금액: {joinableGGanbuPrice}</Text>
           </div>
         </div>
