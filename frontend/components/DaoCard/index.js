@@ -167,8 +167,8 @@ const DaoCard = ({ dao }) => {
                   <div style={{ display: "flex" }}>
                     <Image
                       src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                      width={12}
-                      height={12}
+                      width={25}
+                      height={25}
                       alt=""
                     />
                     <span style={{ marginLeft: "5px" }}>
@@ -192,8 +192,8 @@ const DaoCard = ({ dao }) => {
                   <div style={{ display: "flex" }}>
                     <Image
                       src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                      width={12}
-                      height={12}
+                      width={25}
+                      height={25}
                       alt=""
                     />
                     <span style={{ marginLeft: "5px" }}>{dao.rewards}</span>
