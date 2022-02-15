@@ -97,8 +97,10 @@ const CreateCollection = () => {
 
       if (collectionURI) {
         let contract;
+        console.log(networkId);
         if (networkId === 1001 || networkId === 8217) {
           // klaytn 로직
+          console.log(caver);
           contract = await new caver.klay.Contract(GGanbuCollectionForKlaytn.abi)
             .deploy({
               data: GGanbuCollectionForKlaytn.bytecode,

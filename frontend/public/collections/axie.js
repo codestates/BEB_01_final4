@@ -1,7 +1,7 @@
 export const axie = {
   name: "Axie",
   description:
-    "Axies are fierce creatures that love to battle, build, and hunt for treasure!\r\nBuild up a collection and use them across an ever expanding universe of games!\r\nAxie players can earn tokens such as DAI, KNC, and SLP which can be converted easily to ETH!.",
+    "Axies are fierce creatures that love to battle, build, and hunt for treasure!\r\nBuild up a collection and use them across an ever expanding universe of games!\r\nAxie players can earn tokens such as DAI, KNC, and SLP which can be converted easily to KLAY!.",
   banner_image_url: "https://storage.opensea.io/static/banners/axie-banner6.png",
   large_image_url:
     "https://lh3.googleusercontent.com/kMn93Pl7Are77qy6lGGuitrwMV_405bCZKZBzu4wfvBsnNGeAK8wJxKugsVTQVXb1qH0W_7G0kVNdzXyRk6T5__l=s300",

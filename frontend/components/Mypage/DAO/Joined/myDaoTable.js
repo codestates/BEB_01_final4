@@ -1,5 +1,6 @@
 import { Button, Image, Table } from "@mantine/core";
 import styled from "styled-components";
+import { useStore } from "../../../../utils/store";
 
 const CTable = styled(Table)`
   && td {
@@ -19,6 +20,7 @@ const CImage = styled(Image)`
 
 const MyDaoTable = ({ myDaos }) => {
   // name, description, balance, num_of_members, members[]
+  const networkId = useStore((state) => state.networkId);
 
   const rows = myDaos.map((dao, idx) => (
     <tr key={idx}>
@@ -26,7 +28,12 @@ const MyDaoTable = ({ myDaos }) => {
       <td>{dao.description}</td>
       <td>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <CImage src="/images/eth.svg" width={16} height={16} alt="" />
+          <CImage
+            src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+            width={16}
+            height={16}
+            alt=""
+          />
           <span style={{ marginLeft: "5px" }}>{dao.balance}</span>
         </div>
       </td>

@@ -23,7 +23,7 @@ export default function App(props) {
         window.ethereum.on("accountsChanged", () => {
           connectWallet({ setAccount, setUser });
         });
-        return window.ethereum.removeListener("accountsChanged", () => {});
+        // return window.ethereum.removeListener("accountsChanged", () => {});
       } catch (err) {
         console.log(err);
       }
@@ -43,7 +43,7 @@ export default function App(props) {
           console.log("accountsChanged");
           connectKaikas({ setAccount, setUser });
         });
-        return window.klaytn.removeListener("accountsChanged", () => {});
+        // return window.klaytn.removeListener("accountsChanged", () => {});
       } catch (err) {
         console.log(err);
       }

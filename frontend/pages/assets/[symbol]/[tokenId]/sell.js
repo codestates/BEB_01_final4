@@ -174,8 +174,15 @@ const Sell = () => {
                 flex: "40%",
               }}
             >
-              <Image src="/images/eth.svg" width={24} height={24} alt="" />
-              <div style={{ margin: "0 25px", fontSize: "20px" }}>ETH</div>
+              <Image
+                src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+                width={24}
+                height={24}
+                alt=""
+              />
+              <div style={{ margin: "0 25px", fontSize: "20px" }}>{`${
+                networkId === 1001 || networkId === 8217 ? "KLAY" : "ETH"
+              }`}</div>
               <IoIosArrowDown />
             </div>
             <div style={{ flex: "60%" }}>

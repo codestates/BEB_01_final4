@@ -19,6 +19,7 @@ const CTr = styled.tr`
 const RentHistory = ({ elements }) => {
   const router = useRouter();
   const account = useStore((state) => state.account);
+  const networkId = useStore((state) => state.networkId);
 
   const handleClick = (element) => {
     router.push(`/assets/${element.collection.symbol}/${element.token_ids}`);
@@ -27,7 +28,9 @@ const RentHistory = ({ elements }) => {
   const rows = elements.map((element, idx) => (
     <CTr style={{ cursor: "pointer" }} onClick={() => handleClick(element)} key={idx}>
       <td>{element.asset.name}</td>
-      <td><Image src={element.asset.imageURI} width={128} height={128} alt="" /></td>
+      <td>
+        <Image src={element?.asset?.imageURI ? element?.asset?.imageURI : ""} width={128} height={128} alt="" />
+      </td>
       <td>
         {/* <div
           style={{
@@ -38,11 +41,17 @@ const RentHistory = ({ elements }) => {
             backgroundRepeat: "no-repeat",
           }}
         /> */}
-        <Image src="/images/eth.svg" width={16} height={16} alt="" />&nbsp;
+        <Image
+          src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+          width={16}
+          height={16}
+          alt=""
+        />
+        &nbsp;
         {element.price}
       </td>
-      <td>{(account == element.owner) ? '나' : element.owner.substring(2,8)}</td>
-      <td>{(account == element.renter) ? '나' : element.renter.substring(2,8)}</td>
+      <td>{account == element.owner ? "나" : element.owner.substring(2, 8)}</td>
+      <td>{account == element.renter ? "나" : element.renter.substring(2, 8)}</td>
       <td>{`${new Date(element.createdAt).toLocaleString("en-GB")}`}</td>
       <td>{`${new Date(element.updatedAt).toLocaleString("en-GB")}`}</td>
     </CTr>

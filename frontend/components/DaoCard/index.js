@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { CImage, CollectionWrapper, EllipsisDiv } from "./styles";
 import styled from "styled-components";
+import { useStore } from "../../utils/store";
 
 const CTable = styled(Table)`
   && td {
@@ -16,9 +17,10 @@ const CTable = styled(Table)`
 
 const DaoCard = ({ dao }) => {
   const router = useRouter();
+  const networkId = useStore((state) => state.networkId);
 
   //가짜 데이터
-  if(dao.name == 'codestates-dao') {
+  if (dao.name == "codestates-dao") {
     //[시연 생성] 없는 데이터만 등록
     dao.in_progress_suggestions = [];
 
@@ -38,14 +40,13 @@ const DaoCard = ({ dao }) => {
     dao._my_staking = dao.balance;
     dao._my_input = dao.balance;
     dao._my_output = 0;
-  }
-  else if(dao.name == 'korean whales') {
+  } else if (dao.name == "korean whales") {
     //[시연 view] 모든 정보 상세 페이지와 sync
     dao.num_of_members = 13;
     dao.balance = 670.12;
     dao.rewards = "340.55";
     dao.createdAt = dao.createdAt;
-    dao.in_progress_suggestions = [1,2,3,4,5];
+    dao.in_progress_suggestions = [1, 2, 3, 4, 5];
 
     dao._pool_usage = 62.69;
     dao._num_of_own_nft = 13;
@@ -63,7 +64,6 @@ const DaoCard = ({ dao }) => {
     dao._my_staking = 20;
     dao._my_input = 32;
     dao._my_output = 12;
-
   } else {
     // 모두 랜덤
     dao.in_progress_suggestions = [];
@@ -79,7 +79,7 @@ const DaoCard = ({ dao }) => {
       lg={6}
       onClick={() => {
         router.push(`/dao/${dao.daoAddress}`);
-      }}      
+      }}
     >
       <CollectionWrapper
         style={{
@@ -165,7 +165,12 @@ const DaoCard = ({ dao }) => {
                 <td style={{ width: "20%" }}>자금 Pool</td>
                 <td style={{ width: "30%" }}>
                   <div style={{ display: "flex" }}>
-                    <Image src="/images/eth.svg" width={12} height={12} alt="" />
+                    <Image
+                      src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+                      width={12}
+                      height={12}
+                      alt=""
+                    />
                     <span style={{ marginLeft: "5px" }}>
                       {/* {Math.round(parseFloat(dao.members.reduce((acc, cur) => acc + cur.staking_value, 0)) * 100) / 100} */}
                       {dao.balance}
@@ -185,21 +190,20 @@ const DaoCard = ({ dao }) => {
                 <td>총 수익</td>
                 <td>
                   <div style={{ display: "flex" }}>
-                    <Image src="/images/eth.svg" width={12} height={12} alt="" />
-                    <span style={{ marginLeft: "5px" }}>
-                      {dao.rewards}
-                    </span>
+                    <Image
+                      src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+                      width={12}
+                      height={12}
+                      alt=""
+                    />
+                    <span style={{ marginLeft: "5px" }}>{dao.rewards}</span>
                   </div>
                 </td>
               </tr>
             </tbody>
           </CTable>
-
         </div>
-
       </CollectionWrapper>
-
-
     </Grid.Col>
   );
 };

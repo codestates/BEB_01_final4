@@ -103,11 +103,11 @@ const NFTS = () => {
   const router = useRouter();
   const { symbol } = router.query;
   const [dao, setCollection] = useState(null);
-  const account = useStore((state) => state.account);
+  const networkId = useStore((state) => state.networkId);
 
   const setDummyData = (dao) => {
     //가짜 데이터
-    if(dao.name == 'codestates-dao') {
+    if (dao.name == "codestates-dao") {
       //[시연 생성] 없는 데이터만 등록
       dao.in_progress_suggestions = [];
 
@@ -127,14 +127,13 @@ const NFTS = () => {
       dao._my_staking = dao.balance;
       dao._my_input = dao.balance;
       dao._my_output = 0;
-    }
-    else if(dao.name == 'korean whales') {
+    } else if (dao.name == "korean whales") {
       //[시연 view] 모든 정보 상세 페이지와 sync
       dao.num_of_members = 13;
       dao.balance = 670.12;
       dao.rewards = "340.55";
       dao.createdAt = dao.createdAt;
-      dao.in_progress_suggestions = [1,2,3,4,5];
+      dao.in_progress_suggestions = [1, 2, 3, 4, 5];
 
       dao._pool_usage = 62.69;
       dao._num_of_own_nft = 13;
@@ -152,7 +151,6 @@ const NFTS = () => {
       dao._my_staking = 20;
       dao._my_input = 32;
       dao._my_output = 12;
-
     } else {
       // 모두 랜덤
       dao.in_progress_suggestions = [];
@@ -162,7 +160,7 @@ const NFTS = () => {
     }
 
     return dao;
-  }
+  };
 
   const getCollection = async () => {
     if (symbol) {
@@ -179,16 +177,19 @@ const NFTS = () => {
     getCollection();
   }, [symbol]);
 
-
-  if(dao) {
-    if(dao.name == 'korean whales') {
+  if (dao) {
+    if (dao.name == "korean whales") {
       //nft wolrlds
-      dao.banner_url = 'https://lh3.googleusercontent.com/Z83eH0SKXuR-szAsaFQvoz_mQUshxiEJjrl6nh71-3gOD4U-Z5Crpt2qcwGTf4vltfBWods9VVGDkv436z2_QmKK-Wi7aBrd640l=s2500';
-      dao.image_url = 'https://lh3.googleusercontent.com/Z83eH0SKXuR-szAsaFQvoz_mQUshxiEJjrl6nh71-3gOD4U-Z5Crpt2qcwGTf4vltfBWods9VVGDkv436z2_QmKK-Wi7aBrd640l=s300';
+      dao.banner_url =
+        "https://lh3.googleusercontent.com/Z83eH0SKXuR-szAsaFQvoz_mQUshxiEJjrl6nh71-3gOD4U-Z5Crpt2qcwGTf4vltfBWods9VVGDkv436z2_QmKK-Wi7aBrd640l=s2500";
+      dao.image_url =
+        "https://lh3.googleusercontent.com/Z83eH0SKXuR-szAsaFQvoz_mQUshxiEJjrl6nh71-3gOD4U-Z5Crpt2qcwGTf4vltfBWods9VVGDkv436z2_QmKK-Wi7aBrd640l=s300";
     } else {
       //일루비움
-      dao.banner_url = 'https://lh3.googleusercontent.com/7eZ61l0C61l8wbifkX0jBg3oglKcHTUcRDiZS6xF-cxCaNvz3jBAwp_XoDZAgwLS4o1VGoGRXbtHGHfSJWEhLqmJuTl5E3nF_F6eIg=s2500';
-      dao.image_url = 'https://lh3.googleusercontent.com/IRKmFBtoKfjejTrfm5zj20ztCpR1oIO5GNrhak78C2fLLdkBHi1SOOe83ciouTVuMfONykdelm0ugtVy67FnKVEBbN2nF5n2Ys2_kw=s300';
+      dao.banner_url =
+        "https://lh3.googleusercontent.com/7eZ61l0C61l8wbifkX0jBg3oglKcHTUcRDiZS6xF-cxCaNvz3jBAwp_XoDZAgwLS4o1VGoGRXbtHGHfSJWEhLqmJuTl5E3nF_F6eIg=s2500";
+      dao.image_url =
+        "https://lh3.googleusercontent.com/IRKmFBtoKfjejTrfm5zj20ztCpR1oIO5GNrhak78C2fLLdkBHi1SOOe83ciouTVuMfONykdelm0ugtVy67FnKVEBbN2nF5n2Ys2_kw=s300";
     }
   }
 
@@ -227,8 +228,13 @@ const NFTS = () => {
       </Description>
       <div style={{ textAlign: "right", margin: "20px 0", fontSize: "22px" }}>
         <Button size="lg">Staking 추가하기</Button>&nbsp;&nbsp;
-        <Button color="yellow" size="lg">Staking 출금하기</Button>&nbsp;&nbsp;
-        <Button color="red" size="lg">탈퇴하기</Button>
+        <Button color="yellow" size="lg">
+          Staking 출금하기
+        </Button>
+        &nbsp;&nbsp;
+        <Button color="red" size="lg">
+          탈퇴하기
+        </Button>
       </div>
 
       <Divider style={{ margin: "10px 0 40px 0" }} />
@@ -242,11 +248,7 @@ const NFTS = () => {
           { maxWidth: 850, cols: 1, spacing: "sm" },
         ]}
       >
-        <Grid.Col
-          span={8}
-          md={8}
-          lg={8}    
-        >
+        <Grid.Col span={8} md={8} lg={8}>
           <CollectionWrapper
             style={{
               width: 800,
@@ -255,84 +257,93 @@ const NFTS = () => {
               borderRadius: "10px",
             }}
           >
-
-            <div style={{ 
-              height: "500px", overflow: "hidden", padding: "0 10px",
-            }}>
-              <div>    
+            <div
+              style={{
+                height: "500px",
+                overflow: "hidden",
+                padding: "0 10px",
+              }}
+            >
+              <div>
                 <Text style={{ fontSize: "34px", fontWeight: "bold", marginRight: "10px" }} align="left">
                   요약
                 </Text>
               </div>
               <CTable highlightOnHover>
                 <tbody>
-                  <tr style={{ 
-                    cursor: "pointer",
-                  }}
+                  <tr
+                    style={{
+                      cursor: "pointer",
+                    }}
                   >
                     <td style={{ fontSize: "20px", width: "20%" }}>Total Profits</td>
                     <td style={{ fontSize: "30px", width: "30%" }}>
                       <div style={{ display: "flex" }}>
-                          <Image src="/images/eth.svg" width={12} height={12} alt="" />
-                          <span style={{ marginLeft: "5px" }}>
-                          <span style={{color:"red"}}>{dao?.rewards}</span>
-                          </span>
+                        <Image
+                          src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+                          width={12}
+                          height={12}
+                          alt=""
+                        />
+                        <span style={{ marginLeft: "5px" }}>
+                          <span style={{ color: "red" }}>{dao?.rewards}</span>
+                        </span>
                       </div>
                     </td>
                     <td style={{ fontSize: "20px", width: "20%" }}></td>
                     <td style={{ fontSize: "30px", width: "30%" }}></td>
                   </tr>
                   <tr style={{ cursor: "pointer" }}>
-                  <td style={{ fontSize: "20px", width: "20%" }}>총 사용자 Staking</td>
+                    <td style={{ fontSize: "20px", width: "20%" }}>총 사용자 Staking</td>
                     <td style={{ fontSize: "30px", width: "30%" }}>
                       <div style={{ display: "flex" }}>
-                        <Image src="/images/eth.svg" width={12} height={12} alt="" />
-                        <span style={{ marginLeft: "5px" }}>
-                          {dao?._user_staking}
-                        </span>
+                        <Image
+                          src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+                          width={12}
+                          height={12}
+                          alt=""
+                        />
+                        <span style={{ marginLeft: "5px" }}>{dao?._user_staking}</span>
                       </div>
                     </td>
-                    <td style={{ fontSize: "20px"}}>현재 참여자</td>
-                    <td style={{ fontSize: "30px"}}>{dao?.num_of_members}</td>
+                    <td style={{ fontSize: "20px" }}>현재 참여자</td>
+                    <td style={{ fontSize: "30px" }}>{dao?.num_of_members}</td>
                   </tr>
                   <tr style={{ cursor: "pointer" }}>
-                    <td style={{ fontSize: "20px"}}>보유 중 NFT</td>
-                    <td style={{ fontSize: "30px"}}>{dao?._num_of_own_nft}</td>
-                    <td style={{ fontSize: "20px"}}>대여 중 NFT</td>
-                    <td style={{ fontSize: "30px"}}>{dao?._num_of_lend_nft}</td>
+                    <td style={{ fontSize: "20px" }}>보유 중 NFT</td>
+                    <td style={{ fontSize: "30px" }}>{dao?._num_of_own_nft}</td>
+                    <td style={{ fontSize: "20px" }}>대여 중 NFT</td>
+                    <td style={{ fontSize: "30px" }}>{dao?._num_of_lend_nft}</td>
                   </tr>
                   <tr style={{ cursor: "pointer" }}>
-                    <td style={{ fontSize: "20px"}}>총 구매 수</td>
-                    <td style={{ fontSize: "30px"}}>{dao?._num_of_total_buy}</td>
-                    <td style={{ fontSize: "20px"}}>총 판매 수</td>
-                    <td style={{ fontSize: "30px"}}>{dao?._num_of_total_sell}</td>
+                    <td style={{ fontSize: "20px" }}>총 구매 수</td>
+                    <td style={{ fontSize: "30px" }}>{dao?._num_of_total_buy}</td>
+                    <td style={{ fontSize: "20px" }}>총 판매 수</td>
+                    <td style={{ fontSize: "30px" }}>{dao?._num_of_total_sell}</td>
                   </tr>
                   <tr style={{ cursor: "pointer" }}>
-                    <td style={{ fontSize: "20px"}}>진행 중인 투표 수</td>
-                    <td style={{ fontSize: "30px"}}><span style={{color:"red"}}>{dao?.in_progress_suggestions.length}</span></td>
-                    <td style={{ fontSize: "20px"}}>종료된 투표 수</td>
-                    <td style={{ fontSize: "30px"}}><span style={{color:"red"}}>{dao?._num_of_total_suggestions}</span></td>
+                    <td style={{ fontSize: "20px" }}>진행 중인 투표 수</td>
+                    <td style={{ fontSize: "30px" }}>
+                      <span style={{ color: "red" }}>{dao?.in_progress_suggestions.length}</span>
+                    </td>
+                    <td style={{ fontSize: "20px" }}>종료된 투표 수</td>
+                    <td style={{ fontSize: "30px" }}>
+                      <span style={{ color: "red" }}>{dao?._num_of_total_suggestions}</span>
+                    </td>
                   </tr>
                   <tr style={{ cursor: "pointer" }}>
-                    <td style={{ fontSize: "20px"}}>투표 찬성률</td>
-                    <td style={{ fontSize: "30px"}}>{dao?._ratio_of_vote_pass} %</td>
-                    <td style={{ fontSize: "20px"}}>현재 구매 제안 건</td>
-                    <td style={{ fontSize: "30px"}}>0</td>
+                    <td style={{ fontSize: "20px" }}>투표 찬성률</td>
+                    <td style={{ fontSize: "30px" }}>{dao?._ratio_of_vote_pass} %</td>
+                    <td style={{ fontSize: "20px" }}>현재 구매 제안 건</td>
+                    <td style={{ fontSize: "30px" }}>0</td>
                   </tr>
                 </tbody>
               </CTable>
-
             </div>
           </CollectionWrapper>
-
-
         </Grid.Col>
 
-        <Grid.Col
-          span={3}
-          md={3}
-          lg={3}    
-        >
+        <Grid.Col span={3} md={3} lg={3}>
           <CollectionWrapper
             style={{
               width: 400,
@@ -358,21 +369,27 @@ const NFTS = () => {
                 <StatBox style={{ borderTopLeftRadius: "8px", borderBottomLeftRadius: "8px", borderRightWidth: "0px" }}>
                   <StatCount>
                     <div style={{ display: "flex" }}>
-                      <Image src="/images/eth.svg" width={12} height={12} alt="" />
-                      <span style={{ marginLeft: "5px" }}>
-                        {dao?.balance}
-                      </span>
+                      <Image
+                        src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+                        width={12}
+                        height={12}
+                        alt=""
+                      />
+                      <span style={{ marginLeft: "5px" }}>{dao?.balance}</span>
                     </div>
                   </StatCount>
                   <StatTitle>Total Pool</StatTitle>
                 </StatBox>
-                <StatBox style={{ borderTopLeftRadius: "8px"}}>
+                <StatBox style={{ borderTopLeftRadius: "8px" }}>
                   <StatCount>
                     <div style={{ display: "flex" }}>
-                      <Image src="/images/eth.svg" width={12} height={12} alt="" />
-                      <span style={{ marginLeft: "5px" }}>
-                        {dao?._num_of_pool_use}
-                      </span>
+                      <Image
+                        src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+                        width={12}
+                        height={12}
+                        alt=""
+                      />
+                      <span style={{ marginLeft: "5px" }}>{dao?._num_of_pool_use}</span>
                     </div>
                   </StatCount>
                   <StatTitle>사용 중</StatTitle>
@@ -382,15 +399,20 @@ const NFTS = () => {
             <div>
               <div style={{ display: "flex", margin: "15px auto", width: "100%", height: "90px" }}>
                 <StatBox style={{ borderTopLeftRadius: "8px", borderBottomLeftRadius: "8px", borderRightWidth: "0px" }}>
-                  <StatCount>{dao?._pool_usage } %</StatCount>
+                  <StatCount>{dao?._pool_usage} %</StatCount>
                   <StatTitle>사용률</StatTitle>
                 </StatBox>
-                <StatBox style={{ borderTopLeftRadius: "8px"}}>
+                <StatBox style={{ borderTopLeftRadius: "8px" }}>
                   <StatCount>
                     <div style={{ display: "flex" }}>
-                      <Image src="/images/eth.svg" width={12} height={12} alt="" />
+                      <Image
+                        src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+                        width={12}
+                        height={12}
+                        alt=""
+                      />
                       <span style={{ marginLeft: "5px" }}>
-                      <span style={{color:"red"}}>{dao?._num_of_pool_useble }</span>
+                        <span style={{ color: "red" }}>{dao?._num_of_pool_useble}</span>
                       </span>
                     </div>
                   </StatCount>
@@ -398,18 +420,11 @@ const NFTS = () => {
                 </StatBox>
               </div>
             </div>
-
-
           </CollectionWrapper>
         </Grid.Col>
       </SimpleGrid>
       <Container>
-        <CTabs
-          style={{ fontSize: "20px" }}
-          color="blue"
-          tabPadding="md"
-          position="center"
-        >
+        <CTabs style={{ fontSize: "20px" }} color="blue" tabPadding="md" position="center">
           <CTabs.Tab icon={<MdOutlineCollections style={{ width: 18, height: 18 }} />} label="나의 현황">
             <div>
               <Text style={{ fontSize: "34px", fontWeight: "bold", marginRight: "10px" }} align="left">
@@ -441,7 +456,7 @@ const NFTS = () => {
             </Text>
           </CTabs.Tab>
         </CTabs>
-        </Container>
+      </Container>
     </div>
   );
 };
