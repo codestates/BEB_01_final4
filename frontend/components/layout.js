@@ -115,7 +115,7 @@ const Layout = ({ children }) => {
   const [search, setSearch] = useInputState("");
   const router = useRouter();
   const theme = useMantineTheme();
-  const setNetworkId = useStore((state) => state.setNetworkId);
+  const [setWallet, setNetworkId] = useStore((state) => [state.setWallet, state.setNetworkId]);
 
   // kaikas - caver test 코드
   // const caver = useStore((state) => state.caver);
@@ -278,7 +278,10 @@ const Layout = ({ children }) => {
                   <Menu.Item style={{ fontSize: "18px" }}>
                     <div
                       style={{ display: "flex", alignItems: "center" }}
-                      onClick={() => connectWallet({ setAccount, setUser, setNetworkId })}
+                      onClick={() => {
+                        setWallet("metamask");
+                        connectWallet({ setAccount, setUser, setNetworkId });
+                      }}
                     >
                       <Image width={28} height={28} src="https://docs.metamask.io/metamask-fox.svg" alt="" />
                       <span style={{ marginLeft: "10px", fontSize: "20px" }}>Metamask</span>
@@ -287,7 +290,10 @@ const Layout = ({ children }) => {
                   <Menu.Item style={{ fontSize: "18px" }}>
                     <div
                       style={{ display: "flex", alignItems: "center" }}
-                      onClick={() => connectKaikas({ setAccount, setUser, setNetworkId })}
+                      onClick={() => {
+                        setWallet("kaikas");
+                        connectKaikas({ setAccount, setUser, setNetworkId });
+                      }}
                     >
                       <Image
                         width={28}
