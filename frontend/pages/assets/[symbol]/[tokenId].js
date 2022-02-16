@@ -236,7 +236,7 @@ const Asset = () => {
       // console.log(lendPrice);
 
       if (isKlaytn) {
-        setLendPrice(caver.utils.frompPeb(lendPrice, "KLAY"));
+        setLendPrice(caver.utils.fromPeb(lendPrice, "KLAY"));
       } else {
         setLendPrice(web3.utils.fromWei(lendPrice, "ether"));
       }
