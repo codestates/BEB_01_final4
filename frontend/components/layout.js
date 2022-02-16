@@ -43,7 +43,7 @@ const CHeader = styled.div`
   }
 `;
 
-export const connectWallet = async ({ setAccount, setUser }) => {
+export const connectWallet = async ({ setAccount, setUser, setNetworkId }) => {
   let accounts = await window.ethereum.request({
     method: "eth_requestAccounts",
   });
@@ -52,6 +52,9 @@ export const connectWallet = async ({ setAccount, setUser }) => {
 
   setAccount(Web3.utils.toChecksumAddress(accounts[0]));
   console.log(accounts[0]);
+  const networkId = parseInt(window.ethereum.chainId, 16);
+  console.log(networkId);
+  setNetworkId(networkId);
 
   try {
     const {
@@ -112,7 +115,7 @@ const Layout = ({ children }) => {
   const [search, setSearch] = useInputState("");
   const router = useRouter();
   const theme = useMantineTheme();
-  const setNetworkId = useStore((state) => state.setNetworkId);
+  const [setWallet, setNetworkId] = useStore((state) => [state.setWallet, state.setNetworkId]);
 
   // kaikas - caver test 코드
   // const caver = useStore((state) => state.caver);
@@ -275,7 +278,10 @@ const Layout = ({ children }) => {
                   <Menu.Item style={{ fontSize: "18px" }}>
                     <div
                       style={{ display: "flex", alignItems: "center" }}
-                      onClick={() => connectWallet({ setAccount, setUser })}
+                      onClick={() => {
+                        setWallet("metamask");
+                        connectWallet({ setAccount, setUser, setNetworkId });
+                      }}
                     >
                       <Image width={28} height={28} src="https://docs.metamask.io/metamask-fox.svg" alt="" />
                       <span style={{ marginLeft: "10px", fontSize: "20px" }}>Metamask</span>
@@ -284,7 +290,10 @@ const Layout = ({ children }) => {
                   <Menu.Item style={{ fontSize: "18px" }}>
                     <div
                       style={{ display: "flex", alignItems: "center" }}
-                      onClick={() => connectKaikas({ setAccount, setUser, setNetworkId })}
+                      onClick={() => {
+                        setWallet("kaikas");
+                        connectKaikas({ setAccount, setUser, setNetworkId });
+                      }}
                     >
                       <Image
                         width={28}

@@ -120,7 +120,7 @@ const Lend = () => {
       }
 
       console.log(txResult);
-      const { data } = await axios.post(
+      await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
         {
           transaction: txResult.transactionHash,
