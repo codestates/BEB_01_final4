@@ -26,8 +26,11 @@ sequelize.sync({ force: false })
     });
 
 app.use(morgan('dev'));
+
+const config = require('./config/config');
+const cors_allow = config.development.cors_allow;
 app.use(cors({
-    origin: "http://localhost:3000", // the origin of the requests - frontend address
+    origin: cors_allow,
     credentials: true
 }));
 
