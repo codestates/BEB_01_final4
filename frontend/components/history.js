@@ -18,7 +18,7 @@ const CTr = styled.tr`
 
 const History = ({ elements }) => {
   const router = useRouter();
-  const account = useStore((state) => state.account);
+  const [account, networkId] = useStore((state) => [state.account, state.networkId]);
 
   const handleClick = (element) => {
     router.push(`/assets/${element.collection.symbol}/${element.token_ids}`);
@@ -27,7 +27,14 @@ const History = ({ elements }) => {
   const rows = elements.map((element, idx) => (
     <CTr style={{ cursor: "pointer" }} onClick={() => handleClick(element)} key={idx}>
       <td>{element.asset.name}</td>
-      <td><Image src={element.asset.imageURI} width={128} height={128} alt="" /></td>
+      <td>
+        <Image
+          src={element?.asset?.imageURI ? element.asset.imageURI : "/images/random-box.png"}
+          width={128}
+          height={128}
+          alt=""
+        />
+      </td>
       {/* <td style={{ display: "flex", alignItems: "center" }}> */}
       <td>
         {/* <div
@@ -39,11 +46,17 @@ const History = ({ elements }) => {
             backgroundRepeat: "no-repeat",
           }}
         /> */}
-        <Image src="/images/eth.svg" width={16} height={16} alt="" />&nbsp;
+        <Image
+          src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+          width={16}
+          height={16}
+          alt=""
+        />
+        &nbsp;
         {element.price}
       </td>
-      <td>{(account == element.seller) ? '나' : element.seller.substring(2,8)}</td>
-      <td>{(account == element.buyer) ? '나' : element.buyer.substring(2,8)}</td>
+      <td>{account == element.seller ? "나" : element.seller.substring(2, 8)}</td>
+      <td>{account == element.buyer ? "나" : element.buyer.substring(2, 8)}</td>
       <td>{`${new Date(element.updatedAt).toLocaleString("en-GB")}`}</td>
     </CTr>
   ));

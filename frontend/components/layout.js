@@ -1,5 +1,17 @@
 import { useState } from "react";
-import { AppShell, Badge, Burger, Button, Header, MediaQuery, Navbar, Text, useMantineTheme } from "@mantine/core";
+import {
+  ActionIcon,
+  AppShell,
+  Badge,
+  Burger,
+  Button,
+  Header,
+  MediaQuery,
+  Menu,
+  Navbar,
+  Text,
+  useMantineTheme,
+} from "@mantine/core";
 import Image from "next/image";
 import { Input } from "@mantine/core";
 import Link from "next/link";
@@ -11,6 +23,8 @@ import Web3 from "web3";
 import { useInputState } from "@mantine/hooks";
 import { useRouter } from "next/router";
 import { compressAddress } from "../utils";
+import { MdOutlineAccountBalanceWallet } from "react-icons/md";
+import caver from "caver-js";
 
 const CText = styled(Text)`
   && {
@@ -29,12 +43,18 @@ const CHeader = styled.div`
   }
 `;
 
-export const connectWallet = async ({ setAccount, setUser }) => {
+export const connectWallet = async ({ setAccount, setUser, setNetworkId }) => {
   let accounts = await window.ethereum.request({
     method: "eth_requestAccounts",
   });
+  // let networks = await window.ethereum.request({ method: "eth_chainId" });
+  // console.log(networks);
 
   setAccount(Web3.utils.toChecksumAddress(accounts[0]));
+  console.log(accounts[0]);
+  const networkId = parseInt(window.ethereum.chainId, 16);
+  console.log(networkId);
+  setNetworkId(networkId);
 
   try {
     const {
@@ -51,6 +71,43 @@ export const connectWallet = async ({ setAccount, setUser }) => {
   }
 };
 
+export const connectKaikas = async ({ setAccount, setUser, setNetworkId }) => {
+  const { klaytn } = window;
+
+  if (klaytn) {
+    try {
+      await klaytn.enable();
+      // klaytn.on("accountsChanged", () => console.log(klaytn));
+
+      console.log(klaytn.selectedAddress);
+      console.log(klaytn.networkVersion);
+      const account = klaytn.selectedAddress;
+
+      setAccount(caver.utils.toChecksumAddress(account));
+      console.log(account);
+      setNetworkId(klaytn.networkVersion);
+
+      try {
+        const {
+          data: { data: newUser },
+        } = await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/users`, {
+          address: account,
+        });
+        // console.log(newUser);
+        if (Object.keys(newUser).length !== 0) {
+          setUser(newUser);
+        }
+      } catch (e) {
+        console.log(e.response);
+      }
+    } catch (error) {
+      console.log("User denied account access");
+    }
+  } else {
+    console.log("Non-Kaikas browser detected. You should consider trying Kaikas!");
+  }
+};
+
 const Layout = ({ children }) => {
   const [opened, setOpened] = useState(false);
   const [account, setAccount] = useStore((state) => [state.account, state.setAccount]);
@@ -58,6 +115,17 @@ const Layout = ({ children }) => {
   const [search, setSearch] = useInputState("");
   const router = useRouter();
   const theme = useMantineTheme();
+  const [setWallet, setNetworkId] = useStore((state) => [state.setWallet, state.setNetworkId]);
+
+  // kaikas - caver test 코드
+  // const caver = useStore((state) => state.caver);
+
+  // const getBalance = async () => {
+  //   let balance = await caver.rpc.klay.getBalance(account);
+  //   balance = caver.utils.convertFromPeb(caver.utils.hexToNumberString(balance), "KLAY");
+  //   balance = caver.utils.convertFromPeb(balance, "KLAY");
+  //   console.log(balance);
+  // };
 
   return (
     <AppShell
@@ -171,6 +239,11 @@ const Layout = ({ children }) => {
                   <Link href="/daos" passHref>
                     <CText>D A O</CText>
                   </Link>
+                  {/* 
+                  <CButton variant="white" onClick={getBalance}>
+                    <CText>get balance</CText>
+                  </CButton>
+                  */}
                 </CHeader>
               </MediaQuery>
             </div>
@@ -179,7 +252,7 @@ const Layout = ({ children }) => {
               {account && <Badge radius={4} style={{ fontSize: "17px" }}>{`${compressAddress(account)}`}</Badge>}
               {account && <Profile />}
 
-              {!account && (
+              {/* {!account && (
                 <Button
                   style={{ marginLeft: "20px" }}
                   onClick={() => connectWallet({ setAccount, setUser })}
@@ -189,6 +262,49 @@ const Layout = ({ children }) => {
                   <Image width={28} height={28} src="https://docs.metamask.io/metamask-fox.svg" alt="" />
                   <span style={{ marginLeft: "10px", fontSize: "20px" }}>Connect</span>
                 </Button>
+              )} */}
+
+              {!account && (
+                <Menu
+                  controlRefProp="ref"
+                  control={
+                    <ActionIcon>
+                      <MdOutlineAccountBalanceWallet style={{ width: 45, height: 45 }} />
+                    </ActionIcon>
+                  }
+                  trigger="hover"
+                  delay={200}
+                >
+                  <Menu.Item style={{ fontSize: "18px" }}>
+                    <div
+                      style={{ display: "flex", alignItems: "center" }}
+                      onClick={() => {
+                        setWallet("metamask");
+                        connectWallet({ setAccount, setUser, setNetworkId });
+                      }}
+                    >
+                      <Image width={28} height={28} src="https://docs.metamask.io/metamask-fox.svg" alt="" />
+                      <span style={{ marginLeft: "10px", fontSize: "20px" }}>Metamask</span>
+                    </div>
+                  </Menu.Item>
+                  <Menu.Item style={{ fontSize: "18px" }}>
+                    <div
+                      style={{ display: "flex", alignItems: "center" }}
+                      onClick={() => {
+                        setWallet("kaikas");
+                        connectKaikas({ setAccount, setUser, setNetworkId });
+                      }}
+                    >
+                      <Image
+                        width={28}
+                        height={28}
+                        src="https://aws1.discourse-cdn.com/standard17/uploads/klaytn/original/1X/be6ab5b8b6246393c2c19d32ee75fab8e75f1157.jpeg"
+                        alt=""
+                      />
+                      <span style={{ marginLeft: "10px", fontSize: "20px" }}>Kaikas</span>
+                    </div>
+                  </Menu.Item>
+                </Menu>
               )}
             </div>
           </div>

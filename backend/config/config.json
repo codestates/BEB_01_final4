@@ -7,8 +7,12 @@
       "dialect": "mysql",
       "timezone": "+09:00",
       "logging": false,
-      "web3_uri": "https://ropsten.infura.io/v3/eda85829450044e6b2e8d35ef885ce47",
-      "host_metadata": "http://localhost:4000"
+      "web3_uri": "http://localhost:7545",
+      "host_metadata": "http://localhost:4000",
+      "cors_allow": ["http://localhost:3000"],
+      "klaytn_chainId": 1001,
+      "klaytn_accessKeyId": "KASKDP4CATF6QQH7FTTNG3W1",
+      "klaytn_secretAccessKey": "JoB1I4hpY_5goOZOU2dlFglUKDyIFqr0IP7961SR"
   },
   "test": {
       "username": "root",
@@ -18,7 +22,7 @@
       "dialect": "mysql",
       "timezone": "+09:00",
       "logging": false,
-      "web3_uri": "https://ropsten.infura.io/v3/eda85829450044e6b2e8d35ef885ce47",
+      "web3_uri": "http://localhost:7545",
       "host_metadata": "http://localhost:4000"
   },
   "production": {
@@ -28,7 +32,11 @@
       "host": "127.0.0.1",
       "dialect": "mysql",
       "timezone": "+09:00",
-      "web3_uri": "https://ropsten.infura.io/v3/eda85829450044e6b2e8d35ef885ce47",
+      "web3_uri": {
+        "jihon": "https://ropsten.infura.io/v3/eda85829450044e6b2e8d35ef885ce47",
+        "ms": "https://ropsten.infura.io/v3/7e62d3d0edb8465499fa21ad70873a3f",
+        "hyun": "https://ropsten.infura.io/v3/f24538d4bcf742f995edfa61be02bcd6"
+      },
       "host_metadata": "http://localhost:4000"
   }
 }

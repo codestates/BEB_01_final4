@@ -13,6 +13,7 @@ const mainRouter = require('./routes/main');
 const gganbuRouter = require('./routes/gganbu');
 const suggestionsRouter = require('./routes/suggestions');
 const daoRouter = require('./routes/dao');
+const transactionRouter = require('./routes/transaction');
 
 const app = express();
 
@@ -25,8 +26,11 @@ sequelize.sync({ force: false })
     });
 
 app.use(morgan('dev'));
+
+const config = require('./config/config');
+const cors_allow = config.development.cors_allow;
 app.use(cors({
-    origin: "http://localhost:3000", // the origin of the requests - frontend address
+    origin: cors_allow,
     credentials: true
 }));
 
@@ -44,6 +48,7 @@ app.use('/main', mainRouter);
 app.use('/gganbu', gganbuRouter);
 app.use('/suggestions', suggestionsRouter);
 app.use('/dao', daoRouter);
+app.use('/transaction', transactionRouter);
 
 app.get('/', (req, res) => {
     res.json(`${req.method}: ${req.url}`);

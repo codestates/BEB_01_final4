@@ -2,6 +2,7 @@ import { Badge, Grid } from "@mantine/core";
 import Image from "next/image";
 import styled from "styled-components";
 import { useRouter } from "next/router";
+import { useStore } from "../utils/store";
 
 const NftWrapper = styled.div`
   &:hover {
@@ -34,9 +35,10 @@ const BadgeWrapper = styled.div`
 
 const NFTCard = ({ collectionSymbol, nft }) => {
   const router = useRouter();
+  const networkId = useStore((state) => state.networkId);
   return (
     <Grid.Col
-      span={12}
+      span={25}
       md={6}
       lg={4}
       onClick={() => {
@@ -73,12 +75,12 @@ const NFTCard = ({ collectionSymbol, nft }) => {
           )}
         </div>
         <BadgeWrapper>
-          {nft?.isSelling && (
+          {(nft?.isSelling || nft?.asset?.isSelling) && (
             <Badge size="lg" color="pink" radius={4} variant="outline">
               판매 중
             </Badge>
           )}
-          {nft?.isLending && (
+          {(nft?.isLending || nft?.asset?.isLending) && (
             <Badge size="lg" color="indigo" radius={4} variant="outline">
               대여 가능
             </Badge>
@@ -88,7 +90,7 @@ const NFTCard = ({ collectionSymbol, nft }) => {
               민팅 중
             </Badge>
           )}
-          {nft?.isRenting && (
+          {(nft?.isRenting || nft?.asset?.isRenting) && (
             <Badge size="lg" color="orange" radius={4} variant="outline">
               대여 중
             </Badge>
@@ -106,11 +108,23 @@ const NFTCard = ({ collectionSymbol, nft }) => {
         >
           <div style={{ width: "70%" }}>{nft?.name || nft?.asset?.name}</div>
           {nft?.isSelling && (
-            <div style={{ display: "flex", width: "30%", flexDirection: "column", alignItems: "flex-end" }}>
-              <span>Price</span>
+            <div
+              style={{
+                display: "flex",
+                width: "30%",
+                flexDirection: "column",
+                alignItems: "flex-end",
+              }}
+            >
+              {/* <span>Price</span> */}
               <div style={{ display: "flex", alignItems: "center", marginTop: "3px" }}>
-                <Image width={14} height={14} src="/images/eth.svg" alt="" />
-                <span style={{ marginLeft: "3px", fontWeight: "bold", fontSize: "17px" }}>
+                <Image
+                  width={28}
+                  height={28}
+                  src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+                  alt=""
+                />
+                <span style={{ marginLeft: "3px", fontWeight: "bold", fontSize: "20px" }}>
                   {nft?.trade_selling?.price}
                 </span>
               </div>

@@ -7,6 +7,7 @@ import NFTCard from "../../components/nftCard";
 import { useStore } from "../../utils/store";
 import Link from "next/link";
 import axios from "axios";
+import caver from "caver-js";
 
 const StatBox = styled.div`
   flex: 1;
@@ -65,6 +66,7 @@ const NFTS = () => {
   const { symbol } = router.query;
   const [collection, setCollection] = useState(null);
   const account = useStore((state) => state.account);
+  const networkId = useStore((state) => state.networkId);
 
   const getCollection = async () => {
     if (symbol) {
@@ -115,7 +117,7 @@ const NFTS = () => {
         </NameBox>
 
         <div style={{ position: "absolute", right: "30px", top: "330px" }}>
-          {account && collection?.ownerAddress === account ? (
+          {account && caver.utils.toChecksumAddress(collection?.ownerAddress) === account ? (
             <Link href={`/assets/${collection?.symbol}/create`} passHref>
               <Button size="lg">Add Item</Button>
             </Link>
@@ -133,8 +135,13 @@ const NFTS = () => {
               <StatTitle>owners</StatTitle>
             </StatBox>
             <StatBox style={{ borderRightWidth: "0px" }}>
-              <StatCount>
-                <Image width={23} height={23} src="/images/eth.svg" alt="" />
+              <StatCount style={{ display: "flex" }}>
+                <Image
+                  width={30}
+                  height={30}
+                  src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+                  alt=""
+                />
                 <span style={{ marginLeft: "3px" }}>
                   {Boolean(collection?.assets) === true ? getFloorPrice(collection?.assets) : "-"}
                 </span>
@@ -142,8 +149,13 @@ const NFTS = () => {
               <StatTitle>floor price</StatTitle>
             </StatBox>
             <StatBox style={{ borderTopRightRadius: "8px", borderBottomRightRadius: "8px" }}>
-              <StatCount>
-                <Image width={23} height={23} src="/images/eth.svg" alt="" />
+              <StatCount style={{ display: "flex" }}>
+                <Image
+                  width={30}
+                  height={30}
+                  src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+                  alt=""
+                />
                 <span style={{ marginLeft: "3px" }}>
                   {collection?.volume_traded === null ? "-" : collection?.volume_traded}
                 </span>

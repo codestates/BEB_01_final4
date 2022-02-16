@@ -1,21 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import NFTCard from "../components/nftCard";
+
 import RankingCard from "../components/rankingCard";
-import { Button, Divider, SimpleGrid, Text } from "@mantine/core";
-import styled from "styled-components";
-import Image from "next/image";
+import { Divider, SimpleGrid } from "@mantine/core";
+
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
-
-const CImage = styled(Image)`
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-`;
+import Caver from "caver-js";
 
 const Main = () => {
-  const router = useRouter();
   const [ranking, setRanking] = useState(null);
   const [topUsers, setTopUsers] = useState(null);
 
@@ -53,6 +46,10 @@ const Main = () => {
         >
           <div>
             {/* <Image layout="fill" src="/images/carousel1.jpeg" alt="" /> */}
+            <img src="/images/klaycity.jpeg" alt="" />
+          </div>
+          <div>
+            {/* <Image layout="fill" src="/images/carousel1.jpeg" alt="" /> */}
             <img src="/images/carousel1 (1).jpeg" alt="" />
           </div>
           <div>
@@ -62,10 +59,6 @@ const Main = () => {
           <div>
             {/* <Image layout="fill" src="/images/carousel3.jpeg" alt="" /> */}
             <img src="/images/carousel3 (1).jpeg" alt="" />
-          </div>
-          <div>
-            {/* <Image layout="fill" src="/images/carousel4.jpeg" alt="" /> */}
-            <img src="/images/carousel4 (1).png" alt="" />
           </div>
         </Carousel>
       </div>

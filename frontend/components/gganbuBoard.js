@@ -2,6 +2,7 @@ import { Table } from "@mantine/core";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import styled from "styled-components";
+import { useStore } from "../utils/store";
 
 const CTable = styled(Table)`
   && td {
@@ -13,12 +14,9 @@ const CTable = styled(Table)`
   }
 `;
 
-const handleClick = async () => {
-  router.push(`/assets/${symbol}/${token_ids}`);
-};
-
 const GGanbuBoard = ({ gganbuList }) => {
   const router = useRouter();
+  const networkId = useStore((state) => state.networkId);
 
   const rows = gganbuList.map((gganbu, idx) => {
     if (Object.keys(gganbu).length === 0) {
@@ -41,7 +39,12 @@ const GGanbuBoard = ({ gganbuList }) => {
               "-"
             ) : (
               <>
-                <Image src="/images/eth.svg" width={12} height={12} alt="" />
+                <Image
+                  src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+                  width={30}
+                  height={30}
+                  alt=""
+                />
                 <span style={{ marginLeft: "5px" }}>{gganbu?.asset?.price}</span>
               </>
             )}
@@ -49,7 +52,12 @@ const GGanbuBoard = ({ gganbuList }) => {
         </td>
         <td>
           <div style={{ display: "flex" }}>
-            <Image src="/images/eth.svg" width={12} height={12} alt="" />
+            <Image
+              src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+              width={30}
+              height={30}
+              alt=""
+            />
             <span style={{ marginLeft: "5px" }}>
               {Math.round(parseFloat(gganbu?.members?.reduce((acc, cur) => acc + cur.staking_value, 0)) * 100) / 100}
             </span>

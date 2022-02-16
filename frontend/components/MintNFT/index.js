@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import UploadFile from "../uploadFile";
 import { GGanbuCollection } from "../../public/compiledContracts/GGanbuCollection";
+import { GGanbuCollectionForKlaytn } from "../../public/compiledContracts/GGanbuCollectionForKlaytn";
 import { useStore } from "../../utils/store";
 import { Container, CText, TitleInput } from "./styles";
 import { isHangul } from "../../pages/create-collection";
@@ -25,6 +26,7 @@ const MintNFT = () => {
   const account = useStore((state) => state.account);
   const web3 = useStore((state) => state.web3);
   const [collection, setCollection] = useState(null);
+  const [caver, networkId] = useStore((state) => [state.caver, state.networkId]);
 
   const handleCreate = async ({ ownerAddress, contractAddress, name, description, imageURI }) => {
     // console.log(collection);
@@ -42,7 +44,7 @@ const MintNFT = () => {
       traits: JSON.stringify([]),
       imageURI,
     };
-    console.log(newNFT);
+    // console.log(newNFT);
 
     // console.log(newNFT);
 
@@ -55,23 +57,59 @@ const MintNFT = () => {
         withCredentials: true,
       });
 
-      console.log(tokenURI);
+      // console.log(tokenURI);
+      let contract;
+
       if (tokenURI) {
-        const contract = await new web3.eth.Contract(GGanbuCollection.abi, contractAddress, {
-          from: account,
-        });
-
-        const result = await contract.methods.mintNFT(tokenURI).send({ from: account });
-
-        console.log(result);
-        if (result) {
-          let event = await contract.getPastEvents("Transfer", {
-            fromBlock: result.blockNumber,
-            toBlock: result.blockNumber,
+        let isKlaytn = networkId === 1001 || networkId === 8217;
+        if (isKlaytn) {
+          // klaytn 로직
+          contract = await new caver.klay.Contract(GGanbuCollectionForKlaytn.abi, contractAddress, {
+            from: account,
           });
 
-          let log = event.find((log) => log.transactionHash == result.transactionHash);
-          console.log(log.returnValues.tokenId); // tokenId 출력
+          const result = await contract.methods.mintNFT(tokenURI).send({ from: account, gas: 9000000 });
+
+          console.log(result);
+          if (result) {
+            const { data } = await axios.post(
+              `${process.env.NEXT_PUBLIC_SERVER_URL}/transaction`,
+              {
+                transaction: result.transactionHash,
+                networkType: isKlaytn ? "klaytn" : "ethereum",
+              },
+              {
+                withCredentials: true,
+              },
+            );
+            console.log(data);
+
+            let event = await contract.getPastEvents("Transfer", {
+              fromBlock: result.blockNumber,
+              toBlock: result.blockNumber,
+            });
+
+            let log = event.find((log) => log.transactionHash == result.transactionHash);
+            console.log(log.returnValues.tokenId); // tokenId 출력
+          }
+        } else {
+          // ethereum 로직
+          contract = await new web3.eth.Contract(GGanbuCollection.abi, contractAddress, {
+            from: account,
+          });
+
+          const result = await contract.methods.mintNFT(tokenURI).send({ from: account });
+
+          console.log(result);
+          if (result) {
+            let event = await contract.getPastEvents("Transfer", {
+              fromBlock: result.blockNumber,
+              toBlock: result.blockNumber,
+            });
+
+            let log = event.find((log) => log.transactionHash == result.transactionHash);
+            console.log(log.returnValues.tokenId); // tokenId 출력
+          }
         }
 
         router.push(`/collections/${symbol ? symbol : querySymbol}`);

@@ -3,6 +3,7 @@ import { Button, Input, LoadingOverlay, Text } from "@mantine/core";
 import styled from "styled-components";
 import { useInputState } from "@mantine/hooks";
 import { GGanbuCollection } from "../public/compiledContracts/GGanbuCollection";
+import { GGanbuCollectionForKlaytn } from "../public/compiledContracts/GGanbuCollectionForKlaytn";
 import { useStore } from "../utils/store";
 import UploadLogo from "../components/uploadLogo";
 import UploadBanner from "../components/uploadBanner";
@@ -62,6 +63,7 @@ const CreateCollection = () => {
   const [myCollections, setMyCollections] = useStore((state) => [state.myCollections, state.setMyCollections]);
   const [logoUrl, setLogoUrl] = useState("");
   const [bannerUrl, setBannerUrl] = useState("");
+  const [caver, networkId] = useStore((state) => [state.caver, state.networkId]);
 
   const handleCreateCollection = async ({ name, symbol, description, logoUrl, bannerUrl }) => {
     if (!account) {
@@ -94,15 +96,30 @@ const CreateCollection = () => {
       });
 
       if (collectionURI) {
-        const contract = await new web3.eth.Contract(GGanbuCollection.abi)
-          .deploy({
-            data: GGanbuCollection.bytecode,
-            arguments: [name, symbol, collectionURI], // Writing you arguments in the array
-          })
-          .send({ from: account });
+        let contract;
+        console.log(networkId);
+        if (networkId === 1001 || networkId === 8217) {
+          // klaytn 로직
+          console.log(caver);
+          contract = await new caver.klay.Contract(GGanbuCollectionForKlaytn.abi)
+            .deploy({
+              data: GGanbuCollectionForKlaytn.bytecode,
+              arguments: [name, symbol, collectionURI], // Writing you arguments in the array
+            })
+            .send({ from: account, gas: 9000000 });
 
-        console.log(contract._address);
+          console.log(contract);
+        } else {
+          // ethereum 로직
+          contract = await new web3.eth.Contract(GGanbuCollection.abi)
+            .deploy({
+              data: GGanbuCollection.bytecode,
+              arguments: [name, symbol, collectionURI], // Writing you arguments in the array
+            })
+            .send({ from: account });
 
+          console.log(contract._address);
+        }
         if (contract._address) {
           await axios.post(
             `${process.env.NEXT_PUBLIC_SERVER_URL}/collections/${symbol}`,

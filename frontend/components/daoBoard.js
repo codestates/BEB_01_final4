@@ -1,7 +1,6 @@
 import { Button, Modal, Table, Text, TextInput } from "@mantine/core";
 import { useInputState } from "@mantine/hooks";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import styled from "styled-components";
 import { Coffer } from "../public/compiledContracts/Coffer";
@@ -27,6 +26,7 @@ const DaoBoard = ({ daoList }) => {
   const [selectedDao, setSelectedDao] = useState(null);
   const [amount, setAmount] = useInputState("");
   const [web3, account] = useStore((state) => [state.web3, state.account]);
+  const [networkId] = useStore((state) => [state.networkId]);
 
   const handleJoinDao = async () => {
     if (!amount) {
@@ -64,7 +64,12 @@ const DaoBoard = ({ daoList }) => {
         <td style={{ textAlign: "center" }}>{dao?.num_of_members}</td>
         <td>
           <div style={{ display: "flex" }}>
-            <Image src="/images/eth.svg" width={12} height={12} alt="" />
+            <Image
+              src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+              width={30}
+              height={30}
+              alt=""
+            />
             <span style={{ marginLeft: "5px" }}>
               {Math.round(parseFloat(dao?.members?.reduce((acc, cur) => acc + cur.staking_value, 0)) * 100) / 100}
             </span>
@@ -118,7 +123,7 @@ const DaoBoard = ({ daoList }) => {
           value={amount}
           onChange={setAmount}
           style={{ margin: "20px 0" }}
-          placeholder="ETH"
+          placeholder={`${networkId === 1001 || networkId === 8217 ? "KLAY" : "ETH"}`}
           label="참여 금액"
           required
           type="number"

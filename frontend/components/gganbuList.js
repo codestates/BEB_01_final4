@@ -1,8 +1,10 @@
 import { Table } from "@mantine/core";
 import Image from "next/image";
 import Jazzicon from "react-jazzicon/lib/Jazzicon";
+import { useStore } from "../utils/store";
 
 function GGanbuList({ elements }) {
+  const networkId = useStore((state) => state.networkId);
   const rows = elements.map((element, idx) => (
     <tr key={idx}>
       <td>
@@ -10,8 +12,13 @@ function GGanbuList({ elements }) {
       </td>
       <td style={{ fontSize: "16px" }}>{element?.memberAddress}</td>
       <td>
-        <div style={{ display: "flex" }}>
-          <Image src="/images/eth.svg" width={9} height={9} alt="" />
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Image
+            src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
+            width={30}
+            height={30}
+            alt=""
+          />
           <span style={{ marginLeft: "6px", fontSize: "16px" }}>{element?.staking_value}</span>
         </div>
       </td>
