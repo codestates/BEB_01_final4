@@ -217,11 +217,16 @@ const Asset = () => {
   // 판매 / 대여 등록 상태인 nft의 가격 정보 조회
   const checkNftPriceFromContract = async () => {
     if (isSelling && collectionContract) {
+      let isKlaytn = networkId === 1001 || networkId === 8217;
+
       const sellPrice = await collectionContract.methods.getPrice(tokenId).call();
 
       // console.log(sellPrice);
-
-      setSellPrice(web3.utils.fromWei(sellPrice, "ether"));
+      if (isKlaytn) {
+        setSellPrice(caver.utils.fromPeb(sellPrice, "KLAY"));
+      } else {
+        setSellPrice(web3.utils.fromWei(sellPrice, "ether"));
+      }
     }
 
     if (isLending && collectionContract) {
