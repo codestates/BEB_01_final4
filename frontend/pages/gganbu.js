@@ -1,7 +1,6 @@
 import { Text } from "@mantine/core";
 import axios from "axios";
-import { useState } from "react";
-import { useEffect } from "react/cjs/react.development";
+import { useState, useEffect } from "react";
 import GGanbuBoard from "../components/gganbuBoard";
 
 const GGanbu = () => {

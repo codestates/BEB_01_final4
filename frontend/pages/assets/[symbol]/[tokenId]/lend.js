@@ -9,9 +9,8 @@ import { GGanbuCollection } from "../../../../public/compiledContracts/GGanbuCol
 import { GGanbuCollectionForKlaytn } from "../../../../public/compiledContracts/GGanbuCollectionForKlaytn";
 import { useStore } from "../../../../utils/store";
 import { useRouter } from "next/router";
-import { useEffect } from "react/cjs/react.development";
 import { useInputState } from "@mantine/hooks";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const TitleText = styled(Text)`
   font-size: 26px;
