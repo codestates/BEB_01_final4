@@ -1,21 +1,19 @@
 import { useEffect, useState } from "react";
-import { Grid, Button, Modal, Table, Text, TextInput, Tabs, Divider, SimpleGrid } from "@mantine/core";
-import { CImage, CollectionWrapper, EllipsisDiv } from "./styles";
+import { Grid, Button, Table, Text, Tabs, Divider, SimpleGrid } from "@mantine/core";
 import styled from "styled-components";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import NFTCard from "../../components/nftCard";
 import { useStore } from "../../utils/store";
-import Link from "next/link";
 import axios from "axios";
-import {
-  MdOutlineCollections,
-  MdOutlineCollectionsBookmark,
-  MdOutlineFormatPaint,
-  MdOutlineSell,
-  MdOutlineHistory,
-  MdOutlineHowToVote,
-} from "react-icons/md";
+import { MdOutlineCollections, MdOutlineFormatPaint, MdOutlineSell, MdOutlineHistory } from "react-icons/md";
+
+const CollectionWrapper = styled.div`
+  &:hover {
+    box-shadow: rgb(4 17 29 / 25%) 0px 0px 8px 0px;
+    transition: all 0.1s ease 0s;
+  }
+  cursor: pointer;
+`;
 
 const Container = styled.div`
   max-width: 100%;
@@ -81,23 +79,6 @@ const NameBox = styled.div`
   justify-content: center;
   align-items: center;
 `;
-
-const getFloorPrice = (assets) => {
-  let floor = null;
-
-  if (assets.length === 0) return "-";
-
-  for (let asset of assets) {
-    if (floor === null && asset.trade_selling) {
-      floor = asset.trade_selling.price;
-    }
-    if (floor > asset.trade_selling?.price) {
-      floor = asset.trade_selling?.price;
-    }
-  }
-
-  return floor === null ? "-" : floor;
-};
 
 const NFTS = () => {
   const router = useRouter();
