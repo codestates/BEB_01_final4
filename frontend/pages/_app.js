@@ -11,7 +11,11 @@ export default function App(props) {
   const { Component, pageProps } = props;
   const setWeb3 = useStore((state) => state.setWeb3);
   const setCaver = useStore((state) => state.setCaver);
-  const [setAccount, setUser] = useStore((state) => [state.setAccount, state.setUser]);
+  const [setAccount, setUser, setNetworkId] = useStore((state) => [
+    state.setAccount,
+    state.setUser,
+    state.setNetworkId,
+  ]);
 
   useEffect(() => {
     if (typeof window.ethereum !== "undefined") {
@@ -21,7 +25,7 @@ export default function App(props) {
         setWeb3(web);
 
         window.ethereum.on("accountsChanged", () => {
-          connectWallet({ setAccount, setUser });
+          connectWallet({ setAccount, setUser, setNetworkId });
         });
         // return window.ethereum.removeListener("accountsChanged", () => {});
       } catch (err) {
@@ -41,7 +45,7 @@ export default function App(props) {
 
         window.klaytn.on("accountsChanged", () => {
           console.log("accountsChanged");
-          connectKaikas({ setAccount, setUser });
+          connectKaikas({ setAccount, setUser, setNetworkId });
         });
         // return window.klaytn.removeListener("accountsChanged", () => {});
       } catch (err) {
