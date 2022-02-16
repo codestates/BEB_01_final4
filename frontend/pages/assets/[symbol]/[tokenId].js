@@ -231,10 +231,15 @@ const Asset = () => {
 
     if (isLending && collectionContract) {
       const lendPrice = await collectionContract.methods.getPrice(tokenId).call();
+      let isKlaytn = networkId === 1001 || networkId === 8217;
 
       // console.log(lendPrice);
 
-      setLendPrice(web3.utils.fromWei(lendPrice, "ether"));
+      if (isKlaytn) {
+        setLendPrice(caver.utils.frompPeb(lendPrice, "KLAY"));
+      } else {
+        setLendPrice(web3.utils.fromWei(lendPrice, "ether"));
+      }
     }
   };
 
