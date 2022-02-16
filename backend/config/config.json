@@ -9,6 +9,7 @@
       "logging": false,
       "web3_uri": "http://localhost:7545",
       "host_metadata": "http://localhost:4000",
+      "cors_allow": ["http://localhost:3000"],
       "klaytn_chainId": 1001,
       "klaytn_accessKeyId": "KASKDP4CATF6QQH7FTTNG3W1",
       "klaytn_secretAccessKey": "JoB1I4hpY_5goOZOU2dlFglUKDyIFqr0IP7961SR"
