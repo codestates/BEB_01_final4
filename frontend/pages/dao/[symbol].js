@@ -260,12 +260,7 @@ const NFTS = () => {
                     <td style={{ fontSize: "20px", width: "20%" }}>Total Profits</td>
                     <td style={{ fontSize: "30px", width: "30%" }}>
                       <div style={{ display: "flex" }}>
-                        <Image
-                          src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                          width={25}
-                          height={25}
-                          alt=""
-                        />
+                        <Image src="/images/klay-logo.svg" width={20} height={20} alt="" />
                         <span style={{ marginLeft: "5px" }}>
                           <span style={{ color: "red" }}>{dao?.rewards}</span>
                         </span>
@@ -278,12 +273,7 @@ const NFTS = () => {
                     <td style={{ fontSize: "20px", width: "20%" }}>총 사용자 Staking</td>
                     <td style={{ fontSize: "30px", width: "30%" }}>
                       <div style={{ display: "flex" }}>
-                        <Image
-                          src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                          width={25}
-                          height={25}
-                          alt=""
-                        />
+                        <Image src="/images/klay-logo.svg" width={20} height={20} alt="" />
                         <span style={{ marginLeft: "5px" }}>{dao?._user_staking}</span>
                       </div>
                     </td>
@@ -350,12 +340,7 @@ const NFTS = () => {
                 <StatBox style={{ borderTopLeftRadius: "8px", borderBottomLeftRadius: "8px", borderRightWidth: "0px" }}>
                   <StatCount>
                     <div style={{ display: "flex" }}>
-                      <Image
-                        src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                        width={25}
-                        height={25}
-                        alt=""
-                      />
+                      <Image src="/images/klay-logo.svg" width={20} height={20} alt="" />
                       <span style={{ marginLeft: "5px" }}>{dao?.balance}</span>
                     </div>
                   </StatCount>
@@ -364,12 +349,7 @@ const NFTS = () => {
                 <StatBox style={{ borderTopLeftRadius: "8px" }}>
                   <StatCount>
                     <div style={{ display: "flex" }}>
-                      <Image
-                        src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                        width={25}
-                        height={25}
-                        alt=""
-                      />
+                      <Image src="/images/klay-logo.svg" width={20} height={20} alt="" />
                       <span style={{ marginLeft: "5px" }}>{dao?._num_of_pool_use}</span>
                     </div>
                   </StatCount>
@@ -386,12 +366,7 @@ const NFTS = () => {
                 <StatBox style={{ borderTopLeftRadius: "8px" }}>
                   <StatCount>
                     <div style={{ display: "flex" }}>
-                      <Image
-                        src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                        width={25}
-                        height={25}
-                        alt=""
-                      />
+                      <Image src="/images/klay-logo.svg" width={20} height={20} alt="" />
                       <span style={{ marginLeft: "5px" }}>
                         <span style={{ color: "red" }}>{dao?._num_of_pool_useble}</span>
                       </span>

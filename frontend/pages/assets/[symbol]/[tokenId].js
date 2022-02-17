@@ -705,12 +705,7 @@ const Asset = () => {
                   <>
                     <Text style={{ fontSize: "18px" }}>Current price</Text>
                     <div style={{ display: "flex", margin: "12px 0" }}>
-                      <Image
-                        src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                        width={32}
-                        height={32}
-                        alt=""
-                      />
+                      <Image src="/images/klay-logo.svg" width={27} height={27} alt="" />
                       <Text style={{ fontSize: "28px", fontWeight: "bold", marginLeft: "10px" }}>
                         {sellPrice === null ? lendPrice : sellPrice}
                       </Text>
@@ -919,22 +914,12 @@ const Asset = () => {
         </Text>
         <div style={{ display: "flex", margin: "30px 0", justifyContent: "space-between" }}>
           <div style={{ display: "flex" }}>
-            <Image
-              src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-              width={24}
-              height={24}
-              alt=""
-            />
+            <Image src="/images/klay-logo.svg" width={20} height={20} alt="" />
             <Text style={{ fontSize: "16px", marginLeft: "10px" }}>판매금액: {sellPrice}</Text>
           </div>
 
           <div style={{ display: "flex" }}>
-            <Image
-              src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-              width={24}
-              height={24}
-              alt=""
-            />
+            <Image src="/images/klay-logo.svg" width={20} height={20} alt="" />
             <Text style={{ fontSize: "16px", marginLeft: "10px" }}>참여 가능 금액: {joinableGGanbuPrice}</Text>
           </div>
         </div>

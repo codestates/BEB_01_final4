@@ -96,12 +96,7 @@ const GGanbuVote = ({ suggestions, setSuggestions }) => {
               "-"
             ) : (
               <>
-                <Image
-                  src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                  width={30}
-                  height={30}
-                  alt=""
-                />
+                <Image src="/images/klay-logo.svg" width={25} height={25} alt="" />
                 <span style={{ marginLeft: "5px" }}>{suggestion?.gganbu?.asset?.price}</span>
               </>
             )}
@@ -109,12 +104,7 @@ const GGanbuVote = ({ suggestions, setSuggestions }) => {
         </td>
         <td>
           <div style={{ display: "flex" }}>
-            <Image
-              src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-              width={30}
-              height={30}
-              alt=""
-            />
+            <Image src="/images/klay-logo.svg" width={25} height={25} alt="" />
             <span style={{ marginLeft: "5px" }}>{suggestion?.gganbu?.balance}</span>
           </div>
         </td>
@@ -156,12 +146,7 @@ const GGanbuVote = ({ suggestions, setSuggestions }) => {
                 <Text>{`참여자: ${selectedSuggestion?.joiner}`}</Text>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <Text style={{ marginRight: "5px" }}>참여 금액:</Text>
-                  <Image
-                    src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                    height={30}
-                    width={30}
-                    alt=""
-                  />
+                  <Image src="/images/klay-logo.svg" height={25} width={25} alt="" />
                   <Text style={{ marginLeft: "5px" }}>{selectedSuggestion?.joiner_staking_value}</Text>
                 </div>
               </div>
@@ -181,12 +166,7 @@ const GGanbuVote = ({ suggestions, setSuggestions }) => {
 
                 <div style={{ display: "flex", marginTop: "20px", alignItems: "center" }}>
                   <Text style={{ marginRight: "5px" }}>판매 제안 금액:</Text>
-                  <Image
-                    src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                    height={30}
-                    width={30}
-                    alt=""
-                  />
+                  <Image src="/images/klay-logo.svg" height={25} width={25} alt="" />
                   <Text style={{ marginLeft: "5px" }}>{selectedSuggestion?.targetPrice}</Text>
                 </div>
               </div>

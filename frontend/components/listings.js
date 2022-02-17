@@ -18,13 +18,8 @@ const Listings = ({ elements }) => {
   const rows = elements.map((element, idx) => (
     <tr key={idx}>
       <td style={{ display: "flex", alignItems: "center" }}>
-        <Image
-          src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-          width={16}
-          height={16}
-          alt=""
-        />
-        {element.price}
+        <Image src="/images/klay-logo.svg" width={20} height={20} alt="" />
+        <span style={{ marginLeft: "5px" }}>{element.price}</span>
       </td>
       <td>{element.seller}</td>
       <td>{`${new Date(element.updatedAt).toLocaleString("en-US")}`}</td>

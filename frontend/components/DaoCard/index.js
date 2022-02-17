@@ -165,12 +165,7 @@ const DaoCard = ({ dao }) => {
                 <td style={{ width: "20%" }}>자금 Pool</td>
                 <td style={{ width: "30%" }}>
                   <div style={{ display: "flex" }}>
-                    <Image
-                      src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                      width={25}
-                      height={25}
-                      alt=""
-                    />
+                    <Image src="/images/klay-logo.svg" width={20} height={20} alt="" />
                     <span style={{ marginLeft: "5px" }}>
                       {/* {Math.round(parseFloat(dao.members.reduce((acc, cur) => acc + cur.staking_value, 0)) * 100) / 100} */}
                       {dao.balance}
@@ -190,12 +185,7 @@ const DaoCard = ({ dao }) => {
                 <td>총 수익</td>
                 <td>
                   <div style={{ display: "flex" }}>
-                    <Image
-                      src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                      width={25}
-                      height={25}
-                      alt=""
-                    />
+                    <Image src="/images/klay-logo.svg" width={20} height={20} alt="" />
                     <span style={{ marginLeft: "5px" }}>{dao.rewards}</span>
                   </div>
                 </td>

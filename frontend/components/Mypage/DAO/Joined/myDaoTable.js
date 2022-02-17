@@ -28,12 +28,7 @@ const MyDaoTable = ({ myDaos }) => {
       <td>{dao.description}</td>
       <td>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <CImage
-            src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-            width={16}
-            height={16}
-            alt=""
-          />
+          <CImage src="/images/klay-logo.svg" width={20} height={20} alt="" />
           <span style={{ marginLeft: "5px" }}>{dao.balance}</span>
         </div>
       </td>

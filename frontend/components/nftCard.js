@@ -118,12 +118,7 @@ const NFTCard = ({ collectionSymbol, nft }) => {
             >
               {/* <span>Price</span> */}
               <div style={{ display: "flex", alignItems: "center", marginTop: "3px" }}>
-                <Image
-                  width={28}
-                  height={28}
-                  src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                  alt=""
-                />
+                <Image width={23} height={23} src="/images/klay-logo.svg" alt="" />
                 <span style={{ marginLeft: "3px", fontWeight: "bold", fontSize: "20px" }}>
                   {nft?.trade_selling?.price}
                 </span>
