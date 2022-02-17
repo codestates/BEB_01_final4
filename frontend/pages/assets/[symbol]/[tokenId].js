@@ -20,17 +20,18 @@ import { BsFillGrid3X3GapFill } from "react-icons/bs";
 import NFTCard from "../../../components/nftCard";
 import axios from "axios";
 import { useStore } from "../../../utils/store";
-import { GGanbuCollection } from "../../../public/compiledContracts/GGanbuCollection";
+// import { GGanbuCollection } from "../../../public/compiledContracts/GGanbuCollection";
 import { GGanbuCollectionForKlaytn } from "../../../public/compiledContracts/GGanbuCollectionForKlaytn";
 import { Coffer } from "../../../public/compiledContracts/Coffer";
 import { CofferForKlaytn } from "../../../public/compiledContracts/CofferForKlaytn";
 import Listings from "../../../components/listings";
 import PriceHistory from "../../../components/priceHistory";
-import Web3 from "web3";
 import { compressAddress } from "../../../utils";
 import Traits from "../../../components/traits";
 import { useInputState } from "@mantine/hooks";
 import GGanbuList from "../../../components/gganbuList";
+import Caver from "caver-js";
+import { connectKasForCaver } from "../../_app";
 
 const EmptyHeartIcon = styled(AiOutlineHeart)`
   &&:hover {
@@ -94,7 +95,7 @@ const Asset = () => {
   const [gganbuPrice, setGGanbuPrice] = useInputState("");
   const [gganbuDesc, setGGanbuDesc] = useInputState("");
   const [joinableGGanbuPrice, setJoinableGGanbuPrice] = useState(sellPrice);
-  const [caver, networkId] = useStore((state) => [state.caver, state.networkId]);
+  const [caver, setCaver, networkId] = useStore((state) => [state.caver, state.setCaver, state.networkId]);
 
   // db에서 nft 정보 조회: 해당 nft의 컬렉션 정보를 얻기 위해서
   const getNft = async () => {
@@ -144,14 +145,15 @@ const Asset = () => {
 
   // 컨트랙트에서 nft 정보 조회: 소유자, 빌린사람, 판매, 대여 상태 등을 온체인에서 확인
   const getNftFromContract = async () => {
-    let isKlaytn = networkId === 1001 || networkId === 8217;
+    // let isKlaytn = networkId === 1001 || networkId === 8217;
     try {
-      if (!caver && nft?.contractAddress && nft?.ownerAddress) {
-        console.log(networkId);
-        console.log(isKlaytn);
-        const collectionContract = await new web3.eth.Contract(GGanbuCollection.abi, nft?.contractAddress, {
-          from: account,
-        });
+      // kalytn 로직
+      if (!caver) {
+        connectKasForCaver(caver, setCaver);
+      }
+
+      if (caver && nft?.contractAddress && nft?.ownerAddress) {
+        const collectionContract = await new caver.klay.Contract(GGanbuCollectionForKlaytn.abi, nft?.contractAddress);
         setCollectionContract(collectionContract);
 
         const isSelling = await collectionContract.methods.getIsSelling(tokenId).call();
@@ -159,32 +161,6 @@ const Asset = () => {
 
         const isLending = await collectionContract.methods.getIsRental(tokenId).call();
         setIsLending(isLending);
-
-        // 대여자 주소
-        const rentAddress = await collectionContract.methods.getRentalAddress(tokenId).call();
-        // console.log(rentAddress);
-        setNftRenter(Web3.utils.toChecksumAddress(rentAddress));
-        const emptyAddress = "0x0000000000000000000000000000000000000000";
-        // console.log(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
-        setIsRenting(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
-
-        const owner = await collectionContract.methods.ownerOf(tokenId).call();
-        // console.log(owner);
-        setNftOwner(owner);
-      } else if (caver && nft?.contractAddress && nft?.ownerAddress) {
-        // kalytn 로직
-        console.log("kalytn");
-        const collectionContract = await new caver.klay.Contract(GGanbuCollectionForKlaytn.abi, nft?.contractAddress, {
-          from: account,
-        });
-        setCollectionContract(collectionContract);
-
-        const isSelling = await collectionContract.methods.getIsSelling(tokenId).call();
-        setIsSelling(isSelling);
-
-        const isLending = await collectionContract.methods.getIsRental(tokenId).call();
-        setIsLending(isLending);
-
         // 대여자 주소
         const rentAddress = await collectionContract.methods.getRentalAddress(tokenId).call();
         // console.log(rentAddress);
@@ -197,8 +173,60 @@ const Asset = () => {
         // console.log(owner);
         setNftOwner(owner);
       }
+
+      // if (!caver && nft?.contractAddress && nft?.ownerAddress) {
+      //   console.log(networkId);
+      //   console.log(isKlaytn);
+      //   const collectionContract = await new web3.eth.Contract(GGanbuCollection.abi, nft?.contractAddress, {
+      //     from: account,
+      //   });
+      //   setCollectionContract(collectionContract);
+
+      //   const isSelling = await collectionContract.methods.getIsSelling(tokenId).call();
+      //   setIsSelling(isSelling);
+
+      //   const isLending = await collectionContract.methods.getIsRental(tokenId).call();
+      //   setIsLending(isLending);
+
+      //   // 대여자 주소
+      //   const rentAddress = await collectionContract.methods.getRentalAddress(tokenId).call();
+      //   // console.log(rentAddress);
+      //   setNftRenter(Web3.utils.toChecksumAddress(rentAddress));
+      //   const emptyAddress = "0x0000000000000000000000000000000000000000";
+      //   // console.log(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
+      //   setIsRenting(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
+
+      //   const owner = await collectionContract.methods.ownerOf(tokenId).call();
+      //   // console.log(owner);
+      //   setNftOwner(owner);
+      // } else if (caver && nft?.contractAddress && nft?.ownerAddress) {
+      //   // kalytn 로직
+      //   console.log("kalytn");
+      //   const collectionContract = await new caver.klay.Contract(GGanbuCollectionForKlaytn.abi, nft?.contractAddress, {
+      //     from: account,
+      //   });
+      //   setCollectionContract(collectionContract);
+
+      //   const isSelling = await collectionContract.methods.getIsSelling(tokenId).call();
+      //   setIsSelling(isSelling);
+
+      //   const isLending = await collectionContract.methods.getIsRental(tokenId).call();
+      //   setIsLending(isLending);
+
+      //   // 대여자 주소
+      //   const rentAddress = await collectionContract.methods.getRentalAddress(tokenId).call();
+      //   // console.log(rentAddress);
+      //   setNftRenter(caver.utils.toChecksumAddress(rentAddress));
+      //   const emptyAddress = "0x0000000000000000000000000000000000000000";
+      //   // console.log(Web3.utils.toChecksumAddress(rentAddress) !== emptyAddress);
+      //   setIsRenting(caver.utils.toChecksumAddress(rentAddress) !== emptyAddress);
+
+      //   const owner = await collectionContract.methods.ownerOf(tokenId).call();
+      //   // console.log(owner);
+      //   setNftOwner(owner);
+      // }
     } catch (e) {
-      alert("DB, 블록체인 네트워크 상태를 확인해주세요.");
+      // alert("DB, 블록체인 네트워크 상태를 확인해주세요.");
       console.dir(e);
     }
 
@@ -212,7 +240,7 @@ const Asset = () => {
 
   useEffect(() => {
     getNftFromContract();
-  }, [nft, account]);
+  }, [nft, account, caver]);
 
   // 판매 / 대여 등록 상태인 nft의 가격 정보 조회
   const checkNftPriceFromContract = async () => {
@@ -224,7 +252,7 @@ const Asset = () => {
       // console.log(sellPrice);
       if (isKlaytn) {
         setSellPrice(caver.utils.fromPeb(sellPrice, "KLAY"));
-      } else {
+      } else if (web3) {
         setSellPrice(web3.utils.fromWei(sellPrice, "ether"));
       }
     }

@@ -7,16 +7,40 @@ import { useStore } from "../utils/store";
 import Caver from "caver-js";
 import "../styles/global.css";
 
+export const connectKasForCaver = (caver, setCaver) => {
+  if (!caver) {
+    const option = {
+      headers: [
+        {
+          name: "Authorization",
+          value:
+            "Basic " +
+            Buffer.from("KASKDP4CATF6QQH7FTTNG3W1" + ":" + "JoB1I4hpY_5goOZOU2dlFglUKDyIFqr0IP7961SR").toString(
+              "base64",
+            ),
+        },
+        { name: "x-chain-id", value: 1001 },
+      ],
+    };
+    const newCaver = new Caver(new Caver.providers.HttpProvider("https://node-api.klaytnapi.com/v1/klaytn", option));
+    setCaver(newCaver);
+  }
+};
+
 export default function App(props) {
   const { Component, pageProps } = props;
   const setWeb3 = useStore((state) => state.setWeb3);
-  const setCaver = useStore((state) => state.setCaver);
+  const [caver, setCaver] = useStore((state) => [state.caver, state.setCaver]);
   const [setAccount, setUser, setNetworkId] = useStore((state) => [
     state.setAccount,
     state.setUser,
     state.setNetworkId,
   ]);
   const wallet = useStore((state) => state.wallet);
+
+  useEffect(() => {
+    connectKasForCaver(caver, setCaver);
+  }, []);
 
   useEffect(() => {
     if (typeof window.ethereum !== "undefined" && wallet === "metamask") {
