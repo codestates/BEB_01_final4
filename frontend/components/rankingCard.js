@@ -118,7 +118,7 @@ const RankingCard = ({ rankInfo, index, category }) => {
           <div style={{ display: "flex", width: "30%", flexDirection: "column", alignItems: "flex-end" }}>
             <div style={{ display: "flex", alignItems: "center", marginTop: "3px" }}>
               {category === "nft" ? <Image width={25} height={25} src="/images/klay-logo.svg" alt="" /> : null}
-              <span style={{ marginLeft: "3px", fontWeight: "bold", fontSize: "25px" }}>
+              <span style={{ marginLeft: "8px", fontWeight: "bold", fontSize: "25px" }}>
                 {category === "nft" ? rankInfo?.price : null}
               </span>
             </div>
