@@ -135,13 +135,8 @@ const NFTS = () => {
               <StatTitle>owners</StatTitle>
             </StatBox>
             <StatBox style={{ borderRightWidth: "0px" }}>
-              <StatCount style={{ display: "flex" }}>
-                <Image
-                  width={30}
-                  height={30}
-                  src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                  alt=""
-                />
+              <StatCount style={{ display: "flex", gap: "5px" }}>
+                <Image width={25} height={25} src="/images/klay-logo.svg" alt="" />
                 <span style={{ marginLeft: "3px" }}>
                   {Boolean(collection?.assets) === true ? getFloorPrice(collection?.assets) : "-"}
                 </span>
@@ -149,13 +144,8 @@ const NFTS = () => {
               <StatTitle>floor price</StatTitle>
             </StatBox>
             <StatBox style={{ borderTopRightRadius: "8px", borderBottomRightRadius: "8px" }}>
-              <StatCount style={{ display: "flex" }}>
-                <Image
-                  width={30}
-                  height={30}
-                  src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                  alt=""
-                />
+              <StatCount style={{ display: "flex", gap: "5px" }}>
+                <Image width={25} height={25} src="/images/klay-logo.svg" alt="" />
                 <span style={{ marginLeft: "3px" }}>
                   {collection?.volume_traded === null ? "-" : collection?.volume_traded}
                 </span>

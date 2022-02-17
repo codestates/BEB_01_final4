@@ -46,14 +46,11 @@ const History = ({ elements }) => {
             backgroundRepeat: "no-repeat",
           }}
         /> */}
-        <Image
-          src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-          width={16}
-          height={16}
-          alt=""
-        />
-        &nbsp;
-        {element.price}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Image src="/images/klay-logo.svg" width={20} height={20} alt="" />
+          &nbsp;
+          {element.price}
+        </div>
       </td>
       <td>{account == element.seller ? "나" : element.seller.substring(2, 8)}</td>
       <td>{account == element.buyer ? "나" : element.buyer.substring(2, 8)}</td>

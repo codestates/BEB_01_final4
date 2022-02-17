@@ -39,12 +39,7 @@ const GGanbuBoard = ({ gganbuList }) => {
               "-"
             ) : (
               <>
-                <Image
-                  src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-                  width={30}
-                  height={30}
-                  alt=""
-                />
+                <Image src="/images/klay-logo.svg" width={25} height={25} alt="" />
                 <span style={{ marginLeft: "5px" }}>{gganbu?.asset?.price}</span>
               </>
             )}
@@ -52,12 +47,7 @@ const GGanbuBoard = ({ gganbuList }) => {
         </td>
         <td>
           <div style={{ display: "flex" }}>
-            <Image
-              src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-              width={30}
-              height={30}
-              alt=""
-            />
+            <Image src="/images/klay-logo.svg" width={25} height={25} alt="" />
             <span style={{ marginLeft: "5px" }}>
               {Math.round(parseFloat(gganbu?.members?.reduce((acc, cur) => acc + cur.staking_value, 0)) * 100) / 100}
             </span>

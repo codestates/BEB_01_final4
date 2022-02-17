@@ -41,14 +41,11 @@ const RentHistory = ({ elements }) => {
             backgroundRepeat: "no-repeat",
           }}
         /> */}
-        <Image
-          src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-          width={16}
-          height={16}
-          alt=""
-        />
-        &nbsp;
-        {element.price}
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Image src="/images/klay-logo.svg" width={20} height={20} alt="" />
+          &nbsp;
+          {element.price}
+        </div>
       </td>
       <td>{account == element.owner ? "나" : element.owner.substring(2, 8)}</td>
       <td>{account == element.renter ? "나" : element.renter.substring(2, 8)}</td>

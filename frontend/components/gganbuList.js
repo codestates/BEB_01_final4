@@ -13,12 +13,7 @@ function GGanbuList({ elements }) {
       <td style={{ fontSize: "16px" }}>{element?.memberAddress}</td>
       <td>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <Image
-            src={`${networkId === 1001 || networkId === 8217 ? "/images/klay.svg" : "/images/eth.svg"}`}
-            width={30}
-            height={30}
-            alt=""
-          />
+          <Image src="/images/klay-logo.svg" width={25} height={25} alt="" />
           <span style={{ marginLeft: "6px", fontSize: "16px" }}>{element?.staking_value}</span>
         </div>
       </td>
